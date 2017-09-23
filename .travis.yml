@@ -7,10 +7,10 @@ python:
 services:
   - postgresql
 install:
-  - travis_retry pip install tox-travis
+  - travis_retry pip install -r requirements/test.txt
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:
-  - tox -v
+  - coverage run --source=src src/manage.py test zaakmagazijn --settings=zaakmagazijn.conf.travis
 after_success:
   - codecov
