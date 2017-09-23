@@ -75,10 +75,10 @@ Verwijzingen
 * `Code <https://github.com/maykinmedia/zaakregistratiecomponent>`_
 
 
-.. |build-status| image:: https://secure.travis-ci.org/maykinmedia/zaakregistratiecomponent.svg?branch=master
+.. |build-status| image:: https://secure.travis-ci.org/maykinmedia/zaakregistratiecomponent.svg?branch=develop
     :alt: Build status
     :target: https://travis-ci.org/maykinmedia/zaakregistratiecomponent
 
-.. |coverage| image:: https://codecov.io/github/maykinmedia/zaakregistratiecomponent/coverage.svg?branch=master
+.. |coverage| image:: https://codecov.io/github/maykinmedia/zaakregistratiecomponent/coverage.svg?branch=develop
     :alt: Coverage
-    :target: https://codecov.io/github/maykinmedia/zaakregistratiecomponent?branch=master
+    :target: https://codecov.io/github/maykinmedia/zaakregistratiecomponent?branch=develop
