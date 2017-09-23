@@ -1,0 +1,48 @@
+      <zds:voegZaakdocumentToe_EdcLk01 xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:ns="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:stuf="http://www.egem.nl/StUF/StUF0301" xmlns:xm="http://www.w3.org/2005/05/xmlmime">
+
+       <ns:stuurgegevens>
+            <stuf:berichtcode>Lk01</stuf:berichtcode>
+            <stuf:zender>
+               <stuf:organisatie>1</stuf:organisatie>
+               <stuf:applicatie>SoapUI</stuf:applicatie>
+               <stuf:administratie>test</stuf:administratie>
+               <stuf:gebruiker>David</stuf:gebruiker>
+            </stuf:zender>
+            <stuf:ontvanger>
+               <stuf:organisatie>0392</stuf:organisatie>
+               <stuf:applicatie>SoapUI</stuf:applicatie>
+               <stuf:administratie>test</stuf:administratie>
+               <stuf:gebruiker>David</stuf:gebruiker>
+            </stuf:ontvanger>
+            <stuf:referentienummer>1</stuf:referentienummer>
+            <stuf:tijdstipBericht>20170831115500</stuf:tijdstipBericht>
+            <stuf:entiteittype>EDC</stuf:entiteittype>
+         </ns:stuurgegevens>
+         <!--Optional:-->
+         <ns:parameters>
+            <stuf:mutatiesoort>T</stuf:mutatiesoort>
+            <stuf:indicatorOvername>V</stuf:indicatorOvername>
+         </ns:parameters>
+         <ns:object stuf:entiteittype="EDC" stuf:verwerkingssoort="T">
+            <ns:identificatie>03922427f02b-d0eb-478a-8dfa-57adab0ead81</ns:identificatie>
+            <ns:dct.omschrijving>test</ns:dct.omschrijving>
+            <ns:creatiedatum stuf:noValue="geenWaarde" stuf:exact="true" stuf:indOnvolledigeDatum="V">20170914</ns:creatiedatum>
+            <ns:titel>Melding</ns:titel>
+            <ns:formaat>pdf</ns:formaat>
+            <ns:taal>nl</ns:taal>
+            <!--Optional:-->
+            <ns:vertrouwelijkAanduiding>OPENBAAR</ns:vertrouwelijkAanduiding>
+            <ns:auteur>Melder</ns:auteur>
+            <!--Optional:-->
+            <ns:inhoud stuf:bestandsnaam="melding.pdf" xm:contentType="application/pdf">SlZCRVJpMHhMalFLSmVMano5TUtOQ0F3SUc5aWFnbzhQQzlHYVd4MFpYSXZSbXhoZEdWRVpXTnZaR1V2VEdWdVozUm9JRGMxTno0K2MzUnlaV0Z0Q25pYzdWalJidE13RkgzM1YvaHhrNml4bmRoeGVBRUdRMml3VFlOTVBEQWV2TVpMVTV5MFM5TDI5M0hpaENWTkJ3RkZhQkpSSDlhejNYdlBpWDE4ZmJON2NCSUFESVZMa0JBd0NNRnBBSzdBUGNBSU94NkRPMERobWZuN0VoQU16OEhYYnhpR0JwYWZMQ3BUbjc4amtHREVZSEFIU1BWN0FoMHVrT2RDNGlMaXdTQUJSOFNkK1RPS0RTTE9DMHJoV2taeEt1RnhzQ3pwSHFuaStnVDV2RlVGYm1YNnV4ekJFU0Z0NWwvSE04S1FUdy9FT3h3S3pNb2xTUUJqUHFLaXdickJEa2ZZTmRDRXRyNytqRnFBTHlBRm5rRE1nWjRoY0ZsWmluQmtWclhHdW9jNzRUMW9TNWE3MDViWDR0OVR0aSs4TFluN3BpaDlrRlJqM2NPZDhCNGNWWkp3eXMxNGtHU3g3dUZPZUErT0tzbDFhZy9VRWl6V1Bkd0o3OEZSSldIUlhTV0xkUTkzd250d1RFbk1uUGYyS3RWWTkzQW52QWZIbFBTa1R0eCt2eFRJYlRlaG1oTno1UGhWRTdwTVE1WHRWTFp1TnkrNm4wYUpNRDI2eW1PaXl2dGNaRklXVzVYcGVMNG80alRxTnIrRHROdzN0RGI5WXBNa0txdTZiS2lnbG1raFpaYXVwZFJEZEpTRkdMZE5GTThFZHVxa3FkMk1aaEh1bVJ5N3hCOVhjMW5FYXRER2VJYVpWVmxlVXUzdWg3ZzAyR0lUNTdreGlkS1EwMmZRWE0vTzYyQ0lZN2hSWWV0OVdHV0ZncXNrbnkreWVMbmRjOXlqZ25pMUZHV0JRT1hGRUVwbUtHM0dkVnhFNmpaVGNmZ1h4SXlYUC82RTJEWEVOdU1rWG1vWnFadWo5T2E0YSszcGpoakIyaGczMXI2UU1obTBtNWcwdm42THpsSGw3UGViUEZkNndNWXlIemNtRHBSV2Q2dFZtbGJ0Yndnek01TnBiV0RNQ1hWY3hqMHhoRlRneHNhbnMwVEdXb2FaeWdjeENzTklxOHh3VVQzanE0VnB6bG9sS0IzMHVCNXVmQnlvYkJOOVg2M1hTcHRqQXlPMVUybGV2Qnlrd2pNcVNGWGxUSGJPd0RRQlREUDNOSFAvdHpOMzd4OENGUEVERXk0amlOcjJkNjUwV0hhZnk3VktiMldtNEtkTm5CUnE3Mlg5Y0JWcW5zL095ZGM3bU5oQ25XWTBuZnpwNVA4clQzTnFQRzNubGpjcjg4STBOOU5wcExibVN1M09pRk1EbWE3czZlQk9WL2FUT1hGbC9oWDRBZW1QK0c4S1pXNWtjM1J5WldGdENtVnVaRzlpYWdveElEQWdiMkpxQ2p3OEwwTnZiblJsYm5SeklEUWdNQ0JTTDFSNWNHVXZVR0ZuWlM5U1pYTnZkWEpqWlhNOFBDOVFjbTlqVTJWMElGc3ZVRVJHSUM5VVpYaDBJQzlKYldGblpVSWdMMGx0WVdkbFF5QXZTVzFoWjJWSlhTOUdiMjUwUER3dlJqRWdNaUF3SUZJdlJqSWdNeUF3SUZJK1BqNCtMMUJoY21WdWRDQTFJREFnVWk5TlpXUnBZVUp2ZUZzd0lEQWdOVGsxTGpJNElEZzBNUzQ0T0YwK1BncGxibVJ2WW1vS01pQXdJRzlpYWdvOFBDOVRkV0owZVhCbEwxUjVjR1V4TDFSNWNHVXZSbTl1ZEM5Q1lYTmxSbTl1ZEM5SVpXeDJaWFJwWTJFdFFtOXNaQzlGYm1OdlpHbHVaeTlYYVc1QmJuTnBSVzVqYjJScGJtYytQZ3BsYm1Sdlltb0tNeUF3SUc5aWFnbzhQQzlUZFdKMGVYQmxMMVI1Y0dVeEwxUjVjR1V2Um05dWRDOUNZWE5sUm05dWRDOUlaV3gyWlhScFkyRXZSVzVqYjJScGJtY3ZWMmx1UVc1emFVVnVZMjlrYVc1blBqNEtaVzVrYjJKcUNqVWdNQ0J2WW1vS1BEd3ZTMmxrYzFzeElEQWdVbDB2Vkhsd1pTOVFZV2RsY3k5RGIzVnVkQ0F4TDBsVVdGUW9NaTR4TGpjcFBqNEtaVzVrYjJKcUNqWWdNQ0J2WW1vS1BEd3ZWSGx3WlM5RFlYUmhiRzluTDFCaFoyVnpJRFVnTUNCU1BqNEtaVzVrYjJKcUNqY2dNQ0J2WW1vS1BEd3ZUVzlrUkdGMFpTaEVPakl3TVRjd09URTBNVE15TWpBekt6QXlKekF3SnlrdlEzSmxZWFJwYjI1RVlYUmxLRVE2TWpBeE56QTVNVFF4TXpJeU1ETXJNREluTURBbktTOVFjbTlrZFdObGNpaHBWR1Y0ZENBeUxqRXVOeUJpZVNBeFZETllWQ2srUGdwbGJtUnZZbW9LZUhKbFpnb3dJRGdLTURBd01EQXdNREF3TUNBMk5UVXpOU0JtSUFvd01EQXdNREF3T0RNNUlEQXdNREF3SUc0Z0NqQXdNREF3TURFd01URWdNREF3TURBZ2JpQUtNREF3TURBd01URXdOQ0F3TURBd01DQnVJQW93TURBd01EQXdNREUxSURBd01EQXdJRzRnQ2pBd01EQXdNREV4T1RJZ01EQXdNREFnYmlBS01EQXdNREF3TVRJMU5TQXdNREF3TUNCdUlBb3dNREF3TURBeE16QXdJREF3TURBd0lHNGdDblJ5WVdsc1pYSUtQRHd2U1c1bWJ5QTNJREFnVWk5SlJDQmJQR1JrT0RCak1tWTRaV0ZsWkdWaU5tUXdNMlk0T1dSbVltVXpOV0ZqTkdGa1Bqd3lOVE0wWW1VME4yUXhOMkU1TkRJeE1qQmhNREV4WVRFMVl6WTFOREV3TkQ1ZEwxSnZiM1FnTmlBd0lGSXZVMmw2WlNBNFBqNEtjM1JoY25SNGNtVm1DakUwTWpJS0pTVkZUMFlL</ns:inhoud>
+            <!--Zero or more repetitions:-->
+            <ns:isRelevantVoor stuf:entiteittype="EDCZAK" stuf:verwerkingssoort="T">
+               <!--Optional:-->
+               <ns:gerelateerde stuf:entiteittype="ZAK" stuf:verwerkingssoort="I">
+                  <!--Optional:-->
+                  <ns:identificatie>0392f576ff4a-af98-4669-8fc6-625c7190aa9d</ns:identificatie>
+
+               </ns:gerelateerde>
+            </ns:isRelevantVoor>
+         </ns:object>
+      </zds:voegZaakdocumentToe_EdcLk01>

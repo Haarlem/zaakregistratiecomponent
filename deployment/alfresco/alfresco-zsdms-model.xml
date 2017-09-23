@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model xmlns="http://www.alfresco.org/model/dictionary/1.0" name="hlm:haarlemAlfrescoModel">
+    <description>Alfresco Content Model voor zaaksysteem gemeente Haarlem</description>
+    <version>1.0</version>
+    <imports>
+        <import prefix="d" uri="http://www.alfresco.org/model/dictionary/1.0" />
+        <import prefix="cm" uri="http://www.alfresco.org/model/content/1.0" />
+    </imports>
+
+    <namespaces>
+       <namespace prefix="hlm" uri="http://www.haarlem.nl/model/1.0" />
+       <namespace prefix="tmlo" uri="http://www.haarlem.nl/tmlo/1.0" />
+       <namespace prefix="zsdms" uri="http://www.egem.nl/king/zsdms" />
+    </namespaces>
+
+ <!--  Algemene opmerkingen:
+        -   Datums zijn voorlopig als 'd:date' opgenomen en niet als 'd:datetime'.
+        Tijdstippen worden dus niet opgeslagen in de gedeclareerde velden.
+        De Systeem data (cm:created en cm:modified) zijn wel van het type d:datetime.
+        -   De velden cm:title en zsdms:zaakidentificatie zijn opgenomen in aspecten.
+        Een eventuele cmis query die deze properties op wil vragen, moet een join doen met deze aspecten (resp. cm:titled en zsdms:zaakidentificatieAspect).
+ -->
+
+ <constraints/>
+
+    <types>
+        <type name="zsdms:zaaktype">
+            <title>Zaaktype</title>
+            <description>Zaaktype</description>
+            <parent>cm:folder</parent>
+             <properties>
+             <!-- zaaktypecode is het veld cmis:name - dat komt weer overeen met cm:name en is impliciet aanwezig in alfresco -->
+                <property name="zsdms:Zaaktype-omschrijving">
+                    <title>Zaaktype omschrijving</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+        </properties>
+        </type>
+
+       <type name="zsdms:zaak">
+            <title>Zaakdossier</title>
+            <description>Zaakdossier</description>
+            <parent>cm:folder</parent>
+          <properties>
+                <property name="zsdms:startdatum">
+                    <title>Startdatum zaak</title>
+                    <type>d:date</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:einddatum">
+                    <title>Einddatum zaak</title>
+                    <type>d:date</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:zaakniveau">
+                    <title>Zaakniveau</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:deelzakenindicatie">
+                    <title>Indicatie deelzaken</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:registratiedatum">
+                    <title>Registratiedatum zaak</title>
+                    <type>d:date</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:archiefnominatie">
+                    <title>Archiefnominatie zaak</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:datumVernietigDossier">
+                    <title>Vernietigingsdatum zaak</title>
+                    <type>d:date</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:resultaatomschrijving">
+                    <title>Resultaatomschrijving zaak</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:medewerkeridentificatie">
+                    <title>Medewerkeridentificatie initiator</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:organisatieidentificatie">
+                    <title>Organisatieidentificatie initiator</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:inp.bsn">
+                    <title>Burger service nummer initiator</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:anp.identificatie">
+                    <title>Nummer van ander natuurlijk persoon (initiator)</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:inn.nnpId">
+                    <title>Nummer van ander niet natuurlijk persoon (initiator)</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:ann.identificatie">
+                    <title>Nummer van buitenlands niet natuurlijk persoon (initiator)</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:vestigingsNummer">
+                    <title>Vestigingsnummer (initiator)</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+          </properties>
+            <mandatory-aspects>
+                <aspect>zsdms:zaakidentificatieAspect</aspect>
+            </mandatory-aspects>
+        </type>
+
+ <type name="zsdms:document">
+            <title>Document</title>
+            <description>Document</description>
+            <parent>cm:content</parent>
+          <properties>
+        <!-- document titel (cm:title) is een bestaand veld uit het alfrescomodel.
+        Het is impliciet beschikbaar gemaakt door het aspect cm:titled toe te voegen aan de lijst met verplichte aspecten van het type zsdms:document-->
+        <!--  de bestandsnaam komt overeen met het systeemveld cm:name -->
+          <property name="zsdms:documentIdentificatie">
+                    <title>Document identificatie</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:dct.omschrijving">
+                    <title>Documenttype omschrijving</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentcreatiedatum">
+                    <title>Document creatie datum</title>
+                    <type>d:date</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentontvangstdatum">
+                    <title>Document ontvangst datum</title>
+                    <type>d:date</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentbeschrijving">
+                    <title>Document beschrijving</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentverzenddatum">
+                    <title>Document verzend datum</title>
+                    <type>d:date</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:vertrouwelijkaanduiding">
+                    <title>Vertrouwelijkaanduiding</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentauteur">
+                    <title>Document auteur</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+                <!-- Document formaat (=mimetype) en document omvang (groote in bytes) worden door alfresco al automatisch gezet in het samengestelde veld cm:content -->
+                <!--
+               <property name="zsdms:documentformaat">
+                    <title>Document formaat</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentomvang">
+                    <title>Document omvang</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+                -->
+               <property name="zsdms:documenttaal">
+                    <title>Document taal</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentversie">
+                    <title>Document versie</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+               <property name="zsdms:documentstatus">
+                    <title>Document status</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+                </property>
+             <property name="zsdms:documentLink">
+                    <title>Document link</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="tmlo:externKenmerk">
+                    <title>Extern kenmerk</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="tmlo:ondertekening">
+                    <title>Ondertekening</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+               <property name="tmlo:verantwoordelijkeFunctionaris">
+                    <title>Verantwoordelijke functionaris</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>true</tokenised>
+                    </index>
+                </property>
+          <!-- Identificatiekenmerk (noderef) word door alfresco automatisch gegenereerd en staat in  het veld sys:node-uuid
+                In combinatie met de prefix 'workspace://SpacesStore/' levert dit de zg. nodeRef -->
+          <!-- tmlo:datumAanmaak word door alfresco bijgehouden in het veld cm:created  -->
+          </properties>
+            <mandatory-aspects>
+                <aspect>cm:titled</aspect>
+                <aspect>zsdms:zaakidentificatieAspect</aspect>
+            </mandatory-aspects>
+        </type>
+
+    </types>
+
+    <aspects>
+          <aspect name="zsdms:zaakidentificatieAspect">
+            <title>Zaakidentificatie Aspect</title>
+           <description>Zaakidentificatie Aspect</description>
+            <properties>
+              <property name="zsdms:zaakidentificatie">
+                    <title>Zaak identificatie</title>
+                    <type>d:text</type>
+                    <index enabled="true">
+                        <atomic>true</atomic>
+                        <stored>false</stored>
+                        <tokenised>false</tokenised>
+                    </index>
+             </property>
+            </properties>
+        </aspect>
+    </aspects>
+</model>

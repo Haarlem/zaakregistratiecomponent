@@ -1,0 +1,29 @@
+# Developers
+.hg
+.git
+.svn
+.idea/
+.sass-cache/
+*.db
+*.pyc
+__pycache__
+*~
+*.egg-info
+/.tox/
+
+# Javascript libraries
+/node_modules/
+
+# Coverage reports
+/reports/
+/htmlcov/
+.coverage
+
+# Environment
+local.py
+/env/
+/media/
+/static/
+/mail/
+/log/*.log*
+.vagrant

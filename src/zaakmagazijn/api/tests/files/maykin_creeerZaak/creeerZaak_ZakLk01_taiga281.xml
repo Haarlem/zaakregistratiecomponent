@@ -1,0 +1,79 @@
+<zds:creeerZaak_ZakLk01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd"
+                        xmlns:stuf="http://www.egem.nl/StUF/StUF0301" xmlns:ns1="http://www.egem.nl/StUF/sector/bg/0310"
+                        xmlns:ns="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:gml="http://www.opengis.net/gml"
+                        xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+         <ns:stuurgegevens>
+            <stuf:berichtcode>Lk01</stuf:berichtcode>
+            <stuf:zender>
+               <stuf:organisatie>1</stuf:organisatie>
+               <stuf:applicatie>SoapUI</stuf:applicatie>
+               <stuf:administratie>test</stuf:administratie>
+               <stuf:gebruiker>David</stuf:gebruiker>
+            </stuf:zender>
+            <stuf:ontvanger>
+               <stuf:organisatie>0392</stuf:organisatie>
+               <stuf:applicatie>SoapUI</stuf:applicatie>
+               <stuf:administratie>test</stuf:administratie>
+               <stuf:gebruiker>David</stuf:gebruiker>
+            </stuf:ontvanger>
+            <stuf:referentienummer>1</stuf:referentienummer>
+            <stuf:tijdstipBericht>20170831115500</stuf:tijdstipBericht>
+            <stuf:entiteittype>ZAK</stuf:entiteittype>
+         </ns:stuurgegevens>
+         <ns:parameters>
+            <stuf:mutatiesoort>T</stuf:mutatiesoort>
+            <stuf:indicatorOvername>V</stuf:indicatorOvername>
+         </ns:parameters>
+         <ns:object stuf:entiteittype="ZAK" stuf:verwerkingssoort="T">
+            <ns:identificatie>039288072b1c-54f4-485c-8e83-095621e6jk24</ns:identificatie>
+             <ns:bronorganisatie>0392</ns:bronorganisatie>
+            <ns:archiefstatus>Nog te archiveren</ns:archiefstatus>
+            <ns:verantwoordelijkeOrganisatie>0392</ns:verantwoordelijkeOrganisatie>
+            <ns:omschrijving>Testmelding</ns:omschrijving>
+            <ns:toelichting>Dit is de inhoud van de melding.</ns:toelichting>
+            <ns:startdatum  stuf:exact="true" stuf:indOnvolledigeDatum="V">20170831</ns:startdatum>
+            <ns:registratiedatum  stuf:exact="true" stuf:indOnvolledigeDatum="V">20170831</ns:registratiedatum>
+           <ns:einddatumGepland>170915</ns:einddatumGepland>
+           <ns:zkt.omschrijving>MOR</ns:zkt.omschrijving>
+            <ns:zkt.identificatie>1</ns:zkt.identificatie>
+
+            <ns:heeftAlsInitiator stuf:entiteittype="ZAKBTRINI" stuf:verwerkingssoort="T">
+			  <ns:gerelateerde>
+                        <ns:natuurlijkPersoon stuf:entiteittype="NPS" stuf:verwerkingssoort="T">
+                     <!--Optional:-->
+                   <!--Optional:-->
+                     <ns1:inp.bsn>12345678</ns1:inp.bsn>
+                     <!--Optional:-->
+                     <ns1:anp.identificatie>12345678</ns1:anp.identificatie>
+                     <!--Optional:-->
+                     <ns1:geslachtsnaam>Hussel</ns1:geslachtsnaam>
+                     <!--Optional:-->
+                     <ns1:voornamen>David</ns1:voornamen>
+                     <!--Optional:-->
+                     <ns1:aanhefAanschrijving>de Heer</ns1:aanhefAanschrijving>
+                     <!--Optional:-->
+                     <ns1:voornamenAanschrijving>David</ns1:voornamenAanschrijving>
+                     <!--Optional:-->
+                     <ns1:geslachtsnaamAanschrijving>Hussel</ns1:geslachtsnaamAanschrijving>
+                     <!--Optional:-->
+                     <ns1:geslachtsaanduiding>M</ns1:geslachtsaanduiding>
+                     <!--Optional:-->
+                     <ns1:geboortedatum stuf:noValue="geenWaarde" stuf:exact="true" stuf:indOnvolledigeDatum="V">19760930</ns1:geboortedatum>
+                     <!--Optional:-->
+
+                  </ns:natuurlijkPersoon>
+
+                  </ns:gerelateerde>
+            </ns:heeftAlsInitiator>
+
+            <ns:heeftAlsZaakcoordinator stuf:entiteittype="ZAKBTRZKC" stuf:verwerkingssoort="T" >
+              <ns:gerelateerde>
+                  <ns:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+                     <ns:identificatie>DVV/KCC</ns:identificatie>
+                  </ns:organisatorischeEenheid>
+              </ns:gerelateerde>
+            </ns:heeftAlsZaakcoordinator>
+
+         </ns:object>
+      </zds:creeerZaak_ZakLk01>

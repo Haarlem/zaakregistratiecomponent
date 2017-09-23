@@ -1,0 +1,23 @@
+pip-tools
+psycopg2
+Pillow
+pytz
+raven
+
+Django
+# django-admin-tools
+django-hijack
+django-hijack-admin
+django-axes
+django-choices
+django-rosetta
+django-sniplates
+django-redis
+unidecode
+zeep
+
+# djangorestframework
+
+# forks
+-e git+https://github.com/maykinmedia/spyne.git@maykin#egg=spyne
+-e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev2#egg=cmislib

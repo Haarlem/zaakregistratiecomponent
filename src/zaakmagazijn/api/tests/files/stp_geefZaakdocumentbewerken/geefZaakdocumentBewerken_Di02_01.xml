@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ZDS:geefZaakdocumentBewerken_Di02
+    xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd"
+    xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310"
+    xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:gml="http://www.opengis.net/gml"
+    xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZDS:stuurgegevens>
+        <StUF:berichtcode>Di02</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>{{ zenderOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ zenderApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker>{{ zenderGebruiker }}</StUF:gebruiker>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>{{ ontvangerOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ ontvangerApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>{{ referentienummer }}</StUF:referentienummer>
+        <StUF:tijdstipBericht>{{ tijdstipBericht }}</StUF:tijdstipBericht>
+        <StUF:functie>geefZaakdocumentbewerken</StUF:functie>
+    </ZDS:stuurgegevens>
+    <ZDS:edcLv01 StUF:functie="selectie" StUF:entiteittype="EDC">
+        <ZKN:parameters>
+            <StUF:indicatorAfnemerIndicatie>false</StUF:indicatorAfnemerIndicatie>
+        </ZKN:parameters>
+        <ZKN:gelijk StUF:entiteittype="EDC">
+            <ZKN:identificatie>{{ voegzaakdocumenttoe_identificatie_5 }}</ZKN:identificatie>
+        </ZKN:gelijk>
+        <ZKN:scope>
+            <ZKN:object StUF:entiteittype="EDC">
+                <ZKN:identificatie></ZKN:identificatie>
+                <ZKN:creatiedatum>{{ datumVandaag }}</ZKN:creatiedatum>
+                <ZKN:titel></ZKN:titel>
+                <ZKN:formaat></ZKN:formaat>
+                <ZKN:taal></ZKN:taal>
+                <ZKN:vertrouwelijkAanduiding>CONFIDENTIEEL</ZKN:vertrouwelijkAanduiding>
+                <ZKN:auteur></ZKN:auteur>
+            </ZKN:object>
+        </ZKN:scope>
+    </ZDS:edcLv01>
+</ZDS:geefZaakdocumentBewerken_Di02>

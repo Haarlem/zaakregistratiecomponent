@@ -1,0 +1,18 @@
+<StUF:Bv03Bericht xmlns:StUF="http://www.egem.nl/StUF/StUF0301">
+    <StUF:stuurgegevens>
+        <StUF:berichtcode>Bv03</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>{{ zenderOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ zenderApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>{{ ontvangerOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ ontvangerApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>{{ referentienummer }}</StUF:referentienummer>
+        <StUF:tijdstipBericht>{{ tijdstipBericht }}</StUF:tijdstipBericht>
+        <StUF:crossRefnummer>12345678</StUF:crossRefnummer>
+    </StUF:stuurgegevens>
+</StUF:Bv03Bericht>

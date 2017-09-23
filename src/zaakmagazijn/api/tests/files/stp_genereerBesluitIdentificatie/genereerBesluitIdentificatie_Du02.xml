@@ -1,0 +1,22 @@
+<ZDS:genereerBesluitIdentificatie_Du02 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310">
+    <ZDS:stuurgegevens>
+        <StUF:berichtcode>Du02</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>{{ zenderOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ zenderApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>{{ ontvangerOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ ontvangerApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>{{ referentienummer }}</StUF:referentienummer>
+        <StUF:tijdstipBericht>{{ tijdstipBericht }}</StUF:tijdstipBericht>
+        <StUF:functie>genereerBesluitidentificatie</StUF:functie>
+    </ZDS:stuurgegevens>
+    <ZDS:besluit StUF:entiteittype="BSL" StUF:functie="entiteit">
+        <ZKN:identificatie>{{ genereerbesluitident_identificatie_2 }}</ZKN:identificatie>
+        <ZKN:bst.omschrijving>bst.omschrijving</ZKN:bst.omschrijving>
+    </ZDS:besluit>
+</ZDS:genereerBesluitIdentificatie_Du02>

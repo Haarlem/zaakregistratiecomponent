@@ -1,0 +1,16 @@
+language: python
+sudo: false
+python:
+   - '3.4'
+   - '3.5'
+   - '3.6'
+services:
+  - postgresql
+install:
+  - travis_retry pip install tox-travis
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+script:
+  - tox -v
+after_success:
+  - codecov

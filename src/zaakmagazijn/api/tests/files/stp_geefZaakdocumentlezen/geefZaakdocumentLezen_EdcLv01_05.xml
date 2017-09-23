@@ -1,0 +1,33 @@
+<zds:geefZaakdocumentLezen_EdcLv01
+    xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../../zds0120_msg_totaal.xsd"
+    xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310"
+    xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>Lv01</StUF:berichtcode>
+        <StUF:entiteittype>EDC</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:sortering>0</StUF:sortering>
+        <StUF:indicatorVervolgvraag>false</StUF:indicatorVervolgvraag>
+    </ZKN:parameters>
+    <ZKN:gelijk StUF:entiteittype="EDC">
+        <ZKN:identificatie>{{ voegzaakdocumenttoe_identificatie_1 }}</ZKN:identificatie>
+    </ZKN:gelijk>
+    <ZKN:scope>
+        <ZKN:object StUF:entiteittype="EDC">
+            <ZKN:identificatie xsi:nil="true"/>
+            <ZKN:creatiedatum xsi:nil="true"/>
+            <ZKN:titel xsi:nil="true"/>
+            <ZKN:formaat xsi:nil="true"/>
+            <ZKN:taal xsi:nil="true"/>
+            <ZKN:vertrouwelijkAanduiding xsi:nil="true"/>
+            <ZKN:auteur xsi:nil="true"/>
+            <ZKN:inhoud/>
+            <ZKN:isRelevantVoor StUF:entiteittype="EDCZAK">
+                <ZKN:gerelateerde StUF:entiteittype="ZAK">
+                    <ZKN:identificatie xsi:nil="true"/>
+                </ZKN:gerelateerde>
+            </ZKN:isRelevantVoor>
+        </ZKN:object>
+    </ZKN:scope>
+</zds:geefZaakdocumentLezen_EdcLv01>

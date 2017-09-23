@@ -1,0 +1,42 @@
+<soap11env:Envelope xmlns:s0="http://www.egem.nl/StUF/StUF0301"
+                    xmlns:soap11env="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap11env:Body>
+        <soap11env:Fault>
+            <faultcode>soap11env:Client</faultcode>
+            <faultstring>Berichtbody is niet conform schema in sectormodel</faultstring>
+            <faultactor></faultactor>
+            <detail>
+                <s0:Fo02Bericht>
+                    <s0:stuurgegevens>
+                        <berichtcode>Fo02</berichtcode>
+                    </s0:stuurgegevens>
+                </s0:Fo02Bericht>
+            </detail>
+        </soap11env:Fault>
+    </soap11env:Body>
+</soap11env:Envelope>
+
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:stuf="http://www.egem.nl/StUF/StUF0301">
+          <soapenv:Body>
+            <soapenv:Fault>
+              <faultcode>?</faultcode>
+              <faultstring xml:lang="?">?</faultstring>
+              <!--Optional:-->
+              <faultactor>?</faultactor>
+              <!--Optional:-->
+              <detail>
+                <stuf:Fo02Bericht>
+                  <stuf:stuurgegevens>
+                    <stuf:berichtcode>Fo02</stuf:berichtcode>
+                  </stuf:stuurgegevens>
+                  <stuf:body>
+                    <stuf:code>?</stuf:code>
+                    <stuf:plek>?</stuf:plek>
+                    <stuf:omschrijving>?</stuf:omschrijving>
+                  </stuf:body>
+                </stuf:Fo02Bericht>
+                <!--You may enter ANY elements at this point-->
+              </detail>
+            </soapenv:Fault>
+          </soapenv:Body>
+        </soapenv:Envelope>

@@ -1,0 +1,19 @@
+
+module nginx 1.0;
+
+require {
+	type httpd_t;
+	type var_t;
+	type http_cache_port_t;
+	class tcp_socket name_connect;
+    class file { getattr open read };
+}
+
+#============= httpd_t ==============
+allow httpd_t var_t:file open;
+
+allow httpd_t var_t:file { getattr read };
+
+allow httpd_t http_cache_port_t:tcp_socket name_connect;
+
+allow httpd_t var_t:file getattr;

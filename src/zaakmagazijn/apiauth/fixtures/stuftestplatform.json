@@ -1,0 +1,118 @@
+[
+{
+    "model": "apiauth.serviceoperation",
+    "pk": 1,
+    "fields": {
+        "name": "Geef Zaakstatus (ZakLv01)",
+        "namespace": "http://www.stufstandaarden.nl/koppelvlak/zds0120",
+        "operation_name": "geefZaakstatus_ZakLv01"
+    }
+},
+{
+    "model": "apiauth.serviceoperation",
+    "pk": 2,
+    "fields": {
+        "name": "Geef Lijst Besluiten (ZakLv01)",
+        "namespace": "http://www.stufstandaarden.nl/koppelvlak/zds0120",
+        "operation_name": "geefLijstBesluiten_ZakLv01"
+    }
+},
+{
+    "model": "apiauth.serviceoperation",
+    "pk": 3,
+    "fields": {
+        "name": "Geef Zaakdetails (ZakLv01)",
+        "namespace": "http://www.stufstandaarden.nl/koppelvlak/zds0120",
+        "operation_name": "geefZaakdetails_ZakLv01"
+    }
+},
+{
+    "model": "apiauth.serviceoperation",
+    "pk": 4,
+    "fields": {
+        "name": "Genereer Zaak Identificatie (Di02)",
+        "namespace": "http://www.stufstandaarden.nl/koppelvlak/zds0120",
+        "operation_name": "genereerZaakIdentificatie_Di02"
+    }
+},
+{
+    "model": "apiauth.serviceoperation",
+    "pk": 5,
+    "fields": {
+        "name": "Genereer Besluit Identificatie (Di02)",
+        "namespace": "http://www.stufstandaarden.nl/koppelvlak/zds0120",
+        "operation_name": "genereerBesluitIdentificatie_Di02"
+    }
+},
+{
+    "model": "apiauth.serviceoperation",
+    "pk": 6,
+    "fields": {
+        "name": "Creeer Zaak (ZakLk01)",
+        "namespace": "http://www.stufstandaarden.nl/koppelvlak/zds0120",
+        "operation_name": "creeerZaak_ZakLk01"
+    }
+},
+{
+    "model": "apiauth.applicationgroup",
+    "pk": 1,
+    "fields": {
+        "name": "Alle rechten",
+        "service_operations": [
+            6,
+            2,
+            3,
+            1,
+            5,
+            4
+        ]
+    }
+},
+{
+    "model": "apiauth.organisation",
+    "pk": 1,
+    "fields": {
+        "name": "KING",
+        "description": "Kwaliteitsinstituut Nederlandse Gemeenten"
+    }
+},
+{
+    "model": "apiauth.application",
+    "pk": 1,
+    "fields": {
+        "name": "STP",
+        "description": "StUF Testplatform",
+        "organisation": 1,
+        "groups": [
+            1
+        ]
+    }
+},
+{
+    "model": "apiauth.endpoint",
+    "pk": 1,
+    "fields": {
+        "application": 1,
+        "type": "beantwoordVraag",
+        "url": "http://87.250.154.26:7080/opentunnel/00000000000000000000041/50583302/beantwoordVraag"
+    }
+},
+{
+    "model": "apiauth.endpoint",
+    "pk": 2,
+    "fields": {
+        "application": 1,
+        "type": "OntvangAsynchroon",
+        "url": "http://87.250.154.26:7080/opentunnel/00000000000000000000041/50583302/OntvangAsynchroon"
+    }
+},
+{
+    "model": "apiauth.endpoint",
+    "pk": 3,
+    "fields": {
+        "application": 1,
+        "type": "VerwerkSynchroonVrijBericht",
+        "url": "http://87.250.154.26:7080/opentunnel/00000000000000000000041/50583302/VerwerkSynchroonVrijBericht"
+    }
+}
+]
