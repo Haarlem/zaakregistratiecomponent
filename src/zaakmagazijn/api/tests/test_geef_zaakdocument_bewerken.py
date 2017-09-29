@@ -68,7 +68,7 @@ class STPgeefZaakdocumentbewerken_Di02Tests(DMSMockMixin, BaseTestPlatformTests,
         response_object_element = response_root.xpath('//zds:edcLa01/zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
         response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
 
-        self.assertEqual(response_edc_identificatie, self.edc1.identificatie)
+        self.assertEqual(response_edc_identificatie, self.edc1.informatieobjectidentificatie)
 
         self._assert_xpath_results(
             response_root, '//zds:edcLa01/zkn:antwoord/zkn:object',
