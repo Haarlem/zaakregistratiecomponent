@@ -296,6 +296,13 @@ HIJACK_ALLOW_GET_REQUESTS = True
 # Prefix for identification codes.
 ZAAKMAGAZIJN_GEMEENTE_CODE = '0000'
 
+# Max amount of bytes that the WSGI server can process in 1 request.
+#
+# Since attachments are bas64 encoded twice and thus increase in size
+# the maximum file content size is max_content_length/(8/6)/(8/6) (~23 mb in our case)
+# (excluding any other payload)
+ZAAKMAGAZIJN_MAX_CONTENT_LENGTH = 40 * 1024 * 1024  # 40mb
+
 # CMIS Client settings
 CMIS_ZAKEN_TYPE_ENABLED = False
 CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to'
