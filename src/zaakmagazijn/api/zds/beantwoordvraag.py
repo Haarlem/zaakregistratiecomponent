@@ -705,13 +705,16 @@ class La01Builder(ComplexModelBuilder):
         query_args = create_query_args(filter_obj, recurse=True)
 
         object_model = get_spyne_field(output_model, 'antwoord/object')
-        data = self._create_object_data(stuf_entiteit=self.stuf_entiteit,
-                                        queryset=queryset.filter(**query_args).distinct(),
-                                        scope_obj=scope_obj,
-                                        filter_obj=filter_obj,
-                                        parameters_obj=parameters_obj,
-                                        root_scope_obj=scope_obj,
-                                        object_model=object_model)
+        try:
+            data = self._create_object_data(stuf_entiteit=self.stuf_entiteit,
+                                            queryset=queryset.filter(**query_args).distinct(),
+                                            scope_obj=scope_obj,
+                                            filter_obj=filter_obj,
+                                            parameters_obj=parameters_obj,
+                                            root_scope_obj=scope_obj,
+                                            object_model=object_model)
+        except EmptyResultError:
+            data = []
 
         return data
 
