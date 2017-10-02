@@ -4,7 +4,9 @@ from zeep.xsd.const import Nil
 from zaakmagazijn.api.stuf.choices import BerichtcodeChoices
 from zaakmagazijn.rgbz.choices import JaNee
 
-from ...rgbz.tests.factory_models import ZaakInformatieObjectFactory
+from ...rgbz.tests.factory_models import (
+    ZaakFactory, ZaakInformatieObjectFactory
+)
 from .base import BaseSoapTests, BaseTestPlatformTests
 
 
@@ -173,6 +175,33 @@ class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
             self._get_body_root(root), 'zkn:antwoord/zkn:object[@stuf:entiteittype]',
             1, namespaces=self.nsmap
         )
+
+
+class MaykingeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
+    porttype = 'Beantwoordvraag'
+    maxDiff = None
+    test_files_subfolder = 'maykin_geefLijstZaakdocumenten'
+
+    def test_taiga_issue_282(self):
+        """
+        Regression test from Taiga issue #282
+
+        When no results  are returned because the scope does not match, return an empty list,
+        instead of return 'EmptyResultError', which isn't very friendly.
+        """
+        zaak = ZaakFactory.create(zaakidentificatie='WLO-9192')
+        vraag = 'geefLijstZaakdocumenten_ZakLv01_taiga282.xml'
+        response = self._do_request(self.porttype, vraag, {})
+        response_root = etree.fromstring(response.content)
+
+        response_berichtcode = response_root.xpath(
+            '//zkn:stuurgegevens/stuf:berichtcode',
+            namespaces=self.nsmap
+        )[0].text
+        self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+        objects = response_root.xpath('//zkn:antwoord/child::*', namespaces=self.nsmap)
+        self.assertEquals(len(objects), 0)
 
 
 class STPgeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):

@@ -66,8 +66,13 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
             referentienummer='1234',
             tijdstipBericht=stuf_datetime.now(),
         )
+
+        # Note that the content is base64 encoded twice, and thus increases in size
+        # when encoded. suppose we want to send 100 bytes, this will be encoded
+        # as 100 * (8/6) * (8/6) = ~178 bytes.
+        big_ass_file = b'a' * 22 * 1024**2
         inhoud = stuf_factory.BinaireInhoud(
-            base64.b64encode(b'helloworld'),
+            base64.b64encode(big_ass_file),
             bestandsnaam='to_be_everywhere.flac',
             contentType='audio/flac',
         )

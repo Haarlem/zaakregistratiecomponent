@@ -28,7 +28,7 @@ class EnkelvoudigInformatieObjectEntiteit(StUFEntiteit):
     mnemonic = 'EDC'
     model = EnkelvoudigInformatieObject
     field_mapping = (
-        ('identificatie', 'identificatie'),
+        ('identificatie', 'informatieobjectidentificatie'),
         ('dct.omschrijving', 'informatieobjecttype__informatieobjecttypeomschrijving'),
         ('dct.omschrijvingGeneriek', 'informatieobjecttype__informatieobjecttypeomschrijving_generiek'),
         ('dct.categorie', 'informatieobjecttype__informatieobjectcategorie'),

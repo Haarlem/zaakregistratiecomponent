@@ -66,14 +66,14 @@ print(deps('base.txt'))
 if os.path.exists('README.rst'):
     long_description = codecs.open('README.rst', 'r', 'utf-8').read()
 else:
-    long_description = 'See: https://github.com/maykinmedia/zaakregistratiecomponent'
+    long_description = 'See: https://github.com/haarlem/zaakregistratiecomponent'
 
 # -*- %%% -*-
 
 setuptools.setup(
     name=NAME,
     # packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
-    version='0.9',
+    version='0.9.1',
     description='Implementatie van het referentiecomponent Zaaksysteem (ZS)',
     long_description=long_description,
     keywords='zaaksysteem zakenmagazijn zds zaakservices documentservices soap zds',

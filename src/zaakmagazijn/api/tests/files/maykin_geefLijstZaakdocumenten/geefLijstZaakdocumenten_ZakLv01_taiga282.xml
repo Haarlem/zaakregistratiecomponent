@@ -1,0 +1,51 @@
+
+<zds:geefLijstZaakdocumenten_ZakLv01 xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:ns="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:stuf="http://www.egem.nl/StUF/StUF0301" xmlns:xm="http://www.w3.org/2005/05/xmlmime">
+   <ns:stuurgegevens>
+     <stuf:berichtcode>Lv01</stuf:berichtcode>
+      <stuf:zender>
+         <stuf:organisatie>1</stuf:organisatie>
+         <stuf:applicatie>SoapUI</stuf:applicatie>
+         <stuf:administratie>test</stuf:administratie>
+         <stuf:gebruiker>David</stuf:gebruiker>
+      </stuf:zender>
+      <stuf:ontvanger>
+         <stuf:organisatie>0392</stuf:organisatie>
+         <stuf:applicatie>SoapUI</stuf:applicatie>
+         <stuf:administratie>test</stuf:administratie>
+         <stuf:gebruiker>David</stuf:gebruiker>
+      </stuf:ontvanger>
+      <stuf:referentienummer>1</stuf:referentienummer>
+      <stuf:tijdstipBericht>20170831115500</stuf:tijdstipBericht>
+      <stuf:entiteittype>ZAK</stuf:entiteittype>
+   </ns:stuurgegevens>
+
+   <!--Optional:-->
+   <ns:parameters>
+      <!--Optional:-->
+      <!--Optional:-->
+      <stuf:indicatorVervolgvraag>false</stuf:indicatorVervolgvraag>
+      <!--Optional:-->
+      <stuf:maximumAantal>15</stuf:maximumAantal>
+      <!--Optional:-->
+      <stuf:indicatorAfnemerIndicatie>false</stuf:indicatorAfnemerIndicatie>
+      <!--Optional:-->
+      <stuf:indicatorAantal>false</stuf:indicatorAantal>
+   </ns:parameters>
+   <!--Optional:-->
+   <ns:gelijk stuf:entiteittype="ZAK">
+      <ns:identificatie>WLO-9192</ns:identificatie>
+   </ns:gelijk>
+   <!--Optional:-->
+   <ns:scope>
+      <!--Optional:-->
+      <ns:object stuf:entiteittype="EDC">
+         <ns:heeftRelevant >
+            <!--Optional:-->
+            <ns:gerelateerde stuf:entiteittype="EDCZAK">
+               <!--Optional:-->
+               <ns:identificatie></ns:identificatie>
+          </ns:gerelateerde>
+          </ns:heeftRelevant>
+      </ns:object>
+   </ns:scope>
+</zds:geefLijstZaakdocumenten_ZakLv01>
