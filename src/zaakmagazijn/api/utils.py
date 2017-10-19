@@ -3,7 +3,7 @@ import uuid
 from django.conf import settings
 
 from ..rgbz.models import EnkelvoudigInformatieObject
-from .stuf.choices import BerichtcodeChoices, ServerFoutChoices
+from .stuf.choices import ServerFoutChoices
 
 
 def create_unique_id():
