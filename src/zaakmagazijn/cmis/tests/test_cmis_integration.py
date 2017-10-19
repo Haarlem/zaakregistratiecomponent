@@ -83,7 +83,7 @@ class CMISClientTests(TransactionTestCase):
                 'zsdms:documentIdentificatie': create_unique_id(),
                 'zsdms:documentcreatiedatum': _cmis_stuf_datetime(stuf_datetime.today()),
                 'zsdms:documentontvangstdatum': _cmis_stuf_datetime(stuf_datetime.today()),
-                'zsdms:documentbeschrijving': 'Eeen document omschrijving...',
+                'zsdms:documentbeschrijving': 'Een document omschrijving...',
                 'zsdms:documentverzenddatum': _cmis_stuf_datetime(stuf_datetime.today()),
                 'zsdms:vertrouwelijkaanduiding': Vertrouwelijkaanduiding.openbaar,
                 'zsdms:documentauteur': 'John Doe',

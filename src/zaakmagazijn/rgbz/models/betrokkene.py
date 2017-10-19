@@ -276,7 +276,6 @@ class Vestiging(CMISMixin, BereikenMixin, RekeningnummerMixin, Betrokkene):
 
     CMIS_MAPPING = {
         'zsdms:vestigingsNummer': 'identificatie',  # v
-        'zsdms:handelsnaam': 'handelsnaam',  # o
     }
 
     class Meta:

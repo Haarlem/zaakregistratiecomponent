@@ -96,7 +96,7 @@ virtualenv env >> $SETUP_LOGFILE
 env/bin/pip install -r requirements/$TARGET.txt --trusted-host pypi.python.org >> $SETUP_LOGFILE
 
 # Copy local settings
-cp $CWD/vars/local.py $PROJECT_PATH/src/zaakmagazijn/conf/
+cp $CWD/vars/$TARGET.py $PROJECT_PATH/src/zaakmagazijn/conf/
 
 # Update database and copy assets
 env/bin/python src/manage.py collectstatic --link --noinput --settings=$SETTINGS >> $SETUP_LOGFILE

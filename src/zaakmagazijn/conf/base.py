@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     'zaakmagazijn.rgbz',
     'zaakmagazijn.async',
     'zaakmagazijn.cmis',
+
+    # Contrib
+    'zaakmagazijn.contrib.idgenerator',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -303,14 +306,6 @@ ZAAKMAGAZIJN_GEMEENTE_CODE = '0000'
 # (excluding any other payload)
 ZAAKMAGAZIJN_MAX_CONTENT_LENGTH = 40 * 1024 * 1024  # 40mb
 
-# CMIS Client settings
-CMIS_ZAKEN_TYPE_ENABLED = False
-CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to'
-# CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to_date_based'
-CMIS_CLIENT_URL = 'http://localhost:8080/alfresco/cmisatom'
-CMIS_CLIENT_USER = 'Admin'
-CMIS_CLIENT_USER_PASSWORD = 'admin'
-
 # Allow everyone or use the authentication scheme.
 ZAAKMAGAZIJN_OPEN_ACCESS = True
 
@@ -323,6 +318,9 @@ ZAAKMAGAZIJN_SYSTEEM = {
     'administratie': '',
     'gebruiker': '',
 }
+
+ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
+# ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id'
 
 # Toelichtingen, en omschrijvingen die automatisch worden ingevuld bij het
 # aanmaken van het Relatietype Rol, voor een Zaak.
@@ -373,3 +371,11 @@ ZAAKMAGAZIJN_ROLOMSCHRIJVINGEN = {
                        'uitgevoerd wordt conform de daarover gemaakte afspraken',
     }
 }
+
+# CMIS Client settings
+CMIS_ZAKEN_TYPE_ENABLED = False
+CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to'
+# CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to_date_based'
+CMIS_CLIENT_URL = 'http://localhost:8080/alfresco/cmisatom'
+CMIS_CLIENT_USER = 'Admin'
+CMIS_CLIENT_USER_PASSWORD = 'admin'

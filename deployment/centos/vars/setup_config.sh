@@ -11,7 +11,7 @@ PROJECT_NAME=zaakmagazijn
 # The path where the project is installed.
 PROJECT_PATH=/var/sites/$PROJECT_NAME
 # This will be passed to "git clone -b $BRANCH $REPO".
-REPO=https://bitbucket.org/maykinmedia/haarlem-zaakmagazijn.git
+REPO=https://github.com/Haarlem/zaakregistratiecomponent.git
 BRANCH=develop
 # Available options are: dev, staging, production
 TARGET=staging
