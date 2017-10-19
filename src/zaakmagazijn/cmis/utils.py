@@ -84,6 +84,8 @@ def upload_to_date_based(zaak) -> list:
         zaak.startdatum[6:8]
     )
     return [
+        FolderConfig(name='Sites'),
+        FolderConfig(name='archief'),
         FolderConfig(name='documentLibrary', type_=CMISObjectType.zaken),
         FolderConfig(type_=CMISObjectType.zaaktype),
         FolderConfig(name=year),

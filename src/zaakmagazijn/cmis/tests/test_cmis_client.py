@@ -73,7 +73,7 @@ class CMISClientTests(DMSMixin, TestCase):
         zaak = ZaakFactory.create(
             status_set__indicatie_laatst_gezette_status=JaNee.ja,
             zaakidentificatie='123456789',
-            einddatum=None,
+            einddatum='20171231',
             zaaktype__zaaktypeidentificatie='998877',
             zaaktype__zaaktypeomschrijving='SOAP is leuk',
         )
@@ -110,7 +110,7 @@ class CMISClientTests(DMSMixin, TestCase):
             'cmis:path': '/Zaken/998877/123456789',
             # 'zsdms:zaakidentificatie': '123456789',  # apparently, this is now in policies/aspects
             'zsdms:startdatum': _stuffdate_to_datetime(zaak.startdatum),
-            'zsdms:einddatum': None,
+            'zsdms:einddatum': _stuffdate_to_datetime(zaak.einddatum),
             'zsdms:zaakniveau': None,  # TODO
             'zsdms:deelzakenindicatie': None,  # TODO
             'zsdms:registratiedatum': _stuffdate_to_datetime(zaak.registratiedatum),
@@ -120,7 +120,7 @@ class CMISClientTests(DMSMixin, TestCase):
         })
 
     @override_settings(CMIS_UPLOAD_TO='zaakmagazijn.cmis.utils.upload_to_date_based')
-    def test_boomstructuur_haarlem(self):
+    def test_boomstructuur_date_based(self):
         self.client = CMISDMSClient()
         self.assertEqual(self.client.upload_to.__name__, 'upload_to_date_based')
 
@@ -135,7 +135,7 @@ class CMISClientTests(DMSMixin, TestCase):
         self.client.creeer_zaakfolder(zaak)
 
         # Zaken root folder
-        root_folder = self.client._repo.getObjectByPath('/documentLibrary')
+        root_folder = self.client._repo.getObjectByPath('/Sites/archief/documentLibrary')
 
         children = [child for child in root_folder.getChildren()]
         self.assertEqual(len(children), 1)
@@ -149,7 +149,7 @@ class CMISClientTests(DMSMixin, TestCase):
         self.assertExpectedProps(zaak_type_folder, {
             'cmis:objectTypeId': 'F:zsdms:zaaktype',
             'cmis:baseTypeId': 'cmis:folder',
-            'cmis:path': '/documentLibrary/998877',
+            'cmis:path': '/Sites/archief/documentLibrary/998877',
             'zsdms:Zaaktype-omschrijving': 'SOAP is leuk',
         })
 
@@ -157,7 +157,7 @@ class CMISClientTests(DMSMixin, TestCase):
         self.assertEqual(len(children), 1)
 
         # zaak subfolder
-        date_folder = self.client._repo.getObjectByPath('/documentLibrary/998877/2017/08/14/')
+        date_folder = self.client._repo.getObjectByPath('/Sites/archief/documentLibrary/998877/2017/08/14/')
         children = [child for child in date_folder.getChildren()]
         self.assertEqual(len(children), 1)
 
@@ -166,7 +166,7 @@ class CMISClientTests(DMSMixin, TestCase):
         self.assertExpectedProps(zaak_folder, {
             'cmis:objectTypeId': 'F:zsdms:zaak',
             'cmis:baseTypeId': 'cmis:folder',
-            'cmis:path': '/documentLibrary/998877/2017/08/14/123456789',
+            'cmis:path': '/Sites/archief/documentLibrary/998877/2017/08/14/123456789',
             # 'zsdms:zaakidentificatie': '123456789',  # apparently, this is now in policies/aspects
             'zsdms:startdatum': _stuffdate_to_datetime(zaak.startdatum),
             'zsdms:einddatum': None,
@@ -222,8 +222,12 @@ class CMISClientTests(DMSMixin, TestCase):
         self.client.creeer_zaakfolder(zaak)
 
         document = EnkelvoudigInformatieObjectFactory.create(
-            titel='testnaam', informatieobjectidentificatie='31415926535',
-            beschrijving='Een beschrijving', zaak=zaak
+            zaak=zaak,
+            titel='testnaam',
+            informatieobjectidentificatie='31415926535',
+            ontvangstdatum='20170101',
+            beschrijving='Een beschrijving',
+
         )
         cmis_doc = self.client.maak_zaakdocument(document, zaak)
         # no actual binary data is added
@@ -249,7 +253,7 @@ class CMISClientTests(DMSMixin, TestCase):
             'zsdms:documentcreatiedatum': _stuffdate_to_datetime(document.creatiedatum),
             # 'zsdms:documentformaat': None,
             'zsdms:documentLink': document.link,
-            'zsdms:documentontvangstdatum': None,
+            'zsdms:documentontvangstdatum': _stuffdate_to_datetime(document.ontvangstdatum),
             'zsdms:documentstatus': None,
             'zsdms:documenttaal': document.taal,
             'zsdms:documentversie': None,
