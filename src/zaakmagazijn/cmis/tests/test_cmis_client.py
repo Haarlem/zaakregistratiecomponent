@@ -138,7 +138,7 @@ class CMISClientTests(DMSMixin, TestCase):
         root_folder = self.client._repo.getObjectByPath('/Sites/archief/documentLibrary')
 
         children = [child for child in root_folder.getChildren()]
-        self.assertEqual(len(children), 1)
+        self.assertEqual(len(children), 1) # TODO: Only succeeds once per dag without cleaning up Alfresco
 
         # zaaktype subfolder
         zaak_type_folder = children[0]

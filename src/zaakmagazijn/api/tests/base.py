@@ -183,6 +183,14 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         return default_context
 
     def _do_request(self, soap_port, template_name, extra_context=None):
+        """
+        Calls the Zaakmagazijn SOAP endpoint with the given request.
+
+        soap_port: 'OntvangAsynchroon', 'BeantwoordVraag' etc
+        template_name: the template's filename in the tests/files/ directory, used to build the request
+        extra_context: any additional context for processing the template
+        """
+        
         if extra_context is None:
             extra_context = {}
 

@@ -1,11 +1,13 @@
 import base64
-from datetime import date
+import time
+from datetime import date, datetime
 from unittest import skipIf
 
 from django.test import override_settings
 
 from lxml import etree
 
+from zaakmagazijn.cmis.client import CMISDMSClient
 from zaakmagazijn.cmis.tests.test_cmis_client import DMSMixin
 from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.tests import on_jenkins, should_skip_cmis_tests
@@ -13,7 +15,7 @@ from zaakmagazijn.utils.tests import on_jenkins, should_skip_cmis_tests
 from ...rgbz.choices import JaNee
 from ...rgbz.models import EnkelvoudigInformatieObject, ZaakInformatieObject
 from ...rgbz.tests.factory_models import (
-    InformatieObjectTypeFactory, ZaakFactory
+    InformatieObjectTypeFactory, StatusFactory, ZaakFactory
 )
 from ..stuf.choices import BerichtcodeChoices
 from .base import BaseSoapTests, BaseTestPlatformTests
@@ -70,7 +72,7 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
         # Note that the content is base64 encoded twice, and thus increases in size
         # when encoded. suppose we want to send 100 bytes, this will be encoded
         # as 100 * (8/6) * (8/6) = ~178 bytes.
-        big_ass_file = b'a' * 22 * 1024**2
+        big_ass_file = b'a' * 22 * 1024**2 # 22MB
         inhoud = stuf_factory.BinaireInhoud(
             base64.b64encode(big_ass_file),
             bestandsnaam='to_be_everywhere.flac',
@@ -398,3 +400,224 @@ class voegZaakdocumentToe_EdcLk01RegressionTests(DMSMixin, BaseTestPlatformTests
         response = self._do_request(self.porttype, vraag)
 
         self.assertEquals(response.status_code, 200, response.content)
+
+
+class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
+    maxDiff = None
+    test_files_subfolder = 'maykin_voegZaakdocumentToe'
+    porttype = 'OntvangAsynchroon'
+    disable_mocks = True
+
+    def setUp(self):
+        time.sleep(2)
+        self.client = CMISDMSClient()
+        self.addCleanup(self._removeTree)
+        # Create zaak
+        self.zaak = ZaakFactory.create(
+            zaakidentificatie='123456789',
+            einddatum=None,
+        )
+        StatusFactory.create(zaak=self.zaak, indicatie_laatst_gezette_status=JaNee.ja)
+
+        # Create zaak folder
+        self.client.creeer_zaakfolder(self.zaak)
+
+    def _removeTree(self):
+        """
+        Remove the created Zaak root folder and all children from the DMS.
+        """
+        try:
+            root_folder = self.client._repo.getObjectByPath('/Zaken')
+        except ObjectNotFoundException:
+            return
+        root_folder.deleteTree()
+
+    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+    def test_upload_small_file(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/387
+        """
+
+        self.iot = InformatieObjectTypeFactory.create()
+        self.zender = {
+            'organisatie': 'Maykin Media',
+            'applicatie': 'Test',
+            'administratie': 'Support',
+            'gebruiker': 'john.doe@example.com',
+        }
+        self.ontvanger = {
+            'organisatie': 'Maykin Media',
+            'applicatie': 'TTA',
+            'administratie': 'Support',
+            'gebruiker': 'john.doe@example.com',
+        }
+        client = self._get_client('OntvangAsynchroon')
+
+        stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
+        today = date.today().strftime('%Y%m%d')
+
+        stuurgegevens = stuf_factory.EDC_StuurgegevensVoegZaakdocumentToeLk01(
+            berichtcode='Lk01',
+            entiteittype='EDC',
+            zender=self.zender,
+            ontvanger=self.ontvanger,
+            referentienummer='1234',
+            tijdstipBericht=stuf_datetime.now(),
+        )
+
+        big_ass_file = b'a' * 1 * 1024**2 # 1MB
+        name = '{}.flac'.format(int(time.time()))
+
+        inhoud = stuf_factory.BinaireInhoud(
+            base64.b64encode(big_ass_file),
+            bestandsnaam=name,
+            contentType='audio/flac',
+        )
+        response = client.service.voegZaakdocumentToe_EdcLk01(
+            parameters=stuf_factory.EDC_ParametersVoegZaakdocumentToeLk01(
+                indicatorOvername='V',
+                mutatiesoort='T',
+            ),
+            stuurgegevens=stuurgegevens,
+            object=zkn_factory.EDC_VoegZaakdocumentToe(**{
+                'entiteittype': 'EDC',
+                'verwerkingssoort': 'T',
+                'identificatie': '12345ABC{}'.format(int(time.time())),
+                'dct.omschrijving': self.iot.informatieobjecttypeomschrijving,
+                'creatiedatum': today,
+                'ontvangstdatum': today,
+                'titel': 'To be Everywhere {}'.format(int(time.time())),
+                'beschrijving': '2016 album',
+                'formaat': 'CD',
+                'taal': 'Engels',
+                'versie': '1',
+                'status': 'Gepubliceerd',
+                'verzenddatum': today,
+                'vertrouwelijkAanduiding': 'OPENBAAR',
+                'auteur': 'Thrice',
+                # 'link': ''
+                'inhoud': inhoud,
+                # 'tijdvakGeldigheid': stuf_factory.tijdvakGeldigheid(
+                #     beginGeldigheid=today,
+                # ),
+                # 'tijdstipRegistratie': '',
+                # 'extraElementend': None,
+                'isRelevantVoor': [zkn_factory.EDCZAK_VoegZaakdocumentToe(
+                    entiteittype='EDCZAK',
+                    verwerkingssoort='T',
+                    gerelateerde=zkn_factory.ZAK_VoegZaakdocumentToe(
+                        entiteittype='ZAK',
+                        verwerkingssoort='I',
+                        identificatie=self.zaak.zaakidentificatie,
+                        omschrijving=self.zaak.omschrijving,
+                        # isVan=None
+                    ),
+                    # titel
+                    # beschrijving
+                    # registratiedatum
+                    # stt.volgnummer
+                    # stt.omschrijving
+                    # sta.datumStatusGezet
+                    # tijdvakRelatie
+                    # tijdvakGeldigheid
+                    # tijdstipRegistratie
+                    # extraElementen
+                )]
+            })
+        )
+
+    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+    def test_upload_large_file(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/387
+        """
+
+        self.iot = InformatieObjectTypeFactory.create()
+        self.zender = {
+            'organisatie': 'Maykin Media',
+            'applicatie': 'Test',
+            'administratie': 'Support',
+            'gebruiker': 'john.doe@example.com',
+        }
+        self.ontvanger = {
+            'organisatie': 'Maykin Media',
+            'applicatie': 'TTA',
+            'administratie': 'Support',
+            'gebruiker': 'john.doe@example.com',
+        }
+        client = self._get_client('OntvangAsynchroon')
+
+        stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
+        today = date.today().strftime('%Y%m%d')
+
+        stuurgegevens = stuf_factory.EDC_StuurgegevensVoegZaakdocumentToeLk01(
+            berichtcode='Lk01',
+            entiteittype='EDC',
+            zender=self.zender,
+            ontvanger=self.ontvanger,
+            referentienummer='1234',
+            tijdstipBericht=stuf_datetime.now(),
+        )
+
+        # Note that the content is base64 encoded twice, and thus increases in size
+        # when encoded.
+        big_ass_file = b'a' * 3 * 1024**2 # 22MB
+        name = '{}.flac'.format(int(time.time()))
+
+        inhoud = stuf_factory.BinaireInhoud(
+            base64.b64encode(big_ass_file),
+            bestandsnaam=name,
+            contentType='audio/flac',
+        )
+        response = client.service.voegZaakdocumentToe_EdcLk01(
+            parameters=stuf_factory.EDC_ParametersVoegZaakdocumentToeLk01(
+                indicatorOvername='V',
+                mutatiesoort='T',
+            ),
+            stuurgegevens=stuurgegevens,
+            object=zkn_factory.EDC_VoegZaakdocumentToe(**{
+                'entiteittype': 'EDC',
+                'verwerkingssoort': 'T',
+                'identificatie': '12345ABC{}'.format(int(time.time())),
+                'dct.omschrijving': self.iot.informatieobjecttypeomschrijving,
+                'creatiedatum': today,
+                'ontvangstdatum': today,
+                'titel': 'To be Everywhere {}'.format(int(time.time())),
+                'beschrijving': '2016 album',
+                'formaat': 'CD',
+                'taal': 'Engels',
+                'versie': '1',
+                'status': 'Gepubliceerd',
+                'verzenddatum': today,
+                'vertrouwelijkAanduiding': 'OPENBAAR',
+                'auteur': 'Thrice',
+                # 'link': ''
+                'inhoud': inhoud,
+                # 'tijdvakGeldigheid': stuf_factory.tijdvakGeldigheid(
+                #     beginGeldigheid=today,
+                # ),
+                # 'tijdstipRegistratie': '',
+                # 'extraElementend': None,
+                'isRelevantVoor': [zkn_factory.EDCZAK_VoegZaakdocumentToe(
+                    entiteittype='EDCZAK',
+                    verwerkingssoort='T',
+                    gerelateerde=zkn_factory.ZAK_VoegZaakdocumentToe(
+                        entiteittype='ZAK',
+                        verwerkingssoort='I',
+                        identificatie=self.zaak.zaakidentificatie,
+                        omschrijving=self.zaak.omschrijving,
+                        # isVan=None
+                    ),
+                    # titel
+                    # beschrijving
+                    # registratiedatum
+                    # stt.volgnummer
+                    # stt.omschrijving
+                    # sta.datumStatusGezet
+                    # tijdvakRelatie
+                    # tijdvakGeldigheid
+                    # tijdstipRegistratie
+                    # extraElementen
+                )]
+            })
+        )
