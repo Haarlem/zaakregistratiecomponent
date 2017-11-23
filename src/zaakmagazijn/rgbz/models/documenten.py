@@ -364,7 +364,7 @@ class InformatieObjectType(models.Model):
     gebruikt worden. Zie voor de specificaties van deze gegevens het ZTC.
     """
 
-    informatieobjecttypeomschrijving = models.CharField(max_length=80)
+    informatieobjecttypeomschrijving = models.CharField(max_length=80, unique=True)
     domein = models.CharField(
         max_length=5, help_text='Een afkorting waarmee wordt aangegeven voor welk domein in de CATALOGUS'
                                 ' ZAAKTYPEn zijn uitgewerkt.')
