@@ -1,11 +1,25 @@
-================
- Change history
-================
+==============
+Change history
+==============
+
+0.9.4
+=====
+
+* The WSDL-endpoint for ``Beantwoordvraag`` is now called ``BeantwoordVraag``.
+
 
 0.9.3
 =====
 
-*Unreleased*
+*November 24, 2017*
+
+* Fixed CMIS-lib issue that caused large file uploads to cause an exception.
+* Fixed issue where multiple InformatieObjectType could have the same
+  description.
+* Fixed missing Redis installation in CentOS setup script.
+* Updated to Django 1.11.7.
+* Improved documentation.
+* Removed incorrect mention of PyPy support.
 
 
 0.9.2

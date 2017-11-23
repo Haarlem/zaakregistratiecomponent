@@ -51,7 +51,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 
 LOGGING['loggers'].update({
     '': {
-        'handlers': ['sentry'],
+        'handlers': ['project'],
         'level': 'WARNING',
         'propagate': False,
     },
@@ -67,14 +67,13 @@ LOGGING['loggers'].update({
     },
 })
 
-# We will assume we're running under https
+# Set these to True if you are using HTTPS.
 SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = False
 X_FRAME_OPTIONS = 'DENY'
 # Only set this when we're behind Nginx and this header is set.
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 
 #
 # Custom settings
