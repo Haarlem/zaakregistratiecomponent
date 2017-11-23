@@ -19,7 +19,6 @@ classes = """
     Programming Language :: Python :: 3.5
     Programming Language :: Python :: 3.6
     Programming Language :: Python :: Implementation :: CPython
-    Programming Language :: Python :: Implementation :: PyPy
     Operating System :: OS Independent
     Topic :: Communications
     Topic :: Software Development :: Libraries :: Python Modules
@@ -73,7 +72,7 @@ else:
 setuptools.setup(
     name=NAME,
     # packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
-    version='0.9.2',
+    version='0.9.3',
     description='Implementatie van het referentiecomponent Zaaksysteem (ZS)',
     long_description=long_description,
     keywords='zaaksysteem zakenmagazijn zds zaakservices documentservices soap zds',
