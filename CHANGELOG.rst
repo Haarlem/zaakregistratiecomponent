@@ -5,7 +5,7 @@ Change history
 0.9.4
 =====
 
-*November 27, 2017*
+*November 28, 2017*
 
 * Added compatibility layer between ZDS 1.2 and RGBZ 2.0 that mimics an RGBZ
   1.0 data model. This resolves *most* compliancy issues with ZDS 1.2.
@@ -29,6 +29,8 @@ Change history
   ``False``) indicating whether to use the StUF test platform workarounds.
   This should only be used when setting up an environment to test against the
   StUF test platform.
+* Added new setting ``ZAAKMAGAZIJN_URL`` which should be the URL where the
+  Zaakmagazijn's WSDL is served. For example: http://www.example.com
 
 
 0.9.3

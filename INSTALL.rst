@@ -73,6 +73,11 @@ uit de basis configuratie.
     Creeert een nummer bestaande uit het huidige jaar en een oplopend
     volgnummer binnen hetzelfde jaar.
 
+* ``ZAAKMAGAZIJN_URL``
+
+  De URL van het Zaakmagazijn waar de WSDL beschikbaar is. Voor test
+  doeleinden is dit typisch ``http://localhost:8000``.
+
 * ``ZAAKMAGAZIJN_REFERENCE_WSDL`` (standaard: ``True``)
 
   Gebruik de KING referentie WSDL in plaats van de gegenereerde WSDL.
