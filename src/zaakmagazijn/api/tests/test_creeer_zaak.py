@@ -3,15 +3,18 @@ from unittest import skip
 from lxml import etree
 
 from zaakmagazijn.api.stuf.choices import BerichtcodeChoices
+from zaakmagazijn.rgbz.choices import ArchiefStatus, Rolomschrijving
 from zaakmagazijn.rgbz.models import (
     BuurtObject, KadastraalPerceelObject,
     OverigeAdresseerbaarObjectAanduidingObject, Rol, Zaak
 )
 from zaakmagazijn.rgbz.tests.factory_models import (
-    MedewerkerFactory, OrganisatorischeEenheidFactory,
-    OverigeAdresseerbaarObjectAanduidingObjectFactory, ZaakTypeFactory
+    BuurtObjectFactory, KadastraalPerceelObjectFactory, MedewerkerFactory,
+    NatuurlijkPersoonFactory, NietNatuurlijkPersoonFactory,
+    OrganisatorischeEenheidFactory,
+    OverigeAdresseerbaarObjectAanduidingObjectFactory, VestigingFactory,
+    ZaakTypeFactory
 )
-from zaakmagazijn.rsgb.models import PostAdres
 
 from .base import BaseTestPlatformTests
 
@@ -47,17 +50,26 @@ class MaykincreeerZaak_ZakLk01ZakObjectTests(BaseTestPlatformTests):
         }
 
     def test_create_buurt(self):
+        """
+        You can't actually create a BuurtObject, since
+        datum_einde_geldigheid_buurt, datum_begin_geldigheid_buurt and identificatie
+        are required to create one, and they aren't defined by RGBZ.
+        """
         self.context.update(**{
             'buurtcode': '12',
             'buurtnaam': 'Buurtnaam',
-            'geometrie': '<gml>a</gml>',
             'gem_gemeente_code': '1234',
             'wijk_wijk_code': '12',
-            'ingangsdatum_object': '20170902',
-            'einddatum_object': '20170903',
             'genereerbesluitident_identificatie_2': '123',
             'genereerzaakident_identificatie_2': self.genereerID(10),
         })
+        buurt = BuurtObjectFactory.create(
+            buurtcode=self.context['buurtcode'],
+            buurtnaam=self.context['buurtnaam'],
+            gemeentecode=self.context['gem_gemeente_code'],
+            wijkcode=self.context['wijk_wijk_code'],
+        )
+
         vraag = 'creeerZaak_ZakLk01_buurt.xml'
         response = self._do_request(self.porttype, vraag, self.context)
 
@@ -73,11 +85,8 @@ class MaykincreeerZaak_ZakLk01ZakObjectTests(BaseTestPlatformTests):
         self.assertIs(type(buurt), BuurtObject)
         self.assertEquals(buurt.buurtcode, self.context['buurtcode'])
         self.assertEquals(buurt.buurtnaam, self.context['buurtnaam'])
-        self.assertEquals(buurt.geometrie, self.context['geometrie'])
         self.assertEquals(buurt.gemeentecode, self.context['gem_gemeente_code'])
         self.assertEquals(buurt.wijkcode, self.context['wijk_wijk_code'])
-        self.assertEquals(buurt.datum_begin_geldigheid_buurt, self.context['ingangsdatum_object'])
-        self.assertEquals(buurt.datum_einde_geldigheid_buurt, self.context['einddatum_object'])
 
     def test_zakobj_enkelvoudig_document(self):
         pass
@@ -98,6 +107,11 @@ class MaykincreeerZaak_ZakLk01ZakObjectTests(BaseTestPlatformTests):
         pass
 
     def test_zaakobject_kadastraleOnroerendeZaak(self):
+        """
+        You can't actually create a test_zaakobject_kadastraleOnroerendeZaak, since
+        datum_begin_geldigheid_kadastrale_onroerende_zaak, datum_einde_geldigheid_kadastrale_onroerende_zaak
+        are required to create one, and they aren't defined by RGBZ.
+        """
         self.context.update(**{
             'kadastrale_identificatie': '1234567',
             'kadastrale_gemeentecode': '12',
@@ -108,6 +122,15 @@ class MaykincreeerZaak_ZakLk01ZakObjectTests(BaseTestPlatformTests):
             'genereerzaakident_identificatie_2': self.genereerID(10),
             'ingangsdatum_object': '20170902',
         })
+
+        KadastraalPerceelObjectFactory.create(
+            identificatie=self.context['kadastrale_identificatie'],
+            kadastrale_aanduiding__kadastralegemeentecode=self.context['kadastrale_gemeentecode'],
+            kadastrale_aanduiding__sectie=self.context['kadastrale_sectie'],
+            kadastrale_aanduiding__perceelnummer=self.context['kadastraal_perceelnummer'],
+            kadastrale_aanduiding__appartementsrechtvolgnummer=self.context['apr_appartements_index'],
+        )
+
         vraag = 'creeerZaak_ZakLk01_koz.xml'
         response = self._do_request(self.porttype, vraag, self.context)
 
@@ -221,15 +244,19 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
         # '${gemeentecode}56789' wat is vervangen door '0123456789'
         self.medewerker = MedewerkerFactory.create(
             organisatorische_eenheid__organisatieeenheididentificatie='01234',
-            medewerkeridentificatie='56789')
-        self.assertEqual(self.medewerker.identificatie, '0123456789')
+            medewerkeridentificatie='123456789',
+            achternaam='achternaam',
+            voorvoegsel_achternaam='voorvoeg',
+            voorletters='voorletters',
+        )
+        self.assertEqual(self.medewerker.identificatie, '01234123456789')
 
         self.zaak_type = ZaakTypeFactory.create(
             zaaktypeomschrijving='Aanvraag burgerservicenummer behandelen',
-            zaaktypeidentificatie='12345678')
-
+            zaaktypeidentificatie='12345678',
+            datum_begin_geldigheid_zaaktype='20171001')
         self.context = {
-            'gemeentecode': '',
+            'gemeentecode': '1234',
             'referentienummer': self.genereerID(10),
 
             'datumVandaag': self.genereerdatum(),
@@ -238,6 +265,7 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
 
             'zds_zaaktype_omschrijving': 'Aanvraag burgerservicenummer behandelen',
             'zds_zaaktype_code': '12345678',
+            'zds_zaaktype_datum': '20171001',
         }
 
     def _test_response(self, response):
@@ -255,12 +283,12 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
         """
         self.assertFalse(Zaak.objects.exists())
 
-        vraag = 'creeerZaak_ZakLk01_01.xml'
+        vraag = 'creeerZaak_ZakLk01_01.orig.xml'
         self.context.update(**{
             'genereerbesluitident_identificatie_2': '123',
             'genereerzaakident_identificatie_2': self.genereerID(10),
         })
-        response = self._do_request(self.porttype, vraag, self.context)
+        response = self._do_request(self.porttype, vraag, self.context, stp_syntax=True)
 
         self._test_response(response)
 
@@ -269,24 +297,41 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
 
         self.assertTrue(Zaak.objects.exists())
         expected = {
-            'zaakidentificatie': self.context['genereerzaakident_identificatie_2'],
-            'bronorganisatie': 1,
-            'archiefstatus': 'Gearchiveerd',
-            'verantwoordelijke_organisatie': 1,
+            'zaakidentificatie': self.context['gemeentecode'] + self.context['genereerzaakident_identificatie_2'],
+            'bronorganisatie': self.context['gemeentecode'],
             'omschrijving': 'omschrijving',
-            'startdatum': self.context['datumVandaag'],
+            'toelichting': None,
             'registratiedatum': self.context['datumVandaag'],
+            'verantwoordelijke_organisatie': self.context['gemeentecode'],
+            'einddatum': None,
+            'startdatum': self.context['datumVandaag'],
+            'einddatum_gepland': None,
+            'uiterlijke_einddatum_afdoening': None,
+            'resultaatomschrijving': None,
+            'resultaattoelichting': None,
+            'publicatiedatum': None,
+            'archiefnominatie': None,
+            'archiefstatus': ArchiefStatus.nog_te_archiveren,
+            'archiefactiedatum': None,
+            'betalingsindicatie': None,
+            'laatste_betaaldatum': None,
             'zaaktype_id': self.zaak_type.pk,
         }
         self.assertTrue(Zaak.objects.filter(**expected).exists())
         zaak = Zaak.objects.get(**expected)
-        self.assertTrue(Rol.objects.filter(zaak=zaak, betrokkene=self.medewerker).exists())
+        self.assertTrue(Rol.objects.filter(
+            zaak=zaak, betrokkene=self.medewerker, rolomschrijving=Rolomschrijving.initiator
+        ).exists())
+
+        self._validate_response(response)
+
+        self.assertFalse(zaak.zaakkenmerk_set.exists())
 
     def test_create_03(self):
         """
         creeerZaak_zakLk01 volgnummer 3
         """
-        vraag = 'creeerZaak_ZakLk01_03.xml'
+        vraag = 'creeerZaak_ZakLk01_03.orig.xml'
         medewerker = MedewerkerFactory.create(
             medewerkeridentificatie='7007',
             organisatorische_eenheid=None,
@@ -297,45 +342,52 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
             zaaktypeomschrijving='Aanvraag burgerservicenummer behandelen',
             zaaktypeidentificatie='12345679')
 
-        # TODO: [TECH] This should be created in the tests, but the matching-data mismatches
+        # TODO [TECH]: This should be created in the tests, but the matching-data mismatches
         # with the required information. This can be removed once Issue #250 is solved.
-        OrganisatorischeEenheidFactory.create(
-            identificatie='1234987654',
-            organisatieeenheididentificatie='1234987654',
-            organisatieidentificatie='1234'
+        oeh = OrganisatorischeEenheidFactory.create(
+            identificatie='organisatorischeEenheid',
+            naam='Naam',
+            organisatieeenheididentificatie='organisatorischeEenheid',
+            organisatieidentificatie='0',
+            gevestigd_in__is_specialisatie_van__identificatie='012345678910',
+            gevestigd_in__is_specialisatie_van__handelsnaam=['handelsnaam', ],
         )
 
         self.assertEquals(OverigeAdresseerbaarObjectAanduidingObject.objects.count(), 0)
 
-        # In the test this is a 'T', however, the required field 'datum_begin_geldigheid_adresseerbaar_object_aanduiding'
-        # isn't given a value in the StUF test, so we can't possibly create the OverigeAdresseerbaarObjectAanduidingObject object.OverigeAdresseerbaarObjectAanduidingObject
-        # I assume, that the KING test suite assumes that we create this object in our database.
-        OverigeAdresseerbaarObjectAanduidingObjectFactory.create(
-            identificatie='0123456789101112',
-            woonplaatsnaam='woonplaatsNaam',
-            naam_openbare_ruimte='openbareRuimteNaam',
-            huisnummer=99999,
-            huisletter='A',
-            huisnummertoevoeging='',
-        )
+        # # In the test this is a 'T', however, the required field 'datum_begin_geldigheid_adresseerbaar_object_aanduiding'
+        # # isn't given a value in the StUF test, so we can't possibly create the OverigeAdresseerbaarObjectAanduidingObject object.OverigeAdresseerbaarObjectAanduidingObject
+        # # I assume, that the KING test suite assumes that we create this object in our database.
+        # OverigeAdresseerbaarObjectAanduidingObjectFactory.create(
+        #     identificatie='0123456789101112',
+        #     woonplaatsnaam='woonplaatsNaam',
+        #     naam_openbare_ruimte='openbareRuimteNaam',
+        #     huisnummer=99999,
+        #     huisletter='A',
+        #     huisnummertoevoeging='',
+        #     postcode='1000',
+        # )
 
+        self.assertEquals(Zaak.objects.count(), 0)
         self.context.update(**{
             'genereerzaakident_identificatie_4': self.genereerID(10),
             'genereerbesluitident_identificatie_2': '123',
             'genereerzaakident_identificatie_2': self.genereerID(10),
         })
-        response = self._do_request(self.porttype, vraag, self.context)
+        response = self._do_request(self.porttype, vraag, self.context, stp_syntax=True)
 
         self._test_response(response)
 
         self.assertEquals(Zaak.objects.count(), 1)
         expected = {
-            'zaakidentificatie': self.context['genereerzaakident_identificatie_4'],
-            'bronorganisatie': 1,
-            'archiefstatus': 'Gearchiveerd',
-            'verantwoordelijke_organisatie': 1,
+            'zaakidentificatie': self.context['gemeentecode'] + self.context['genereerzaakident_identificatie_4'],
+            'bronorganisatie': self.context['gemeentecode'],
+            'archiefstatus': 'Nog te archiveren',
+            'verantwoordelijke_organisatie': self.context['gemeentecode'],
             'omschrijving': 'omschrijving',
             'toelichting': 'toelichting',
+            'resultaatomschrijving': 'omschrijving',
+            'resultaattoelichting': 'toelichting',
             'startdatum': self.context['datumVandaag'],
             'registratiedatum': self.context['datumVandaag'],
             'publicatiedatum': self.context['datumVandaag'],
@@ -344,7 +396,7 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
             'einddatum': self.context['datumVandaag'],
             'betalingsindicatie': '(Nog) niet',
             'laatste_betaaldatum': self.context['datumVandaag'],
-            'archiefnominatie': 'Vernietigen',
+            'archiefnominatie': None,
             'zaaktype_id': self.zaak_type.pk,
         }
         self.assertTrue(Zaak.objects.filter(**expected).exists())
@@ -360,6 +412,8 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
             ander_zaakobject_lokatie__startswith='<gml:OrientableSurface',
         ).count(), 2)
 
+        # Test for resultaat
+
         self.assertEquals(zaak.zaakopschorting_set.filter(
             indicatie_opschorting='N', reden_opschorting='reden',
         ).count(), 1)
@@ -368,77 +422,207 @@ class STPcreeerZaak_ZakLk01Tests(BaseTestPlatformTests):
             duur_verlenging=123, reden_verlenging='reden',
         ).count(), 1)
 
-        expected = {
-            'postadres_postcode': '1000',
-            'woonplaatsnaam': 'woonplaatsNaam',
-        }
-        self.assertEquals(PostAdres.objects.filter(**expected).count(), 2)
+        self.assertEquals(zaak.zaakobject_set.count(), 2)
 
-        self.assertEquals(zaak.zaakobject_set.count(), 1)
-        zaakobj = zaak.zaakobject_set.get()
-        self.assertEquals(zaakobj.relatieomschrijving, 'omschrijving')
-        obj = zaakobj.object
-        adres = obj.is_type()
-        self.assertEquals(adres.identificatie, '0123456789101112')
-        self.assertEquals(adres.woonplaatsnaam, 'woonplaatsNaam')
-        self.assertEquals(adres.naam_openbare_ruimte, 'openbareRuimteNaam')
-        self.assertEquals(adres.huisnummer, 99999)
-        self.assertEquals(adres.huisletter, 'A')
-        self.assertEquals(adres.huisnummertoevoeging, '')
+        self.assertEquals(OverigeAdresseerbaarObjectAanduidingObject.objects.filter(
+            object_zaken__in=[zaak, ],
+            identificatie='0123456789101112',
+            woonplaatsnaam='woonplaatsNaam',
+            naam_openbare_ruimte='openbareRuimteNaam',
+            huisnummer='99999',
+            huisletter='A',
+            huisnummertoevoeging='',
+        ).count(), 2)
 
-    @skip("fails on '<gerelateerde>', also lots of TODO's in the xml test file")
+        # De rollen zijn als volgt aangepast van RGBZ 1.0 naar RGBZ 2.0.
+        #
+        # "Gemachtigde" wordt "Belanghebbende"
+        # "Overig" wordt "Adviseur"
+        # "Uitvoerder" wordt "Behandelaar"
+        # "Verantwoordelijke" wordt "Beslisser"
+        # Overige rolbenamingen blijven gelijk.
+
+        # Both 'heeftAlsBelanghebbende' and 'heeftAlsGemachtigde' in RGBZ2 are stored as
+        # 'Belanghebbende' and both point to medewerker.
+        belanghebbenden = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.belanghebbende,
+            betrokkene=self.medewerker)
+        self.assertEquals(belanghebbenden.count(), 4)
+
+        # heeftAlsInitiator
+        initiators = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.initiator,
+            betrokkene=oeh)
+        self.assertEquals(initiators.count(), 1)
+
+        # heeftAlsUitvoerende
+        behandelaars = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.behandelaar,
+            betrokkene=self.medewerker)
+        self.assertEquals(behandelaars.count(), 2)
+
+        # heeftAlsVerantwoordelijke
+        beslissers = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.beslisser,
+            betrokkene=self.medewerker)
+        self.assertEquals(beslissers.count(), 2)
+
+        # heeftAlsOverigBetrokkene
+        adviseurs = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.adviseur,
+            betrokkene=self.medewerker)
+        self.assertEquals(adviseurs.count(), 2)
+
+        self._validate_response(response)
+
     def test_create_05(self):
-        vraag = 'creeerZaak_ZakLk01_05.xml'
+        vraag = 'creeerZaak_ZakLk01_05.orig.xml'
+
+        nps = NatuurlijkPersoonFactory.create(burgerservicenummer=self.context['gemeentecode'] + '56789')
+
         self.context.update(
             genereerzaakident_identificatie_6=self.genereerID(10)
         )
-        response = self._do_request(self.porttype, vraag, self.context)
+        response = self._do_request(self.porttype, vraag, self.context, stp_syntax=True)
+
+        zaak = Zaak.objects.get()
+
+        # heeftAlsInitiator
+        initiators = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.initiator,
+            betrokkene=nps)
+        self.assertEquals(initiators.count(), 1)
 
         self._test_response(response)
+        self._validate_response(response)
 
-    @skip("several 'Dit veld mag niet leeg zijn' errors, also several TODO's in the xml test file ")
     def test_create_07(self):
-        vraag = 'creeerZaak_ZakLk01_07.xml'
+        vraag = 'creeerZaak_ZakLk01_07.orig.xml'
+        nnps = NietNatuurlijkPersoonFactory.create(rsin=self.context['gemeentecode'] + '56789')
         self.context.update(
             creerzaak_identificatie_7=self.genereerID(10)
         )
-        response = self._do_request(self.porttype, vraag, self.context)
+        response = self._do_request(self.porttype, vraag, self.context, stp_syntax=True)
+
+        zaak = Zaak.objects.get()
+
+        belanghebbenden = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.belanghebbende,
+            betrokkene=self.medewerker)
+        self.assertEquals(belanghebbenden.count(), 1)
+
+        # heeftAlsInitiator
+        initiators = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.initiator,
+            betrokkene=nnps)
+        self.assertEquals(initiators.count(), 1)
 
         self._test_response(response)
+        self._validate_response(response)
 
-    @skip("several 'Dit veld mag niet leeg zijn' errors, also several TODO's in the xml test file ")
     def test_create_09(self):
-        # VestigingFactory.create() ?
+        ves = VestigingFactory.create(identificatie='010203040506')
 
-        vraag = 'creeerZaak_ZakLk01_09.xml'
+        vraag = 'creeerZaak_ZakLk01_09.orig.xml'
         self.context.update(
             creerzaak_identificatie_9=self.genereerID(10)
         )
-        response = self._do_request(self.porttype, vraag, self.context)
+        response = self._do_request(self.porttype, vraag, self.context, stp_syntax=True)
+
+        zaak = Zaak.objects.get()
+        initiators = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.initiator,
+            betrokkene=ves)
+        self.assertEquals(initiators.count(), 1)
 
         self._test_response(response)
+        self._validate_response(response)
 
-    @skip("several 'Dit veld mag niet leeg zijn' errors, also several TODO's in the xml test file ")
     def test_create_11(self):
-        vraag = 'creeerZaak_ZakLk01_11.xml'
+        ves = VestigingFactory.create(identificatie='010203040506')
+        vraag = 'creeerZaak_ZakLk01_11.orig.xml'
         self.context.update(
             creerzaak_identificatie_11=self.genereerID(10)
         )
-        response = self._do_request(self.porttype, vraag, self.context)
+        response = self._do_request(self.porttype, vraag, self.context, stp_syntax=True)
+
+        zaak = Zaak.objects.get()
+        initiators = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.initiator,
+            betrokkene=ves)
+        self.assertEquals(initiators.count(), 1)
 
         self._test_response(response)
+        self._validate_response(response)
 
-    # fails also datumVernietigingDossier, heeftAlsGemachtigde, heeftAlsUitvoerende,
-    # heeftAlsVerantwoordelijke, heeftAlsOverigBetrokkene
-    @skip("several 'Dit veld mag niet leeg zijn' errors, also several TODO's in the xml test file ")
     def test_create_13(self):
-        vraag = 'creeerZaak_ZakLk01_13.xml'
+        vraag = 'creeerZaak_ZakLk01_13.orig.xml'
+
+        ves = VestigingFactory.create(identificatie='010203040506')
+        mdw56786 = MedewerkerFactory.create(
+            medewerkeridentificatie=self.context['gemeentecode'] + '56786',
+            organisatorische_eenheid=None,
+        )
+        mdw56785 = MedewerkerFactory.create(
+            medewerkeridentificatie=self.context['gemeentecode'] + '56785',
+            organisatorische_eenheid=None,
+        )
+        mdw56784 = MedewerkerFactory.create(
+            medewerkeridentificatie=self.context['gemeentecode'] + '56784',
+            organisatorische_eenheid=None,
+        )
+        mdw56783 = MedewerkerFactory.create(
+            medewerkeridentificatie=self.context['gemeentecode'] + '56783',
+            organisatorische_eenheid=None,
+        )
+        mdw56782 = MedewerkerFactory.create(
+            medewerkeridentificatie=self.context['gemeentecode'] + '56782',
+            organisatorische_eenheid=None,
+        )
+        mdw56781 = MedewerkerFactory.create(
+            medewerkeridentificatie=self.context['gemeentecode'] + '56781',
+            organisatorische_eenheid=None,
+        )
         self.context.update(
             creerzaak_identificatie_13=self.genereerID(10)
         )
-        response = self._do_request(self.porttype, vraag, self.context)
+        response = self._do_request(self.porttype, vraag, self.context, stp_syntax=True)
+
+        zaak = Zaak.objects.get()
+
+        # Both 'heeftAlsBelanghebbende' and 'heeftAlsGemachtigde' in RGBZ2 are stored as
+        # 'Belanghebbende' and both point to medewerker.
+        belanghebbenden = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.belanghebbende,
+            betrokkene=mdw56781)
+        self.assertEquals(belanghebbenden.count(), 1)
+
+        # heeftAlsInitiator
+        initiators = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.initiator,
+            betrokkene=ves)
+        self.assertEquals(initiators.count(), 1)
+
+        # heeftAlsUitvoerende
+        behandelaars = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.behandelaar,
+            betrokkene__in=[mdw56782, mdw56783])
+        self.assertEquals(behandelaars.count(), 2)
+
+        # heeftAlsVerantwoordelijke
+        beslissers = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.beslisser,
+            betrokkene=mdw56784)
+        self.assertEquals(beslissers.count(), 1)
+
+        # heeftAlsOverigBetrokkene
+        adviseurs = zaak.rol_set.filter(
+            rolomschrijving=Rolomschrijving.adviseur,
+            betrokkene__in=[mdw56785, mdw56786])
+        self.assertEquals(adviseurs.count(), 2)
 
         self._test_response(response)
+        self._validate_response(response)
 
 
 class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
@@ -468,7 +652,9 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
         """
         zaak_type = ZaakTypeFactory.create(
             zaaktypeomschrijving='MOR',
-            zaaktypeidentificatie='1')
+            zaaktypeidentificatie='1',
+            datum_begin_geldigheid_zaaktype='20170831',
+        )
 
         org_eenheid = OrganisatorischeEenheidFactory.create(
             organisatieeenheididentificatie='DVV/KCC')

@@ -1,24 +1,23 @@
-from django.conf import settings
 from django.db import transaction
 
 from spyne import ServiceBase, rpc
 
-from ...cmis.client import default_client as dms_client
-from ...rgbz.models import (
-    EnkelvoudigInformatieObject, Zaak, ZaakInformatieObject
+from zaakmagazijn.rgbz_mapping.models import (
+    EnkelvoudigDocumentProxy, ZaakDocumentProxy, ZaakProxy
 )
-from ...utils import stuf_datetime
+
+from ...cmis.client import default_client as dms_client
+from ...rgbz.models import EnkelvoudigInformatieObject, Zaak
 from ..stuf import OneToManyRelation, StUFEntiteit
-from ..stuf.choices import BerichtcodeChoices
 from ..stuf.models import Bv03Bericht  # , TijdvakGeldigheid
-from ..utils import create_unique_id
+from ..stuf.utils import get_bv03_stuurgegevens
 from ..zds import Lk01Builder
 from ..zds.kennisgevingsberichten import process_create
 
 
 class ZaakEntiteit(StUFEntiteit):
     mnemonic = 'ZAK'
-    model = Zaak
+    model = ZaakProxy
     field_mapping = (
         ('identificatie', 'zaakidentificatie'),
         ('omschrijving', 'omschrijving'),
@@ -31,29 +30,29 @@ class ZaakEntiteit(StUFEntiteit):
 
 class ZaakInformatieObjectEntiteit(StUFEntiteit):
     mnemonic = 'EDCZAK'
-    model = ZaakInformatieObject
+    model = ZaakDocumentProxy
     gerelateerde = ('zaak', ZaakEntiteit)
     field_mapping = ()  # Intentionally left blank
 
 
-class InformatieObjectEntiteit(StUFEntiteit):
-    mnemonic = 'EDC'  # Correct?
-    model = EnkelvoudigInformatieObject
+class EnkelvoudigDocumentEntiteit(StUFEntiteit):
+    mnemonic = 'EDC'
+    model = EnkelvoudigDocumentProxy
     field_mapping = (
-        ('identificatie', 'informatieobjectidentificatie'),
-        ('dct.omschrijving', 'informatieobjecttype__informatieobjecttypeomschrijving'),
-        ('creatiedatum', 'creatiedatum'),
-        ('ontvangstdatum', 'ontvangstdatum'),
-        ('titel', 'titel'),
-        ('beschrijving', 'beschrijving'),
-        ('formaat', 'formaat'),
-        ('taal', 'taal'),
-        ('versie', 'versie'),
-        ('status', 'informatieobject_status'),
-        ('verzenddatum', 'verzenddatum'),
+        ('identificatie', 'identificatie'),
+        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('creatiedatum', 'documentcreatiedatum'),
+        ('ontvangstdatum', 'documentontvangstdatum'),
+        ('titel', 'documenttitel'),
+        ('beschrijving', 'documentbeschrijving'),
+        ('formaat', 'documentformaat'),
+        ('taal', 'documenttaal'),
+        ('versie', 'documentversie'),
+        ('status', 'documentstatus'),
+        ('verzenddatum', 'documentverzenddatum'),
         ('vertrouwelijkAanduiding', 'vertrouwlijkaanduiding'),
-        ('auteur', 'auteur'),
-        # ('link', 'link'),
+        ('auteur', 'documentauteur'),
+        ('link', 'documentlink'),
         ('inhoud', '_inhoud'),
     )
     related_fields = (
@@ -74,7 +73,7 @@ class InformatieObjectEntiteit(StUFEntiteit):
         'verzenddatum',
         'vertrouwelijkAanduiding',
         'auteur',
-        # 'link',
+        'link',
         'inhoud',
         # 'tijdvakGeldigheid',
         'isRelevantVoor',
@@ -85,10 +84,8 @@ class InformatieObjectEntiteit(StUFEntiteit):
         'titel',
     )
 
-    # TODO: [TECH] Taiga #188 entititeittype attribute should be "fixed"
 
-
-input_builder = Lk01Builder(InformatieObjectEntiteit, 'VoegZaakdocumentToe')
+input_builder = Lk01Builder(EnkelvoudigDocumentEntiteit, 'VoegZaakdocumentToe')
 
 
 class VoegZaakdocumentToe(ServiceBase):
@@ -107,7 +104,7 @@ class VoegZaakdocumentToe(ServiceBase):
     """
     input_model = input_builder.create_model()
 
-    @rpc(input_model, _body_style="bare", _out_message_name="Bv03Bericht", _returns=Bv03Bericht)
+    @rpc(input_model, _body_style="bare", _out_message_name="{http://www.egem.nl/StUF/StUF0301}Bv03Bericht", _returns=Bv03Bericht)
     def voegZaakdocumentToe_EdcLk01(ctx, data):
         """
         Er ontstaat een document wat direct aan een lopende zaak gekoppeld moet
@@ -134,7 +131,7 @@ class VoegZaakdocumentToe(ServiceBase):
         #   aangegeven tussen de StUF-ZKN-elementen en CMIS-objectproperties.
 
         with transaction.atomic():
-            process_create(InformatieObjectEntiteit, data)
+            process_create(EnkelvoudigDocumentEntiteit, data)
 
             # relateer document aan juiste zaak folder
             document = EnkelvoudigInformatieObject.objects.get(informatieobjectidentificatie=data.object.identificatie)
@@ -142,11 +139,5 @@ class VoegZaakdocumentToe(ServiceBase):
             dms_client.relateer_aan_zaak(document, zaak)
 
         return {
-            'stuurgegevens': {
-                'berichtcode': BerichtcodeChoices.bv03,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': data.stuurgegevens.zender,
-                'referentienummer': create_unique_id(),
-                'tijdstipBericht': stuf_datetime.now()
-            },
+            'stuurgegevens': get_bv03_stuurgegevens(data),
         }

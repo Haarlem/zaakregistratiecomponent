@@ -23,7 +23,7 @@ class AuthorizationTests(BaseSoapTests):
     def setUp(self):
         super().setUp()
 
-        self.client = self._get_client('Beantwoordvraag', strict=False)
+        self.client = self._get_client('BeantwoordVraag', strict=False)
 
         self.status = StatusFactory.create()
         self.zaak = self.status.zaak
@@ -49,22 +49,23 @@ class AuthorizationTests(BaseSoapTests):
         with self.client.options(raw_response=True):
             stuf_factory, zkn_factory, zds_factory = self._get_type_factories(self.client)
             response = self.client.service.geefZaakstatus_ZakLv01(
-                stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefZaakStatusLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='ZAK',
                     zender=zender,
                     ontvanger=ontvanger,
                 ),
-                parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False),
-                scope=zkn_factory.GeefZaakStatus_vraagScope(
-                    object=zkn_factory.GeefZaakStatus_ZAK_vraagScope(
+                scope={
+                    'object': zkn_factory['GeefZaakStatus-ZAK-vraagScope'](
                         entiteittype='ZAK',
-                        identificatie=Nil)),
-                gelijk=zkn_factory.GeefZaakStatus_ZAK_vraagSelectie(
+                        identificatie=Nil),
+                },
+                gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
                     identificatie=zaak_id,
-                    heeft=zkn_factory.GeefZaakStatus_ZAKSTT_vraagSelectie(
+                    heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
                         indicatieLaatsteStatus=False,
                     )
                 )

@@ -1,0 +1,53 @@
+<zds:updateZaakdocument_Di02 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../../zds0120_msg_totaal.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <zds:stuurgegevens>
+        <StUF:berichtcode>Di02</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:functie>updateZaakdocument</StUF:functie>
+    </zds:stuurgegevens>
+    <zds:parameters>
+        <zds:checkedOutId>${maakzaakdocument_identificatie_5}</zds:checkedOutId>
+        <zds:versioningState>major</zds:versioningState>
+    </zds:parameters>
+    <zds:edcLk02 StUF:functie="update" StUF:entiteittype="EDC">
+        <ZKN:parameters>
+            <StUF:mutatiesoort>W</StUF:mutatiesoort>
+        </ZKN:parameters>
+        <ZKN:object StUF:entiteittype="EDC" StUF:verwerkingssoort="W">
+            <ZKN:identificatie>${maakzaakdocument_identificatie_5}</ZKN:identificatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid>${datumVandaag}</StUF:eindGeldigheid>
+            </StUF:tijdvakGeldigheid>
+            <ZKN:isRelevantVoor StUF:verwerkingssoort="I" StUF:entiteittype="EDCZAK">
+                <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZAK">
+                    <ZKN:identificatie>${gemeentecode}${creerzaak_identificatie_9}</ZKN:identificatie>
+                </ZKN:gerelateerde>
+            </ZKN:isRelevantVoor>
+        </ZKN:object>
+        <ZKN:object StUF:entiteittype="EDC" StUF:verwerkingssoort="W">
+            <ZKN:identificatie>${maakzaakdocument_identificatie_5}</ZKN:identificatie>
+            <ZKN:inhoud StUF:bestandsnaam="bestandsnaam">UjBsR09EbGhjZ0dTQUxNQUFBUUNBRU1tQ1p0dU1GUXhEUzhi</ZKN:inhoud>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumVandaag}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+            <ZKN:isRelevantVoor StUF:verwerkingssoort="I" StUF:entiteittype="EDCZAK">
+                <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZAK">
+                    <ZKN:identificatie>${gemeentecode}${creerzaak_identificatie_9}</ZKN:identificatie>
+                </ZKN:gerelateerde>
+            </ZKN:isRelevantVoor>
+        </ZKN:object>
+    </zds:edcLk02>
+</zds:updateZaakdocument_Di02>

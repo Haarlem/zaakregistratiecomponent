@@ -1,5 +1,4 @@
 import logging
-from itertools import groupby
 
 from django.core.exceptions import FieldDoesNotExist, ImproperlyConfigured
 from django.db.models.constants import LOOKUP_SEP
@@ -90,6 +89,7 @@ class BaseEntiteit:
     file_fields = None
     matching_fields = None
     custom_fields = None
+    required_fields = None
     namespace = 'http://www.egem.nl/StUF/sector/zkn/0310'
 
     @classmethod
@@ -167,6 +167,10 @@ class BaseEntiteit:
         return cls.file_fields or ()
 
     @classmethod
+    def get_required_fields(cls):
+        return cls.required_fields or ()
+
+    @classmethod
     def get_django_field_mapping(cls, filter_fields=False, matching_fields=False):
         """
         Return a list of tuples with the StUF/SOAP field name as the first
@@ -201,25 +205,25 @@ class BaseEntiteit:
 
     @classmethod
     def get_filter_fields(cls):
-        # TODO: [TECH] check if all filter_fields actually exist.
+        # TODO [TECH]: check if all filter_fields actually exist.
         return cls.filter_fields or ()
 
     @classmethod
     def get_matching_fields(cls):
         if cls.matching_fields is None:
-            raise ImproperlyConfigured('matching_fields are required for a StUFEntiteit')
+            raise ImproperlyConfigured('matching_fields are required for StUFEntiteit {}'.format(cls.__name__))
         return cls.matching_fields or ()
 
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            raise ImproperlyConfigured('A model is required for a StUFEntiteit')
+            raise ImproperlyConfigured('A model is required for StUFEntiteit {}'.format(cls.__name__))
         return cls.model
 
     @classmethod
     def get_mnemonic(cls):
         if cls.mnemonic is None:
-            raise ImproperlyConfigured('A mnemonic is required for a StUFEntiteit')
+            raise ImproperlyConfigured('A mnemonic is required for StUFEntiteit {}'.format(cls.__name__))
         return cls.mnemonic
 
     @classmethod
@@ -230,6 +234,26 @@ class BaseEntiteit:
                 'eind_geldigheid': getattr(cls, 'eind_geldigheid', None),
             }
         return None
+
+    @classmethod
+    def get_tijdvak_relatie(cls):
+        if getattr(cls, 'begin_relatie', None) or getattr(cls, 'eind_relatie', None):
+            return {
+                'begin_relatie': getattr(cls, 'begin_relatie', None),
+                'eind_relatie': getattr(cls, 'eind_relatie', None),
+            }
+        return None
+
+    @classmethod
+    def get_tijdstip_registratie(cls):
+        return getattr(cls, 'tijdstip_registratie', None)
+
+    @classmethod
+    def add_extra_obj_kwargs(cls, spyne_obj, obj):
+        """
+        A hook to add extra kwargs, if special filtering is needed for a Entiteit.
+        """
+        return obj
 
 
 class StUFEntiteit(BaseEntiteit):

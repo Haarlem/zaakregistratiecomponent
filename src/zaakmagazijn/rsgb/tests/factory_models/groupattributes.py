@@ -2,15 +2,15 @@ import factory
 
 from ...models import (
     AdresMetPostcode, Bezoekadres, Correspondentieadres, KadastraleAanduiding,
-    KadastraleAanduidingBaseClass, Locatieadres, NaamAanschrijving, PostAdres,
-    PostadresType, VerblijfAdres, VerblijfBuitenland
+    KadastraleAanduidingBaseClass, Locatieadres, PostAdres, PostadresType,
+    VerblijfAdres, VerblijfBuitenland
 )
 
 
 class AdresMetPostcodeFactory(factory.django.DjangoModelFactory):
     woonplaatsnaam = factory.Sequence(lambda n: 'woonplaatsnaam {0}'.format(n))
     naam_openbare_ruimte = factory.Sequence(lambda n: 'naam_openbare_ruimte {0}'.format(n))
-    huisnummer = factory.Sequence(lambda n: n)
+    huisnummer = factory.Sequence(lambda n: n + 1)
 
     class Meta:
         model = AdresMetPostcode
@@ -57,14 +57,6 @@ class VerblijfBuitenlandFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = VerblijfBuitenland
-
-
-class NaamAanschrijvingFactory(factory.django.DjangoModelFactory):
-    geslachtsnaam_aanschrijving = factory.Sequence(lambda n: 'Geslachtsnaam {0}'.format(n))
-    aanhef_aanschrijving = factory.Sequence(lambda n: 'Aanhef {0}'.format(n))
-
-    class Meta:
-        model = NaamAanschrijving
 
 
 class KadastraleAanduidingBaseClassFactory(factory.django.DjangoModelFactory):

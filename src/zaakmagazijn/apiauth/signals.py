@@ -5,7 +5,7 @@ from django.utils.text import capfirst
 
 
 def update_service_operations(sender, **kwargs):
-    # TODO: [TECH] Retrieve all application service from Spyne instead of importing all applications.
+    # TODO [TECH]: Retrieve all application service from Spyne instead of importing all applications.
     from ..api.applications import beantwoordvraag_app, verwerksynchroonvrijbericht_app, ontvangasynchroon_app
     from .models import ServiceOperation
 

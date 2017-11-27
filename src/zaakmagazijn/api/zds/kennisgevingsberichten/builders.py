@@ -6,7 +6,9 @@ from ...stuf.attributes import entiteittype, verwerkingssoort
 from ...stuf.base import ComplexModelBuilder
 from ...stuf.choices import BerichtcodeChoices
 from ...stuf.constants import STUF_XML_NS, ZKN_XML_NS
-from ...stuf.models import BinaireInhoud, Systeem
+from ...stuf.models import (
+    BinaireInhoud, Systeem, Tijdstip_e, TijdvakGeldigheid, TijdvakRelatie
+)
 from ...stuf.simple_types import IndicatorOvername
 from ...stuf.utils import django_field_to_spyne_model, reorder_type_info
 
@@ -135,7 +137,7 @@ class Lk01Builder(ComplexModelBuilder):
             type_info[related_field.field_name] = self.create_object_model(
                 related_field.stuf_entiteit).customize(**model_kwargs)
 
-        # TODO: [TECH] In the WSDL this should be minOccurs and maxOccurs of 1.
+        # TODO [TECH]: In the WSDL this should be minOccurs and maxOccurs of 1.
         gerelateerde = stuf_entiteit.get_gerelateerde()
         if gerelateerde:
             _, gerelateerde_data = gerelateerde
@@ -161,7 +163,7 @@ class Lk01Builder(ComplexModelBuilder):
                     min_occurs=1 if required else 0
                 )
 
-            # TODO: [TECH] figure out if we can put this in the DJANGO -> SPYNE mapping
+            # TODO [TECH]: figure out if we can put this in the DJANGO -> SPYNE mapping
             if field_name in file_fields:
                 spyne_model = BinaireInhoud.customize(**customize_kwargs)
             else:
@@ -169,8 +171,26 @@ class Lk01Builder(ComplexModelBuilder):
 
             type_info[field_name] = spyne_model
 
-        for field_name, spyne_model in stuf_entiteit.get_custom_fields():
+        for field_name, spyne_model, _ in stuf_entiteit.get_custom_fields():
             type_info[field_name] = spyne_model
+
+        tijdvak_geldigheid = stuf_entiteit.get_tijdvak_geldigheid()
+        if tijdvak_geldigheid:
+            type_info.append(
+                ('tijdvakGeldigheid', TijdvakGeldigheid.customize(ref='tijdvakGeldigheid')),
+            )
+
+        tijdvak_relatie = stuf_entiteit.get_tijdvak_relatie()
+        if tijdvak_relatie:
+            type_info.append(
+                ('tijdvakRelatie', TijdvakRelatie.customize(ref='TijdvakRelatie')),
+            )
+
+        tijdstip_registratie = stuf_entiteit.get_tijdstip_registratie()
+        if tijdstip_registratie:
+            type_info.append(
+                ('tijdstipRegistratie', Tijdstip_e.customize(ref='tijdstipRegistratie')),
+            )
 
         complex_model = self.create_reusable_model(
             self.create_object_name(stuf_entiteit),

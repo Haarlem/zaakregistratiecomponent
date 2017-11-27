@@ -89,7 +89,7 @@
                                 <ZKN:isEen StUF:entiteittype="VZOVES" StUF:verwerkingssoort="T">
                                     <ZKN:gerelateerde StUF:verwerkingssoort="T" StUF:entiteittype="VES">
                                         <BG:vestigingsNummer>012345678915</BG:vestigingsNummer>
-                                        <!-- TODO: [TECH] Taiga #226 VestigingObject heeft veel meer attributen dan nu geimplementeerd. -->
+                                        <!-- TODO [TECH]: Taiga #226 VestigingObject heeft veel meer attributen dan nu geimplementeerd. -->
                                         <!--
                                         <BG:authentiek StUF:metagegeven="true">J</BG:authentiek>
                                         <BG:handelsnaam>handelsnaam5</BG:handelsnaam>

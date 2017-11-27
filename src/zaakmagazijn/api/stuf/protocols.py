@@ -6,8 +6,7 @@ from spyne.const.xml import XSI
 from spyne.protocol.soap import Soap11
 from spyne.protocol.xml import SchemaValidationError
 
-from .choices import BerichtcodeChoices, ClientFoutChoices
-from .faults import StUFFault
+from .choices import ClientFoutChoices
 
 
 class IgnoreAttribute:
@@ -64,6 +63,7 @@ class StUF(Soap11):
         cls_attrs = self.get_cls_attrs(cls)
         if cls_attrs.min_occurs == 0 and isinstance(inst, IgnoreAttribute):
             return None
+
         if inst is None and cls.Attributes.min_occurs == 0:
             return self.null_to_parent(ctx, cls, inst, parent, ns, *args, **kwargs)
         return super().to_parent(ctx, cls, inst, parent, ns, *args, **kwargs)

@@ -73,6 +73,15 @@ uit de basis configuratie.
     Creeert een nummer bestaande uit het huidige jaar en een oplopend
     volgnummer binnen hetzelfde jaar.
 
+* ``ZAAKMAGAZIJN_REFERENCE_WSDL`` (standaard: ``True``)
+
+  Gebruik de KING referentie WSDL in plaats van de gegenereerde WSDL.
+
+* ``ZAAKMAGAZIJN_STUF_TESTPLATFORM`` (standaard: ``False``)
+
+  Gebruik workarounds voor een installatie die gebruikt wordt voor het StUF
+  test platform. Niet geschikt voor reguliere installaties!
+
 * ``CMIS_CLIENT_URL`` (standaard: ``http://localhost:8080/alfresco/cmisatom``)
 
   De URL naar de DMS server.

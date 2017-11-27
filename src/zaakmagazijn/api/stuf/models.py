@@ -9,7 +9,7 @@ from spyne.model.complex import ComplexModel, XmlAttribute, XmlData
 from . import attributes, simple_types
 from ...utils.fields import StUFDateField, StUFDateTimeField
 from .attributes import element, exact, indOnvolledigeDatum, noValue
-from .constants import STUF_XML_NS, XMIME_XML_NS, ZKN_XML_NS
+from .constants import BG_XML_NS, STUF_XML_NS, ZKN_XML_NS
 from .ordering import BSLSortering, EDCSortering, ZAKSortering
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class ZAK_parametersVraagSynchroon(ComplexModel):
         # "het gaat J/N om een vervolgvraag (default N)"
         ('indicatorVervolgvraag', Boolean.customize(default=False)),
         ('maximumAantal', simple_types.MaximumAantal.customize(min_occurs=0)),
-        # TODO: [TECH] Taiga #151 Dit geeft aan dat we van updates op de hoogte gehouden willen worden. Niet geimplementeerd.
+        # TODO [TECH]: Taiga #151 Dit geeft aan dat we van updates op de hoogte gehouden willen worden. Niet geimplementeerd.
         # "plaats J/N afnemerindicatie voor geselecteerde objecten (default N)"
         ('indicatorAfnemerIndicatie', Boolean.customize(default=False, min_occurs=0)),
         # "geef aantal voorkomens terug dat voldoet aan selectie"
@@ -77,7 +77,7 @@ class ParametersAntwoordSynchroon(ComplexModel):
     """
     Type voor gebruik in La01, La07, La09, La11 en La13 berichten.
     """
-    __namespace__ = ZKN_XML_NS
+    __namespace__ = STUF_XML_NS
     __type_name__ = 'ParametersAntwoordSynchroon'
     # As with VraagParameters, indicatorVervolgvraag and indicatorAfnemerIndicatie are
     # XML booleans
@@ -158,7 +158,10 @@ class DatumMetIndicator(ComplexModel):
 
     @classmethod
     def to_spyne_value(cls, django_obj, spyne_field):
-        # TODO: [TECH] implement indOnvolledigeDatum support
+        if django_obj is None:
+            return None
+
+        # TODO [TECH]: implement indOnvolledigeDatum support
         return {
             'data': django_obj
         }
@@ -174,6 +177,25 @@ class Tijdstip_e(ComplexModel):
     _type_info = element + [
         ('data', XmlData(simple_types.Tijdstip))
     ]
+
+    class Attributes(ComplexModel.Attributes):
+        sub_ns = STUF_XML_NS
+
+    @classmethod
+    def to_django_value(cls, spyne_obj, django_field):
+        if spyne_obj.data is None:
+            return ''
+        return '{}'.format(spyne_obj.data)
+
+    @classmethod
+    def to_spyne_value(cls, django_obj, spyne_field):
+        if django_obj is None:
+            return None
+
+        # TODO [TECH]: implement indOnvolledigeDatum support
+        return {
+            'data': django_obj
+        }
 
 
 class TijdstipMetIndicator(ComplexModel):
@@ -196,7 +218,9 @@ class TijdstipMetIndicator(ComplexModel):
 
     @classmethod
     def to_spyne_value(cls, django_obj, spyne_field):
-        # TODO: [TECH] implement indOnvolledigeDatum support
+        if django_obj is None:
+            return None
+        # TODO [TECH]: implement indOnvolledigeDatum support
         return {
             'data': django_obj
         }
@@ -211,7 +235,7 @@ class TijdvakGeldigheid(ComplexModel):
     __type_name__ = 'tijdvakGeldigheid'
     _type_info = [
         ('beginGeldigheid', DatumMetIndicator.customize(nillable=True)),
-        ('eindGeldigheid', DatumMetIndicator.customize(nillable=True)),
+        ('eindGeldigheid', DatumMetIndicator.customize(nillable=True, min_occurs=1)),
     ]
 
     class Attributes(ComplexModel.Attributes):
@@ -226,6 +250,9 @@ class TijdvakObject(ComplexModel):
         ('eindGeldigheid', DatumMetIndicator.customize(nillable=True, min_occurs=0)),
     ]
 
+    class Attributes(ComplexModel.Attributes):
+        sub_ns = STUF_XML_NS
+
 
 class TijdvakRelatie(ComplexModel):
     __namespace__ = STUF_XML_NS
@@ -235,6 +262,8 @@ class TijdvakRelatie(ComplexModel):
         ('eindRelatie', TijdstipMetIndicator.customize(nillable=True, min_occurs=0)),
     ]
 
+    class Attributes(ComplexModel.Attributes):
+        sub_ns = STUF_XML_NS
 
 class Bv01BerichtStuurgegevens(ComplexModel):
     __namespace__ = STUF_XML_NS
@@ -349,4 +378,13 @@ class ExtraElementen(ComplexModel):
     __type_name__ = 'extraElementen'
     _type_info = [
         ('extraElement', ExtraElement.customize(min_occurs=1, max_occurs=decimal.Decimal('inf'))),
+    ]
+
+
+class Authentiek(ComplexModel):
+    __namespace__ = BG_XML_NS
+    __type_name__ = 'authentiek'
+    _type_info = [
+        ('data', XmlData(Unicode)),
+        ('metagegeven', XmlAttribute(Boolean.customize(__namespace__=STUF_XML_NS, min_occurs=1, default=True), ns=STUF_XML_NS)),
     ]

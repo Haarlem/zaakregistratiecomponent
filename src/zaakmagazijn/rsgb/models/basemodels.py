@@ -24,6 +24,7 @@ class AdresBaseClass(models.Model):
     huisletter = models.CharField(max_length=1, null=True, blank=True)
     huisnummer = models.PositiveIntegerField(validators=[MaxValueValidator(99999)])
     huisnummertoevoeging = models.CharField(max_length=4, null=True, blank=True)
+    postcode = models.CharField(max_length=7, null=True, blank=True)
 
     class Meta:
         abstract = True

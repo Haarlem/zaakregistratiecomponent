@@ -1,4 +1,4 @@
-from spyne import AnyXml, ComplexModel, ServiceBase, rpc
+from spyne import ComplexModel, ServiceBase, rpc
 
 from ...rgbz.models import EnkelvoudigInformatieObject
 from ..stuf.constants import STUF_XML_NS
@@ -8,8 +8,8 @@ from ..zds.vrijeberichten import (
     GenereerIdentificatieInputBuilder, GenereerIdentificatieOutputBuilder
 )
 
-input_builder = GenereerIdentificatieInputBuilder('genereerDocumentIdentificatie', 'gdi')
-output_builder = GenereerIdentificatieOutputBuilder('genereerDocumentIdentificatie', 'gdi', 'document', 'EDC')
+input_builder = GenereerIdentificatieInputBuilder('genereerDocumentidentificatie', 'gdi')
+output_builder = GenereerIdentificatieOutputBuilder('genereerDocumentidentificatie', 'gdi', 'document', 'EDC')
 
 
 class Parameters(ComplexModel):

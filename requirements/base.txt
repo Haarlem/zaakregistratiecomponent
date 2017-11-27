@@ -6,11 +6,12 @@
 #
 -e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev2#egg=cmislib
 -e git+https://github.com/maykinmedia/spyne.git@maykin#egg=spyne
-appdirs==1.4.3            # via zeep
-cached-property==1.3.0    # via zeep
+-e git+https://github.com/maykinmedia/python-zeep.git@xsi-nil-on-complex-type-with-simple-content#egg=zeep
+appdirs==1.4.3
+cached-property==1.3.0
 click==6.7                # via pip-tools
 contextlib2==0.5.5        # via raven
-defusedxml==0.5.0         # via zeep
+defusedxml==0.5.0
 django-axes==2.3.2
 django-choices==1.5.0
 django-compat==1.0.14     # via django-hijack, django-hijack-admin
@@ -23,8 +24,8 @@ django==1.11.7
 first==2.0.1              # via pip-tools
 httplib2==0.8             # Pinned to 0.8 due to #387
 iso8601==0.1.11
-isodate==0.5.4            # via zeep
-lxml==3.7.3               # via zeep
+isodate==0.5.4
+lxml==3.7.3
 microsofttranslator==0.8  # via django-rosetta
 olefile==0.44             # via pillow
 pillow==4.1.1
@@ -34,8 +35,7 @@ psycopg2==2.7.1
 pytz==2017.2
 raven==6.0.0
 redis==2.10.5             # via django-redis
-requests-toolbelt==0.8.0  # via zeep
-requests==2.14.2          # via django-rosetta, microsofttranslator, requests-toolbelt, zeep
-six==1.10.0               # via django-compat, django-rosetta, microsofttranslator, pip-tools, zeep
+requests-toolbelt==0.8.0
+requests==2.14.2          # via django-rosetta, microsofttranslator, requests-toolbelt
+six==1.10.0               # via django-compat, django-rosetta, microsofttranslator, pip-tools
 unidecode==0.4.20
-zeep==2.0.0

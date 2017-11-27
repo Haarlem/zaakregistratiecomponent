@@ -1,5 +1,6 @@
 import factory
 
+from ....rsgb.choices import AdelijkeTitel
 from ....rsgb.tests.factory_models.mixins import (
     BereikenMixinFactory, RekeningnummerMixinFactory
 )
@@ -28,13 +29,24 @@ class BetrokkeneFactory(factory.django.DjangoModelFactory):
 class NatuurlijkPersoonFactory(BSNMixinFactory, BereikenMixinFactory, GeslachtsAanduidingMixinFactory,
                                RekeningnummerMixinFactory, BetrokkeneFactory):
     identificatie = factory.Sequence(lambda n: 'natuurlijk persoon identificatié {0}'.format(n))
-    nummer_ander_natuurlijk_persoon = factory.Sequence(lambda n: 'unieknummer {0}'.format(n))
+    # nummer_ander_natuurlijk_persoon = factory.Sequence(lambda n: 'unieknummer {0}'.format(n))
     verblijfadres = factory.SubFactory('zaakmagazijn.rsgb.tests.factory_models.VerblijfAdresFactory')
-    naam = factory.SubFactory('zaakmagazijn.rgbz.tests.factory_models.NaamFactory')
+
+    naam_voornamen = factory.sequence(lambda n: 'Willekeurige voornamen {0}'.format(n))
+    naam_geslachtsnaam = factory.sequence(lambda n: 'Willekeurige geslachtsnamen {0}'.format(n))
+    # naam_voorvoegsel_geslachtsnaam_voorvoegselnummer = factory.sequence(lambda n: '0{0}'.format(n))
+    # naam_voorvoegsel_geslachtsnaam_lo3_voorvoegsel = factory.sequence(lambda n: 'LO3 voorvoegsel {0}'.format(n))
+    naam_voorvoegsel_geslachtsnaam_voorvoegsel = factory.sequence(lambda n: 'Voorvoegsel {0}'.format(n))
+    # naam_voorvoegsel_geslachtsnaam_scheidingsteken = 'N'
+    naam_adelijke_titel = AdelijkeTitel.baron
+
     academische_titel = factory.SubFactory('zaakmagazijn.rsgb.tests.factory_models.AcademischeTitelFactory')
     aanduiding_naamgebruik = NaamGebruik.eigen
     geboortedatum_ingeschreven_persoon = stuf_datetime.today()
-    naam_aanschrijving = factory.SubFactory('zaakmagazijn.rsgb.tests.factory_models.NaamAanschrijvingFactory')
+
+    naam_aanschrijving_geslachtsnaam_aanschrijving = factory.Sequence(lambda n: 'Geslachtsnaam {0}'.format(n))
+    naam_aanschrijving_aanhef_aanschrijving = factory.Sequence(lambda n: 'Aanhef {0}'.format(n))
+
     correspondentieadres = factory.SubFactory('zaakmagazijn.rsgb.tests.factory_models.CorrespondentieadresFactory')
     verblijf_buitenland = factory.SubFactory('zaakmagazijn.rsgb.tests.factory_models.VerblijfBuitenlandFactory')
     postadres = factory.SubFactory('zaakmagazijn.rsgb.tests.factory_models.PostAdresFactory')
@@ -66,8 +78,8 @@ class VestigingFactory(BereikenMixinFactory, RekeningnummerMixinFactory, Betrokk
         model = Vestiging
 
 
-class VestigingVanZaakBehandelendeOrganisatieFactory(VestigingFactory):
-    identificatie = factory.Sequence(lambda n: 'VZO identificatié {0}'.format(n))
+class VestigingVanZaakBehandelendeOrganisatieFactory(factory.django.DjangoModelFactory):
+    is_specialisatie_van = factory.SubFactory('zaakmagazijn.rgbz.tests.factory_models.VestigingFactory')
 
     class Meta:
         model = VestigingVanZaakBehandelendeOrganisatie

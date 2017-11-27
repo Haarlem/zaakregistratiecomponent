@@ -1,6 +1,8 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 
+from zaakmagazijn.utils import stuf_datetime
+
 from ...utils.fields import StUFDateField
 from ..choices import JaNee, VervalRedenen
 from .basemodels import Object
@@ -43,14 +45,14 @@ class BesluitType(models.Model):
                   'BESLUITTYPE gepubliceerd moeten blijven.',
         validators=[MaxValueValidator(999)]
     )
-    datum_begin_geldigheid_besluittype = StUFDateField()
+    datum_begin_geldigheid_besluittype = StUFDateField(default=stuf_datetime.today)
     datum_einde_geldigheid_besluittype = StUFDateField(null=True, blank=True)
 
     class Meta:
         mnemonic = 'BST'
 
 
-# TODO: [TECH] This can be replaced by using the 'self' relation name in StUFEntiteiten.
+# TODO [TECH]: This can be replaced by using the 'self' relation name in StUFEntiteiten.
 class BesluitInformatieObject(models.Model):
     """ Added as alternative to ZaakInformatieObject, empty m2m-through tabel """
     besluit = models.ForeignKey('rgbz.Besluit', on_delete=models.CASCADE)
@@ -58,7 +60,7 @@ class BesluitInformatieObject(models.Model):
 
     class Meta:
         verbose_name_plural = 'BesluitInformatieObjecten'
-        mnemonic = 'BDC'  # TODO: This is wrong, there is no such mnmemonic in RGBZ 2.0.
+        mnemonic = 'BDC'  # TODO [KING]: This is wrong, there is no such mnmemonic in RGBZ 2.0.
 
 
 class Besluit(TijdstipRegistratieMixin, Object):

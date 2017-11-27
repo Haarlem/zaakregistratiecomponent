@@ -32,7 +32,6 @@
                 <ZKN:identificatie>0123456789</ZKN:identificatie>
                 <ZKN:bst.omschrijving>omschrijving5</ZKN:bst.omschrijving>
                 <ZKN:datumBeslissing>{{ datumVandaag }}</ZKN:datumBeslissing>
-                <ZKN:ingangsdatumWerking>{{ datumVandaag }}</ZKN:ingangsdatumWerking>
             </ZKN:gerelateerde>
         </ZKN:leidtTot>
     </ZKN:object>

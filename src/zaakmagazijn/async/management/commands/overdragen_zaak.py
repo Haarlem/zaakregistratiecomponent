@@ -1,9 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext as _
 
-from zaakmagazijn.async.exceptions import (
-    ConsumerException, UnexpectedAnswerException
-)
+from zaakmagazijn.async.exceptions import UnexpectedAnswerException
 
 from ....apiauth.models import Application
 from ....rgbz.models import Zaak
@@ -11,7 +9,7 @@ from ...consumer import Consumer
 
 
 class Command(BaseCommand):
-    help = _('Draag een zaak over aan een andere applicatie.')
+    help = _('Accepteer of weiger de overdracht van een Zaak.')
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -27,11 +25,24 @@ class Command(BaseCommand):
             help='Zaak identification, as it is known by the system.'
         )
         parser.add_argument(
+            'xrefnumber',
+            metavar='XREFNUMBER',
+            action='store',
+            help='The cross reference number.',
+        )
+        parser.add_argument(
             '-m', '--message',
             metavar='MESSAGE',
             action='append',
             dest='message',
             help='One or more messages that are sent with the request for transfer.',
+        )
+        parser.add_argument(
+            '-d', '--decline',
+            action='store_false',
+            dest='accepted',
+            default=True,
+            help='Decline the Zaak. If not provided the Zaak will be accepted.',
         )
         parser.add_argument(
             '--dry-run', '--dryrun',
@@ -41,7 +52,7 @@ class Command(BaseCommand):
             help='Only shows the outgoing XML request. No actual request is made.',
         )
 
-    def handle(self, application_name, zaak_id, *args, **options):
+    def handle(self, application_name, zaak_id, xrefnumber, *args, **options):
         try:
             application = Application.objects.get(name=application_name)
         except Application.DoesNotExist as e:
@@ -51,13 +62,19 @@ class Command(BaseCommand):
         except Zaak.DoesNotExist as e:
             raise CommandError('Zaak "{}" does not exist.'.format(zaak_id))
 
+        accepted = options.get('accepted', True)
         messages = options.get('message', [])
         dryrun = options.get('dryrun', False)
 
         consumer = Consumer(application, dryrun=dryrun)
 
         try:
-            result = consumer.overdragenZaak(zaak, messages)
+            result = consumer.overdragenZaak(
+                zaak,
+                messages,
+                accepted,
+                xrefnumber,
+            )
             self.stdout.write('Operation succeeded: {}'.format(result.content if result else '(no response)'))
         except UnexpectedAnswerException as e:
             self.stdout.write('Server returned an error: {}'.format(e))

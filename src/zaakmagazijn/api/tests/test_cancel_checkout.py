@@ -1,5 +1,7 @@
 from lxml import etree
 
+from zaakmagazijn.rgbz_mapping.utils import to_proxy_obj
+
 from ...rgbz.choices import JaNee
 from ...rgbz.tests.factory_models import (
     EnkelvoudigInformatieObjectFactory, StatusFactory, ZaakFactory,
@@ -47,7 +49,7 @@ class STPcancelCheckout_Di02Tests(DMSMockMixin, BaseTestPlatformTests):
             'tijdstipRegistratie': self.genereerdatumtijd(),
             'zds_zaaktype_code': '12345678',
             'zds_zaaktype_omschrijving': 'Aanvraag burgerservicenummer behandelen',
-            # TODO: [TECH] check this one!
+            # TODO [TECH]: check this one!
             'checkoutid_doc1': 'doc1',
         }
 
@@ -66,4 +68,4 @@ class STPcancelCheckout_Di02Tests(DMSMockMixin, BaseTestPlatformTests):
 
         self._test_response(response)
 
-        self._service_dms_client.cancel_checkout.assert_called_once_with(self.edc1, 'doc1')
+        self._service_dms_client.cancel_checkout.assert_called_once_with(to_proxy_obj(self.edc1), 'doc1')

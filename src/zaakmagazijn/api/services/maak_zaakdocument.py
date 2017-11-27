@@ -1,19 +1,16 @@
-from django.conf import settings
 from django.db import transaction
 
 from spyne import ServiceBase, rpc
 
 from ...cmis.client import default_client as dms_client
 from ...rgbz.models import EnkelvoudigInformatieObject, Zaak
-from ...utils import stuf_datetime
-from ..stuf.choices import BerichtcodeChoices
 from ..stuf.models import BinaireInhoud, Bv03Bericht  # , TijdvakGeldigheid
-from ..utils import create_unique_id
+from ..stuf.utils import get_bv03_stuurgegevens
 from ..zds import Lk01Builder
 from ..zds.kennisgevingsberichten import process_create
-from .voeg_zaakdocument_toe import InformatieObjectEntiteit
+from .voeg_zaakdocument_toe import EnkelvoudigDocumentEntiteit
 
-input_builder = Lk01Builder(InformatieObjectEntiteit, 'MaakZaakdocument')
+input_builder = Lk01Builder(EnkelvoudigDocumentEntiteit, 'MaakZaakdocument')
 
 
 class MaakZaakdocument(ServiceBase):
@@ -24,7 +21,7 @@ class MaakZaakdocument(ServiceBase):
     """
     input_model = input_builder.create_model()
 
-    @rpc(input_model, _body_style="bare", _out_message_name="Bv03Bericht", _returns=Bv03Bericht)
+    @rpc(input_model, _body_style="bare", _out_message_name="{http://www.egem.nl/StUF/StUF0301}Bv03Bericht", _returns=Bv03Bericht)
     def maakZaakdocument_EdcLk01(ctx, data):
         """
         Er wordt gestart met het aanmaken van een document dat relevant is
@@ -60,19 +57,16 @@ class MaakZaakdocument(ServiceBase):
             # geen binaire inhoud toegelaten -> maak leeg indien wel meegestuurd
             data.object.inhoud.data = None
 
-            process_create(InformatieObjectEntiteit, data)
+            process_create(EnkelvoudigDocumentEntiteit, data)
 
             # relateer document aan juiste zaak folder
             document = EnkelvoudigInformatieObject.objects.get(informatieobjectidentificatie=data.object.identificatie)
+            if data.object.inhoud and data.object.inhoud.bestandsnaam:
+                document.volledige_bestandsnaam = data.object.inhoud.bestandsnaam
+                document.save()
             zaak = Zaak.objects.get(zaakidentificatie=data.object.isRelevantVoor[0].gerelateerde.identificatie)
             dms_client.relateer_aan_zaak(document, zaak)
 
         return {
-            'stuurgegevens': {
-                'berichtcode': BerichtcodeChoices.bv03,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': data.stuurgegevens.zender,
-                'referentienummer': create_unique_id(),
-                'tijdstipBericht': stuf_datetime.now()
-            },
+            'stuurgegevens': get_bv03_stuurgegevens(data),
         }

@@ -93,6 +93,8 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False
 }
 
+ZAAKMAGAZIJN_URL = 'http://localhost:8000'
+
 # Override settings with local settings.
 try:
     from .local import *

@@ -1,0 +1,82 @@
+<ZDS:actualiseerZaakstatus_ZakLk01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:gml="http://www.opengis.net/gml" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>Lk01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>#{tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>ZAK</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:mutatiesoort>W</StUF:mutatiesoort>
+        <StUF:indicatorOvername>I</StUF:indicatorOvername>
+    </ZKN:parameters>
+    <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
+        <ZKN:identificatie>${gemeentecode}${genereerzaakident_identificatie_6}</ZKN:identificatie>
+        <ZKN:omschrijving>omschrijving7</ZKN:omschrijving>
+        <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="I">
+            <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
+                <ZKN:omschrijving>${zds_zaaktype_omschrijving}</ZKN:omschrijving>
+                <ZKN:code>${zds_zaaktype_code}</ZKN:code>
+                <ZKN:ingangsdatumObject>${zds_zaaktype_datum}</ZKN:ingangsdatumObject>
+            </ZKN:gerelateerde>
+        </ZKN:isVan>
+        <ZKN:heeft StUF:verwerkingssoort="T" StUF:entiteittype="ZAKSTT" xsi:nil="true"/>
+    </ZKN:object>
+    <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
+        <ZKN:identificatie>${gemeentecode}${genereerzaakident_identificatie_6}</ZKN:identificatie>
+        <ZKN:omschrijving>omschrijving7</ZKN:omschrijving>
+        <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="I">
+            <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
+                <ZKN:omschrijving>${zds_zaaktype_omschrijving}</ZKN:omschrijving>
+                <ZKN:code>${zds_zaaktype_code}</ZKN:code>
+                <ZKN:ingangsdatumObject>${zds_zaaktype_datum}</ZKN:ingangsdatumObject>
+            </ZKN:gerelateerde>
+        </ZKN:isVan>
+        <ZKN:heeft StUF:verwerkingssoort="T" StUF:entiteittype="ZAKSTT">
+            <ZKN:gerelateerde StUF:verwerkingssoort="T" StUF:entiteittype="STT">
+                <ZKN:zkt.code>${zds_zaaktype_code}</ZKN:zkt.code>
+                <ZKN:zkt.omschrijving>${zds_zaaktype_omschrijving}</ZKN:zkt.omschrijving>
+                <ZKN:volgnummer>7</ZKN:volgnummer>
+                <ZKN:code>${zds_zaakstatus_code_4}</ZKN:code>
+                <ZKN:omschrijving>${zds_zaakstatus_omschrijving_4}</ZKN:omschrijving>
+                <ZKN:ingangsdatumObject>${datumVandaag}</ZKN:ingangsdatumObject>
+            </ZKN:gerelateerde>
+            <ZKN:toelichting>toelichting7</ZKN:toelichting>
+            <ZKN:datumStatusGezet>${datumVandaag}</ZKN:datumStatusGezet>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumVandaag}</StUF:beginRelatie>
+                <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumVandaag}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <ZKN:isGezetDoor StUF:verwerkingssoort="T" StUF:entiteittype="ZAKSTTBTR">
+                <ZKN:gerelateerde>
+                    <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
+                        <ZKN:identificatie>${gemeentecode}56787</ZKN:identificatie>
+                        <ZKN:achternaam>achternaam7</ZKN:achternaam>
+                        <ZKN:voorletters>voorletters7</ZKN:voorletters>
+                        <ZKN:voorvoegselAchternaam>voorvoeg7</ZKN:voorvoegselAchternaam>
+                    </ZKN:medewerker>
+                </ZKN:gerelateerde>
+                <ZKN:rolOmschrijving>rolOmschrijving7</ZKN:rolOmschrijving>
+                <ZKN:rolomschrijvingGeneriek>Initiator</ZKN:rolomschrijvingGeneriek>
+                <StUF:tijdvakRelatie>
+                    <StUF:beginRelatie>${datumVandaag}</StUF:beginRelatie>
+                    <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+                </StUF:tijdvakRelatie>
+                <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+            </ZKN:isGezetDoor>
+        </ZKN:heeft>
+    </ZKN:object>
+</ZDS:actualiseerZaakstatus_ZakLk01>

@@ -8,7 +8,25 @@ from ..validators import validate_non_negative_string
 
 
 class TijdstipRegistratieMixin(models.Model):
-    tijdstip_registratie = StUFDateTimeField(default=stuf_datetime.now)
+    tijdstip_registratie = StUFDateTimeField(default=stuf_datetime.now, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class TijdvakGeldigheidMixin(models.Model):
+    # begin_geldigheid should not be nullable.
+    begin_geldigheid = StUFDateTimeField(blank=True, null=True)
+    eind_geldigheid = StUFDateTimeField(blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class TijdvakRelatieMixin(models.Model):
+    # begin_relatie should not be nullable.
+    begin_relatie = StUFDateTimeField(blank=True, null=True)
+    eind_relatie = StUFDateTimeField(blank=True, null=True)
 
     class Meta:
         abstract = True

@@ -1,11 +1,8 @@
-from django.conf import settings
 
 from spyne import ServiceBase, rpc
 
-from ...utils import stuf_datetime
-from ..stuf.choices import BerichtcodeChoices
 from ..stuf.models import Bv03Bericht
-from ..utils import create_unique_id
+from ..stuf.utils import get_bv03_stuurgegevens
 from ..zds.entiteiten.overdragen_zaak import (
     DI01_overdragenZaak, Du01_overdragenZaak
 )
@@ -20,27 +17,21 @@ class OverdragenZaak(ServiceBase):
 
     Zie: ZDS 1.2, paragraaf 4.2
     """
-    @rpc(Du01_overdragenZaak, _body_style="bare", _out_message_name="Bv03Bericht", _returns=Bv03Bericht)
+    @rpc(Du01_overdragenZaak, _body_style="bare", _out_message_name="{http://www.egem.nl/StUF/StUF0301}Bv03Bericht", _returns=Bv03Bericht)
     def overdragenZaak_Du01(ctx, data):
         # Undocumented but technically, a ZSC can tell us it accepted or denied
         # the Zaak.
 
         if data.object.antwoord == 'Overdracht geaccepteerd':
-            # TODO: [KING] Taiga #237 Het is onduidelijk wat een ZS moet doen als een ZSC een zaak overdracht accepteerd of weigert.
+            # TODO [KING]: Taiga #237 Het is onduidelijk wat een ZS moet doen als een ZSC een zaak overdracht accepteerd of weigert.
             pass
 
         return {
-            'stuurgegevens': {
-                'berichtcode': BerichtcodeChoices.bv03,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': data.stuurgegevens.zender,
-                'referentienummer': create_unique_id(),
-                'tijdstipBericht': stuf_datetime.now(),
-            },
+            'stuurgegevens': get_bv03_stuurgegevens(data),
         }
 
     # Capital I as per spec...
-    @rpc(DI01_overdragenZaak, _body_style="bare", _out_message_name="Bv03Bericht", _returns=Bv03Bericht)
+    @rpc(DI01_overdragenZaak, _body_style="bare", _out_message_name="{http://www.egem.nl/StUF/StUF0301}Bv03Bericht", _returns=Bv03Bericht)
     def overdragenZaak_Di01(ctx, data):
         """
         De "Overdragen te behandelen Zaak" service biedt het ZS de mogelijkheid
@@ -64,11 +55,5 @@ class OverdragenZaak(ServiceBase):
         # De ZSC verwerkt berichten asynchroon en direct ("near realtime");
 
         return {
-            'stuurgegevens': {
-                'berichtcode': BerichtcodeChoices.bv03,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': data.stuurgegevens.zender,
-                'referentienummer': create_unique_id(),
-                'tijdstipBericht': stuf_datetime.now(),
-            },
+            'stuurgegevens': get_bv03_stuurgegevens(data),
         }

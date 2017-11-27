@@ -10,7 +10,7 @@ from .factory_models import (
 
 class BesluitTestCase(TestCase):
 
-    @skip('identificatie field on besluit is deleted, it used to have AlphanumericExcludingDiacritic(start=5)')
+    @skip('TODO [TECH]: identificatie field on besluit is deleted, it used to have AlphanumericExcludingDiacritic(start=5)')
     def test_besluit_validatie(self):
         with self.assertRaises(ValidationError):
             BesluitFactory.create(identificatie='identificatiéééé')

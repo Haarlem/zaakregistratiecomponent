@@ -44,13 +44,10 @@
             <ZKN:duur xsi:nil="true"/>
             <ZKN:reden xsi:nil="true"/>
         </ZKN:verlenging>
-        <!--
         <StUF:tijdvakGeldigheid>
             <StUF:beginGeldigheid>{{ datumEergisteren }}</StUF:beginGeldigheid>
             <StUF:eindGeldigheid>{{ datumVandaag }}</StUF:eindGeldigheid>
         </StUF:tijdvakGeldigheid>
-        -->
-        {% comment %}
         <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="I">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
                 <ZKN:omschrijving>{{ zds_zaaktype_omschrijving }}</ZKN:omschrijving>
@@ -58,24 +55,16 @@
                 <ZKN:ingangsdatumObject>{{ datumVandaag }}</ZKN:ingangsdatumObject>
             </ZKN:gerelateerde>
         </ZKN:isVan>
-        {% endcomment %}
         <ZKN:heeftAlsBelanghebbende StUF:entiteittype="ZAKBTRBLH" StUF:verwerkingssoort="T" xsi:nil="true"/>
         <ZKN:heeftAlsBelanghebbende StUF:entiteittype="ZAKBTRBLH" StUF:verwerkingssoort="T" xsi:nil="true"/>
-        {% comment %}
         <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T" xsi:nil="true"/>
         <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T" xsi:nil="true"/>
-        {% endcomment %}
         <ZKN:heeftAlsInitiator StUF:entiteittype="ZAKBTRINI" StUF:verwerkingssoort="R">
             <ZKN:gerelateerde>
                 <ZKN:vestiging StUF:verwerkingssoort="I" StUF:entiteittype="VES">
-                    <!-- Was
                     <BG:vestigingsNummer>010203040506</BG:vestigingsNummer>
-                    -->
-                    <BG:vestigingsNummer>010203040506</BG:vestigingsNummer>
-
                 </ZKN:vestiging>
             </ZKN:gerelateerde>
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie>{{ datumGisteren }}</StUF:eindRelatie>
@@ -85,16 +74,13 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsInitiator>
-        {% comment %}
         <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T" xsi:nil="true"/>
         <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T" xsi:nil="true"/>
         <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T" xsi:nil="true"/>
         <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T" xsi:nil="true"/>
         <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T" xsi:nil="true"/>
         <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T" xsi:nil="true"/>
-        {% endcomment %}
     </ZKN:object>
     <ZKN:object StUF:entiteittype="ZAK" StUF:verwerkingssoort="W">
         <ZKN:identificatie>{{ gemeentecode }}{{ creerzaak_identificatie_9 }}</ZKN:identificatie>
@@ -115,16 +101,11 @@
             <ZKN:duur>2</ZKN:duur>
             <ZKN:reden>reden12</ZKN:reden>
         </ZKN:verlenging>
-        <!-- TODO: See Taiga issue #150 -->
-        <!--
         <StUF:tijdvakGeldigheid>
             <StUF:beginGeldigheid>{{ datumVandaag }}</StUF:beginGeldigheid>
             <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
         </StUF:tijdvakGeldigheid>
         <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-        -->
-        <!-- TODO: vervangen met een platgeslagen variant in ZKN 3.2 -->
-        <!--
         <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="I">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
                 <ZKN:omschrijving>{{ zds_zaaktype_omschrijving }}</ZKN:omschrijving>
@@ -132,25 +113,18 @@
                 <ZKN:ingangsdatumObject>{{ datumVandaag }}</ZKN:ingangsdatumObject>
             </ZKN:gerelateerde>
         </ZKN:isVan>
-        -->
         <ZKN:heeftAlsBelanghebbende StUF:entiteittype="ZAKBTRBLH" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56781</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56781</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56781</ZKN:identificatie>
                     <ZKN:achternaam>achternaam2</ZKN:achternaam>
                     <ZKN:voorletters>voorletters2</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg2</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code2</ZKN:code>
             <ZKN:omschrijving>omschrijving2</ZKN:omschrijving>
             <ZKN:toelichting>toelichting2</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -160,29 +134,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsBelanghebbende>
         <ZKN:heeftAlsBelanghebbende StUF:entiteittype="ZAKBTRBLH" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56782</ZKN:identificatie>-->
-
-                    <ZKN:medewerkeridentificatie>56782</ZKN:medewerkeridentificatie>
-                    <!--taiga #254 wij staan organisatie-identificatie bij toevoegen medewerker niet toe-->
-                    <!--<ZKN:organisatie-identificatie xsi:nil="true" />-->
-
+                    <ZKN:identificatie>{{ gemeentecode }}56782</ZKN:identificatie>
                     <ZKN:achternaam>achternaam22</ZKN:achternaam>
                     <ZKN:voorletters>voorletters22</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code22</ZKN:code>
             <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
             <ZKN:toelichting>toelichting22</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -192,28 +156,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsBelanghebbende>
-        <!-- TODO: Gone in ZKN 3.20 -->
-        {% comment %}
         <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56783</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56783</ZKN:medewerkeridentificatie>
-
+                    <ZKN:identificatie>{{ gemeentecode }}56783</ZKN:identificatie>
                     <ZKN:achternaam>achternaam2</ZKN:achternaam>
                     <ZKN:voorletters>voorletters2</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg2</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code2</ZKN:code>
             <ZKN:omschrijving>omschrijving2</ZKN:omschrijving>
             <ZKN:toelichting>toelichting2</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -223,26 +178,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsGemachtigde>
         <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56784</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56784</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56784</ZKN:identificatie>
                     <ZKN:achternaam>achternaam22</ZKN:achternaam>
                     <ZKN:voorletters>voorletters22</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code2</ZKN:code>
             <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
             <ZKN:toelichting>toelichting22</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -252,9 +200,7 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsGemachtigde>
-        {% endcomment %}
         <ZKN:heeftAlsInitiator StUF:entiteittype="ZAKBTRINI" StUF:verwerkingssoort="R">
             <ZKN:gerelateerde>
                 <ZKN:organisatorischeEenheid StUF:entiteittype="OEH" StUF:verwerkingssoort="I">
@@ -264,24 +210,19 @@
                         <ZKN:gerelateerde StUF:entiteittype="VZO" StUF:verwerkingssoort="I">
                             <ZKN:isEen StUF:entiteittype="VZOVES" StUF:verwerkingssoort="I">
                                 <ZKN:gerelateerde StUF:entiteittype="VES" StUF:verwerkingssoort="I">
-                                    <!-- <BG:vestigingsNummer>012345678910</BG:vestigingsNummer> -->
                                     <BG:vestigingsNummer>012345678910</BG:vestigingsNummer>
-                                    <!-- <BG:authentiek StUF:metagegeven="true" xsi:nil="true"/> -->
-                                    <!-- <BG:handelsnaam>handelsnaam</BG:handelsnaam> -->
-                                    <!-- <BG:verblijfsadres/> -->
+                                    <BG:authentiek StUF:metagegeven="true" xsi:nil="true"/>
+                                    <BG:handelsnaam>handelsnaam</BG:handelsnaam>
+                                    <BG:verblijfsadres/>
                                 </ZKN:gerelateerde>
                             </ZKN:isEen>
                         </ZKN:gerelateerde>
                     </ZKN:isGehuisvestIn>
                 </ZKN:organisatorischeEenheid>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code2</ZKN:code>
             <ZKN:omschrijving>omschrijving2</ZKN:omschrijving>
             <ZKN:toelichting>toelichting2</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -291,28 +232,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsInitiator>
-        <!-- TODO: Gone in ZKN 3.20 -->
-        {% comment %}
         <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56786</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56786</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56786</ZKN:identificatie>
                     <ZKN:achternaam>achternaam6</ZKN:achternaam>
                     <ZKN:voorletters>voorletters6</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg6</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code6</ZKN:code>
             <ZKN:omschrijving>omschrijving6</ZKN:omschrijving>
             <ZKN:toelichting>toelichting6</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -322,26 +254,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsUitvoerende>
         <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56787</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56787</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56787</ZKN:identificatie>
                     <ZKN:achternaam>achternaam22</ZKN:achternaam>
                     <ZKN:voorletters>voorletters22</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code22</ZKN:code>
             <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
             <ZKN:toelichting>toelichting22</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -351,26 +276,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsUitvoerende>
         <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56788</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56788</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56788</ZKN:identificatie>
                     <ZKN:achternaam>achternaam2</ZKN:achternaam>
                     <ZKN:voorletters>voorletters2</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg2</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code2</ZKN:code>
             <ZKN:omschrijving>omschrijving2</ZKN:omschrijving>
             <ZKN:toelichting>toelichting2</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -380,26 +298,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsVerantwoordelijke>
         <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam22</ZKN:achternaam>
                     <ZKN:voorletters>voorletters22</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code22</ZKN:code>
             <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
             <ZKN:toelichting>toelichting22</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -409,26 +320,19 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsVerantwoordelijke>
         <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56790</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56790</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56790</ZKN:identificatie>
                     <ZKN:achternaam>achternaam20</ZKN:achternaam>
                     <ZKN:voorletters>voorletters20</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg20</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Gone in ZKN 3.2
             <ZKN:code>code20</ZKN:code>
             <ZKN:omschrijving>omschrijving20</ZKN:omschrijving>
             <ZKN:toelichting>toelichting2</ZKN:toelichting>
-            -->
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -438,15 +342,11 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsOverigBetrokkene>
-
         <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
-                    <!--dit was identificatie, maar dit is vervangen door medewerkeridentificatie icm organisatie-identificatie-->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56791</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>56791</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56791</ZKN:identificatie>
                     <ZKN:achternaam>achternaam22</ZKN:achternaam>
                     <ZKN:voorletters>voorletters22</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
@@ -455,8 +355,6 @@
             <ZKN:code>code22</ZKN:code>
             <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
             <ZKN:toelichting>toelichting22</ZKN:toelichting>
-            <!-- TODO: See Taiga issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -466,8 +364,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsOverigBetrokkene>
-        {% endcomment %}
     </ZKN:object>
 </ZDS:updateZaak_ZakLk01>

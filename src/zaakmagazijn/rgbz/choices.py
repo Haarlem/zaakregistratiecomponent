@@ -194,7 +194,7 @@ class Rolomschrijving(DjangoChoices):
     behandelaar = ChoiceItem('Behandelaar', 'Behandelaar')
     belanghebbende = ChoiceItem('Belanghebbende', 'Belanghebbende')
     beslisser = ChoiceItem('Beslisser', 'Beslisser')
-    initiator = ChoiceItem('initiator', 'initiator')
+    initiator = ChoiceItem('initiator', 'Initiator')
     klantcontacter = ChoiceItem('Klantcontacter', 'Klantcontacter')
     zaakcoordinator = ChoiceItem('Zaakcoordinator', 'Zaakcoordinator')
 

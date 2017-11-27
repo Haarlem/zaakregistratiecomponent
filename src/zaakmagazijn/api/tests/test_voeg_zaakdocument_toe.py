@@ -1,6 +1,6 @@
 import base64
-import time
-from datetime import date, datetime
+from datetime import date
+from io import BytesIO
 from unittest import skipIf
 
 from django.test import override_settings
@@ -55,12 +55,14 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
         }
 
     def test_create(self):
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
+
         zaak = ZaakFactory.create(status_set__indicatie_laatst_gezette_status=JaNee.ja)
         client = self._get_client('OntvangAsynchroon')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
         today = date.today().strftime('%Y%m%d')
 
-        stuurgegevens = stuf_factory.EDC_StuurgegevensVoegZaakdocumentToeLk01(
+        stuurgegevens = stuf_factory['EDC-StuurgegevensLk01'](
             berichtcode='Lk01',
             entiteittype='EDC',
             zender=self.zender,
@@ -80,12 +82,12 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
         )
 
         response = client.service.voegZaakdocumentToe_EdcLk01(
-            parameters=stuf_factory.EDC_ParametersVoegZaakdocumentToeLk01(
+            parameters=stuf_factory['ParametersLk01'](
                 indicatorOvername='V',
                 mutatiesoort='T',
             ),
             stuurgegevens=stuurgegevens,
-            object=zkn_factory.EDC_VoegZaakdocumentToe(**{
+            object=zkn_factory['VoegZaakdocumentToe-EDC-kennisgeving'](**{
                 'entiteittype': 'EDC',
                 'verwerkingssoort': 'T',
                 'identificatie': '12345ABC',
@@ -108,10 +110,10 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
                 # ),
                 # 'tijdstipRegistratie': '',
                 # 'extraElementend': None,
-                'isRelevantVoor': [zkn_factory.EDCZAK_VoegZaakdocumentToe(
+                'isRelevantVoor': [zkn_factory['VoegZaakdocumentToe-EDCZAK-kennisgeving'](
                     entiteittype='EDCZAK',
                     verwerkingssoort='T',
-                    gerelateerde=zkn_factory.ZAK_VoegZaakdocumentToe(
+                    gerelateerde=zkn_factory['VoegZaakdocumentToe-ZAK-kerngegevensKennisgeving'](
                         entiteittype='ZAK',
                         verwerkingssoort='I',
                         identificatie=zaak.zaakidentificatie,
@@ -154,12 +156,13 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
           daarvoor gedefinieerde objectproperties. In Tabel 3 is een mapping
           aangegeven tussen de StUF-ZKN-elementen en CMIS-objectproperties.
         """
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
         zaak = ZaakFactory.create(status_set__indicatie_laatst_gezette_status=JaNee.ja)
         client = self._get_client('OntvangAsynchroon')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
         today = date.today().strftime('%Y%m%d')
 
-        stuurgegevens = stuf_factory.EDC_StuurgegevensVoegZaakdocumentToeLk01(
+        stuurgegevens = stuf_factory['EDC-StuurgegevensLk01'](
             berichtcode='Lk01',
             entiteittype='EDC',
             zender=self.zender,
@@ -174,12 +177,12 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
         )
 
         response = client.service.voegZaakdocumentToe_EdcLk01(
-            parameters=stuf_factory.EDC_ParametersVoegZaakdocumentToeLk01(
+            parameters=stuf_factory['ParametersLk01'](
                 indicatorOvername='V',
                 mutatiesoort='T',
             ),
             stuurgegevens=stuurgegevens,
-            object=zkn_factory.EDC_VoegZaakdocumentToe(**{
+            object=zkn_factory['VoegZaakdocumentToe-EDC-kennisgeving'](**{
                 'entiteittype': 'EDC',
                 'verwerkingssoort': 'T',
                 'identificatie': '12345ABC',
@@ -202,10 +205,10 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
                 # ),
                 # 'tijdstipRegistratie': '',
                 # 'extraElementend': None,
-                'isRelevantVoor': zkn_factory.EDCZAK_VoegZaakdocumentToe(
+                'isRelevantVoor': zkn_factory['VoegZaakdocumentToe-EDCZAK-kennisgeving'](
                     entiteittype='EDCZAK',
                     verwerkingssoort='T',
-                    gerelateerde=zkn_factory.ZAK_VoegZaakdocumentToe(
+                    gerelateerde=zkn_factory['VoegZaakdocumentToe-ZAK-kerngegevensKennisgeving'](
                         entiteittype='ZAK',
                         verwerkingssoort='I',
                         identificatie=zaak.zaakidentificatie,
@@ -306,11 +309,14 @@ class STPvoegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
 
         self.assertEqual(bytes, expected_bytes)
 
+        self._validate_response(response)
+
     def test_voegZaakdocumentToe_EdcLk01_01(self):
         """
         1. Verzoek voegZaakdocumentToe_EdcLk01: STP -> ZS
         2. Antwoord Bv03Bericht: ZS -> STP
         """
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
         vraag = 'voegZaakdocumentToe_EdcLk01_01.xml'
         self.context.update(
             voegzaakdocumenttoe_identificatie_1=self.genereerID(10),
@@ -325,6 +331,7 @@ class STPvoegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
         3. Verzoek voegZaakdocumentToe_EdcLk01: STP -> ZS
         4. Antwoord Bv03Bericht: ZS -> STP
         """
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
         vraag = 'voegZaakdocumentToe_EdcLk01_03.xml'
         self.context.update(
             voegzaakdocumenttoe_identificatie_3=self.genereerID(10),
@@ -339,6 +346,7 @@ class STPvoegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
         5. Verzoek voegZaakdocumentToe_EdcLk01: STP -> ZS
         6. Antwoord Bv03Bericht: ZS -> STP
         """
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
         vraag = 'voegZaakdocumentToe_EdcLk01_05.xml'
         self.context.update(
             voegzaakdocumenttoe_identificatie_5=self.genereerID(10),
@@ -353,6 +361,7 @@ class STPvoegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
         7. Verzoek voegZaakdocumentToe_EdcLk01: STP -> ZS
         8. Antwoord Bv03Bericht: ZS -> STP
         """
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
         vraag = 'voegZaakdocumentToe_EdcLk01_07.xml'
         self.context.update(
             voegzaakdocumenttoe_identificatie_7=self.genereerID(10),
@@ -367,6 +376,7 @@ class STPvoegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
         9. Verzoek voegZaakdocumentToe_EdcLk01: STP -> ZS
         10. Antwoord Bv03Bericht: ZS -> STP
         """
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
         vraag = 'voegZaakdocumentToe_EdcLk01_09.xml'
         self.context.update(
             voegzaakdocumenttoe_identificatie_9=self.genereerID(10),
@@ -409,7 +419,6 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
     disable_mocks = True
 
     def setUp(self):
-        time.sleep(2)
         self.client = CMISDMSClient()
         self.addCleanup(self._removeTree)
         # Create zaak

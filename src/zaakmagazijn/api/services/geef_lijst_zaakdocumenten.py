@@ -1,43 +1,45 @@
 from spyne import ServiceBase, rpc
 
-from zaakmagazijn.rgbz.models import (
-    InformatieObject, Zaak, ZaakInformatieObject
+from zaakmagazijn.rgbz_mapping.models import (
+    EnkelvoudigDocumentProxy, ZaakDocumentProxy, ZaakProxy
 )
 
 from ..stuf import OneToManyRelation, StUFEntiteit
-from ..stuf.models import ZAK_parametersVraagSynchroon
+from ..stuf.models import (
+    ParametersAntwoordSynchroon, ZAK_parametersVraagSynchroon
+)
 from ..zds import La01Builder, Lv01Builder
 
 
 class InformatieObjectEntiteit(StUFEntiteit):
     mnemonic = 'EDC'
-    model = InformatieObject
+    model = EnkelvoudigDocumentProxy
     field_mapping = (
-        ('identificatie', 'informatieobjectidentificatie'),
-        ('dct.omschrijving', 'informatieobjecttype__informatieobjecttypeomschrijving'),
-        ('dct.omschrijvingGeneriek', 'informatieobjecttype__informatieobjecttypeomschrijving_generiek'),
-        ('creatiedatum', 'creatiedatum'),
-        ('ontvangstdatum', 'ontvangstdatum'),
-        ('titel', 'titel'),
-        ('beschrijving', 'beschrijving'),
-        ('formaat', 'enkelvoudiginformatieobject__formaat'),
-        ('taal', 'enkelvoudiginformatieobject__taal'),
-        ('versie', 'versie'),
-        ('status', 'informatieobject_status'),
-        ('verzenddatum', 'verzenddatum'),
+        ('identificatie', 'identificatie'),
+        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('dct.omschrijvingGeneriek', 'documenttype__documenttypeomschrijving_generiek'),
+        ('creatiedatum', 'documentcreatiedatum'),
+        ('ontvangstdatum', 'documentontvangstdatum'),
+        ('titel', 'documenttitel'),
+        ('beschrijving', 'documentbeschrijving'),
+        ('formaat', 'documentformaat'),
+        ('taal', 'documenttaal'),
+        ('versie', 'documentversie'),
+        ('status', 'documentstatus'),
+        ('verzenddatum', 'documentverzenddatum'),
         ('vertrouwelijkheidAanduiding', 'vertrouwlijkaanduiding'),
-        ('auteur', 'auteur'),
-        ('link', 'enkelvoudiginformatieobject__link'),
+        ('auteur', 'documentauteur'),
+        ('link', 'documentlink'),
     )
 
 
 class ZaakInformatieObjectEntiteit(StUFEntiteit):
     mnemonic = 'ZAKEDC'
-    model = ZaakInformatieObject
+    model = ZaakDocumentProxy
     field_mapping = (
         ('registratiedatum', 'registratiedatum'),
-        ('titel', 'titel'),
-        ('beschrijving', 'beschrijving'),
+        ('titel', 'zaakdocumenttitel'),
+        ('beschrijving', 'zaakdocumentbeschrijving'),
     )
     gerelateerde = ('informatieobject', InformatieObjectEntiteit)
     fields = (
@@ -50,14 +52,15 @@ class ZaakInformatieObjectEntiteit(StUFEntiteit):
 
 class ZaakDocumentLijstEntiteit(StUFEntiteit):
     mnemonic = 'ZAK'
-    model = Zaak
+    model = ZaakProxy
     field_mapping = (
         ('identificatie', 'zaakidentificatie'),
     )
     filter_fields = ('identificatie', )
     input_parameters = ZAK_parametersVraagSynchroon
+    output_parameters = ParametersAntwoordSynchroon
     related_fields = (
-        OneToManyRelation('heeftRelevant', 'zaakinformatieobject_set', ZaakInformatieObjectEntiteit),
+        OneToManyRelation('heeftRelevant', 'zaakdocument_set', ZaakInformatieObjectEntiteit),
     )
     fields = (
         'identificatie',

@@ -1,3 +1,5 @@
+from unittest import skip
+
 from lxml import etree
 from zeep.xsd.const import Nil
 
@@ -15,27 +17,32 @@ class geefLijstZaakdocumenten_ZakLv01Tests(BaseSoapTests):
         zio = ZaakInformatieObjectFactory.create(zaak__status_set__indicatie_laatst_gezette_status=JaNee.ja)
         ZaakInformatieObjectFactory.create(zaak__status_set__indicatie_laatst_gezette_status=JaNee.ja)
 
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         response = client.service.geefLijstZaakdocumenten_ZakLv01(
-            stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefLijstZaakdocumentenLv01(
+            # http://www.egem.nl/StUF/StUF0301:ZAK-StuurgegevensLv01
+            stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                 berichtcode='Lv01',
                 entiteittype='ZAK',
             ),
-            parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+            # http://www.egem.nl/StUF/StUF0301:ZAK-parametersVraagSynchroon
+            parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                 sortering=1,
                 indicatorVervolgvraag=False
             ),
-            scope=zkn_factory.GeefLijstZaakdocumenten_vraagScope(
-                object=zkn_factory.GeefLijstZaakdocumenten_ZAK_vraagScope(
+            scope={
+                # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstZaakDocumenten-ZAK-vraagScope
+                'object': zkn_factory['GeefLijstZaakDocumenten-ZAK-vraagScope'](
                     entiteittype='ZAK',
                     identificatie=Nil,
-                    heeftRelevant=zkn_factory.GeefLijstZaakdocumenten_ZAKEDC_vraagScope(**{
+                    # http://www.egem.nl/StUF/sector/zkn/0310:ZAKEDC-basis
+                    heeftRelevant=zkn_factory['ZAKEDC-basis'](**{
                         'entiteittype': 'EDC',
                         'titel': Nil,
                         'beschrijving': Nil,
-                        'gerelateerde': zkn_factory.GeefLijstZaakdocumenten_EDC_vraagScope(**{
+                        # http://www.egem.nl/StUF/sector/zkn/0310:EDC-basis
+                        'gerelateerde': zkn_factory['EDC-basis'](**{
                             'identificatie': Nil,
                             'creatiedatum': Nil,
                             'titel': Nil,
@@ -43,15 +50,16 @@ class geefLijstZaakdocumenten_ZakLv01Tests(BaseSoapTests):
                         }),
                     })
                 )
-            ),
-            gelijk=zkn_factory.GeefLijstZaakdocumenten_ZAK_vraagSelectie(
+            },
+            # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstZaakDocumenten-ZAK-vraagSelectie
+            gelijk=zkn_factory['GeefLijstZaakDocumenten-ZAK-vraagSelectie'](
                 identificatie=zio.zaak.zaakidentificatie,
             )
         )
         self.assertEquals(len(response.antwoord.object), 1)
         self.assertEquals(len(response.antwoord.object[0].heeftRelevant), 1)
 
-    # TODO: test_scope
+    # TODO [TECH]: test_scope
 
 
 class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
@@ -67,28 +75,28 @@ class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
         """
         Do a simple SOAP request.
         """
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         with client.options(raw_response=raw_response):
             return client.service.geefLijstZaakdocumenten_ZakLv01(
-                stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefLijstZaakdocumentenLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='ZAK',
                 ),
-                parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False
                 ),
-                scope=zkn_factory.GeefLijstZaakdocumenten_vraagScope(
-                    object=zkn_factory.GeefLijstZaakdocumenten_ZAK_vraagScope(
+                scope={
+                    'object': zkn_factory['GeefLijstZaakDocumenten-ZAK-vraagScope'](
                         entiteittype='ZAK',
                         identificatie=Nil,
-                        heeftRelevant=zkn_factory.GeefLijstZaakdocumenten_ZAKEDC_vraagScope(**{
+                        heeftRelevant=zkn_factory['ZAKEDC-basis'](**{
                             'entiteittype': 'ZAKEDC',
                             'titel': Nil,
                             'beschrijving': Nil,
-                            'gerelateerde': zkn_factory.GeefLijstZaakdocumenten_EDC_vraagScope(**{
+                            'gerelateerde': zkn_factory['EDC-basis'](**{
                                 'identificatie': Nil,
                                 'creatiedatum': Nil,
                                 'titel': Nil,
@@ -97,8 +105,8 @@ class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
                         }
                         )
                     )
-                ),
-                gelijk=zkn_factory.GeefLijstZaakdocumenten_ZAK_vraagSelectie(
+                },
+                gelijk=zkn_factory['GeefLijstZaakDocumenten-ZAK-vraagSelectie'](
                     identificatie=self.zio.zaak.zaakidentificatie,
                 )
             )
@@ -109,16 +117,11 @@ class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
         """
         result = self._do_simple_request(raw_response=True)
         root = etree.fromstring(result.content)
-        self.assertEquals(
-            set(root.nsmap.values()),
-            {
-                'http://www.egem.nl/StUF/sector/zkn/0310',
-                'http://www.egem.nl/StUF/StUF0301',
-                'http://www.stufstandaarden.nl/koppelvlak/zds0120',
-                'http://schemas.xmlsoap.org/soap/envelope/',
-                'http://www.w3.org/2001/XMLSchema-instance'
-            }
-        )
+        namespaces = {ns for el in root.iterdescendants() for ns in el.nsmap.values()}
+
+        self.assertIn('http://www.egem.nl/StUF/sector/zkn/0310', namespaces)
+        self.assertIn('http://www.egem.nl/StUF/StUF0301', namespaces)
+        self.assertIn('http://www.stufstandaarden.nl/koppelvlak/zds0120', namespaces)
 
     def test_root_element(self):
         """
@@ -178,7 +181,7 @@ class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
 
 
 class MaykingeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
-    porttype = 'Beantwoordvraag'
+    porttype = 'BeantwoordVraag'
     maxDiff = None
     test_files_subfolder = 'maykin_geefLijstZaakdocumenten'
 
@@ -205,7 +208,7 @@ class MaykingeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
 
 
 class STPgeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
-    porttype = 'Beantwoordvraag'
+    porttype = 'BeantwoordVraag'
     maxDiff = None
     test_files_subfolder = 'stp_geefLijstZaakdocumenten'
 
@@ -256,11 +259,12 @@ class STPgeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
 
         note: scope="alles"
         """
-        vraag = 'geefLijstZaakdocumenten_ZakLv01_01.xml'
+        vraag = 'geefLijstZaakdocumenten_ZakLv01_01.orig.xml'
         context = {
-            'zaakidentificatie': self.zaak.zaakidentificatie,
+            'gemeentecode': '',
+            'creerzaak_identificatie_7': self.zaak.zaakidentificatie,
         }
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
 
         self._test_response(response)
 
@@ -286,24 +290,27 @@ class STPgeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
 
         note: scope="allesZonderMetagegevensMaarKerngegevensGerelateerden"
         """
-        vraag = 'geefLijstZaakdocumenten_ZakLv01_03.xml'
+        vraag = 'geefLijstZaakdocumenten_ZakLv01_03.orig.xml'
         context = {
-            'zaakidentificatie': self.zaak.zaakidentificatie,
+            'gemeentecode': '',
+            'creerzaak_identificatie_7': self.zaak.zaakidentificatie,
         }
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
 
         self._test_response(response)
 
+    @skip('[KING] Taiga #240 Scope elementen hoeven blijkbaar niet expliciet Nil te zijn om als scope te worden gezien.')
     def test_geefLijstZaakdocumenten_ZakLv01_05(self):
         """
         5. Verzoek geefLijstZaakdocumenten_ZakLv01_05: STP -> ZS
         6. Antwoord geefLijstZaakdocumenten_ZakLa01_06: ZS -> STP
         """
-        vraag = 'geefLijstZaakdocumenten_ZakLv01_05.xml'
+        vraag = 'geefLijstZaakdocumenten_ZakLv01_05.orig.xml'
         context = {
-            'zaakidentificatie': self.zaak.zaakidentificatie,
+            'gemeentecode': '',
+            'creerzaak_identificatie_7': self.zaak.zaakidentificatie,
         }
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
 
         self._test_response(response)
 
@@ -312,11 +319,12 @@ class STPgeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
         7. Verzoek geefLijstZaakdocumenten_ZakLv01_07: STP -> ZS
         8. Antwoord geefLijstZaakdocumenten_ZakLa01_08: ZS -> STP
         """
-        vraag = 'geefLijstZaakdocumenten_ZakLv01_07.xml'
+        vraag = 'geefLijstZaakdocumenten_ZakLv01_07.orig.xml'
         context = {
-            'zaakidentificatie': self.zaak.zaakidentificatie,
+            'gemeentecode': '',
+            'creerzaak_identificatie_7': self.zaak.zaakidentificatie,
         }
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
 
         self._test_response(response)
 
@@ -325,10 +333,12 @@ class STPgeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
         9. Verzoek geefLijstZaakdocumenten_ZakLv01_09: STP -> ZS
         10. Antwoord geefLijstZaakdocumenten_ZakLa01_10: ZS -> STP
         """
-        vraag = 'geefLijstZaakdocumenten_ZakLv01_09.xml'
+        vraag = 'geefLijstZaakdocumenten_ZakLv01_09.orig.xml'
         context = {
-            'zaakidentificatie': self.zaak.zaakidentificatie,
+            'gemeentecode': '',
+            'creerzaak_identificatie_9': self.zaak.zaakidentificatie,
+
         }
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
 
         self._test_response(response)

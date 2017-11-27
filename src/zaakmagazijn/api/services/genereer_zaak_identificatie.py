@@ -4,7 +4,6 @@ from django.utils.module_loading import import_string
 from spyne import ServiceBase, rpc
 
 from ...rgbz.models import Zaak
-from ..utils import create_unique_id
 from ..zds.vrijeberichten import (
     GenereerIdentificatieInputBuilder, GenereerIdentificatieOutputBuilder
 )

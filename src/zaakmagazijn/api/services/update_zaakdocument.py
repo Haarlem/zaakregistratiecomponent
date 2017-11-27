@@ -16,9 +16,9 @@ from ..stuf.models import Bv02Bericht, Systeem
 from ..utils import create_unique_id
 from ..zds import Lk02Builder
 from ..zds.kennisgevingsberichten import process_update
-from .voeg_zaakdocument_toe import InformatieObjectEntiteit
+from .voeg_zaakdocument_toe import EnkelvoudigDocumentEntiteit
 
-input_builder_edc_lk02 = Lk02Builder(InformatieObjectEntiteit, 'updateZaakdocument', update=True)
+input_builder_edc_lk02 = Lk02Builder(EnkelvoudigDocumentEntiteit, 'updateZaakdocument', update=True)
 
 
 class Di02_Stuurgegevens_uzd(ComplexModel):
@@ -106,7 +106,7 @@ class UpdateZaakdocument(ServiceBase):
         #   gemuteerd bij het object met juiste documentidentificatie;
         # * Er wordt rekening gehouden met de regels voor minimaal vereiste
         #   metadata bij een EDC.
-        process_update(InformatieObjectEntiteit, data.edcLk02)
+        process_update(EnkelvoudigDocumentEntiteit, data.edcLk02)
         identificatie = data.edcLk02.object[0].identificatie
         inhoud = data.edcLk02.object[0].inhoud
 

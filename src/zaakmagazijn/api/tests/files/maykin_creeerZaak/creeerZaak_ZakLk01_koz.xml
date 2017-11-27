@@ -25,15 +25,18 @@
     </ZKN:parameters>
     <ZKN:object StUF:verwerkingssoort="T" StUF:entiteittype="ZAK">
         <ZKN:identificatie>{{genereerzaakident_identificatie_2}}</ZKN:identificatie>
-        <ZKN:bronorganisatie>1</ZKN:bronorganisatie>
-        <ZKN:archiefstatus>Gearchiveerd</ZKN:archiefstatus>
-        <ZKN:verantwoordelijkeOrganisatie>1</ZKN:verantwoordelijkeOrganisatie>
         <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
         <ZKN:startdatum>{{datumVandaag}}</ZKN:startdatum>
         <ZKN:registratiedatum>{{datumVandaag}}</ZKN:registratiedatum>
-        <ZKN:zkt.omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:zkt.omschrijving>
-        <ZKN:zkt.identificatie>{{zds_zaaktype_code}}</ZKN:zkt.identificatie>
-
+        <ZKN:zaakniveau>1</ZKN:zaakniveau>
+        <ZKN:deelzakenIndicatie>J</ZKN:deelzakenIndicatie>
+        <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="T">
+            <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
+                <ZKN:omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:omschrijving>
+                <ZKN:code>{{zds_zaaktype_code}}</ZKN:code>
+                <ZKN:ingangsdatumObject>{{datumVandaag}}</ZKN:ingangsdatumObject>
+            </ZKN:gerelateerde>
+        </ZKN:isVan>
         <ZKN:heeftBetrekkingOp StUF:verwerkingssoort="T" StUF:entiteittype="ZAKOBJ">
             <ZKN:gerelateerde>
                 <ZKN:kadastraleOnroerendeZaak StUF:entiteittype="KOZ" StUF:verwerkingssoort="T">
@@ -44,7 +47,6 @@
                         <BG:kadastraalPerceelnummer>{{ kadastraal_perceelnummer }}</BG:kadastraalPerceelnummer>
                         <BG:apr.appartementsIndex>{{ apr_appartements_index }}</BG:apr.appartementsIndex>
                     </BG:kadastraleAanduiding>
-                    <BG:ingangsdatumObject>{{ ingangsdatum_object }}</BG:ingangsdatumObject>
                 </ZKN:kadastraleOnroerendeZaak>
             </ZKN:gerelateerde>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
@@ -53,16 +55,9 @@
         <ZKN:heeftAlsInitiator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRINI">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>56789</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
         </ZKN:heeftAlsInitiator>
-        <ZKN:heeftAlsZaakcoordinator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRZKC">
-            <ZKN:gerelateerde>
-                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
-                </ZKN:medewerker>
-            </ZKN:gerelateerde>
-        </ZKN:heeftAlsZaakcoordinator>
     </ZKN:object>
 </ZDS:creeerZaak_ZakLk01>

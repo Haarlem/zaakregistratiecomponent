@@ -1,6 +1,5 @@
 import decimal
 
-from django.conf import settings
 from django.db import transaction
 
 from spyne import ComplexModel, ServiceBase, Unicode, rpc
@@ -8,16 +7,13 @@ from spyne import ComplexModel, ServiceBase, Unicode, rpc
 from ...rgbz.models import (
     Besluit, BesluitInformatieObject, BesluitType, InformatieObject, Zaak
 )
-from ...utils import stuf_datetime
 from ..stuf import simple_types
 from ..stuf.attributes import entiteittype, noValue, verwerkingssoort
-from ..stuf.choices import (
-    BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
-)
+from ..stuf.choices import ClientFoutChoices, ServerFoutChoices
 from ..stuf.constants import STUF_XML_NS, ZKN_XML_NS
 from ..stuf.faults import StUFFault
 from ..stuf.models import Bv03Bericht, Systeem, Tijdstip_e, TijdvakGeldigheid
-from ..utils import create_unique_id
+from ..stuf.utils import get_bv03_stuurgegevens
 
 
 class VoegBesluitToe_EDC_kerngegevensKennisgeving(ComplexModel):
@@ -146,7 +142,7 @@ class VoegBesluitToe(ServiceBase):
 
     Zie: ZDS 1.2, paragraaf 4.1.7
     """
-    @rpc(Di01_VoegBesluitToe, _body_style="bare", _out_message_name="Bv03Bericht", _returns=Bv03Bericht)
+    @rpc(Di01_VoegBesluitToe, _body_style="bare", _out_message_name="{http://www.egem.nl/StUF/StUF0301}Bv03Bericht", _returns=Bv03Bericht)
     def voegBesluitToe_Di01(ctx, data):
         """
         In een Zaak is een besluit genomen welke moet worden vastgelegd.
@@ -176,8 +172,9 @@ class VoegBesluitToe(ServiceBase):
             raise StUFFault(ServerFoutChoices.stuf064)
 
         if Besluit.objects.filter(identificatie=besluit.identificatie).exists():
-            raise StUFFault(BerichtcodeChoices.fo03, ServerFoutChoices.stuf046)
+            raise StUFFault(ServerFoutChoices.stuf046)
 
+        # TODO [TECH]: Why are theses referenced, but unused?
         try:
             datum_begin = besluit.tijdvakGeldigheid.beginGeldigheid.data
         except AttributeError:
@@ -199,7 +196,7 @@ class VoegBesluitToe(ServiceBase):
                 publicatiedatum=besluit.datumPublicatie,
                 verzenddatum=besluit.datumVerzending,
                 uiterlijke_reactiedatum=besluit.datumUiterlijkeReactie,
-                # TODO: [KING] Taiga #210 (BSL) Element "tijdstipRegistratie" in "voegBesluitToe" ontbreekt in RGBZ
+                # TODO [KING]: Taiga #210 (BSL) Element "tijdstipRegistratie" in "voegBesluitToe" ontbreekt in RGBZ
                 # ???=besluit.tijdstipRegistratie,
                 zaak=zaken_objs[0],
                 besluittype=besluit_type,
@@ -216,11 +213,5 @@ class VoegBesluitToe(ServiceBase):
                     )
 
         return {
-            'stuurgegevens': {
-                'berichtcode': BerichtcodeChoices.bv03,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': data.stuurgegevens.zender,
-                'referentienummer': create_unique_id(),
-                'tijdstipBericht': stuf_datetime.now(),
-            },
+            'stuurgegevens': get_bv03_stuurgegevens(data),
         }

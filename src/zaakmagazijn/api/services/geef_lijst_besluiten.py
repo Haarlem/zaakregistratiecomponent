@@ -3,7 +3,9 @@ from spyne import ServiceBase, rpc
 from zaakmagazijn.rgbz.models import Besluit, Zaak
 
 from ..stuf import OneToManyRelation, StUFEntiteit
-from ..stuf.models import ZAK_parametersVraagSynchroon
+from ..stuf.models import (
+    ParametersAntwoordSynchroon, ZAK_parametersVraagSynchroon
+)
 from ..zds import La01Builder, Lv01Builder
 
 # class BesluitTypeEntiteit(StUFEntiteit):
@@ -29,7 +31,7 @@ class BesluitEntiteit(StUFEntiteit):
         ('datumPublicatie', 'publicatiedatum'),  # o
         ('datumVerzending', 'verzenddatum'),  # o
         ('datumUiterlijkeReactie', 'uiterlijke_reactiedatum'),  # o
-        # TODO: [KING] Taiga #230
+        # TODO [KING]: Taiga #230
         ('tijdstipRegistratie', 'tijdstip_registratie'),  # o
     )
     # filter_fields = ('identificatie', )
@@ -52,6 +54,7 @@ class BesluitLijstEntiteit(StUFEntiteit):
     )
     filter_fields = ('identificatie', )
     input_parameters = ZAK_parametersVraagSynchroon
+    output_parameters = ParametersAntwoordSynchroon
     related_fields = (
         OneToManyRelation('leidtTot', 'besluit_set', ZAKBSLEntiteit),
     )

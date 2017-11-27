@@ -1,0 +1,42 @@
+<ZDS:geefLijstZaakdocumenten_ZakLa01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>La01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>ZAK</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:indicatorVervolgvraag>true</StUF:indicatorVervolgvraag>
+    </ZKN:parameters>
+    <ZKN:antwoord>
+        <ZKN:object StUF:entiteittype="ZAK">
+            <ZKN:identificatie>${creerzaak_identificatie_7}</ZKN:identificatie>
+            <ZKN:heeftRelevant StUF:entiteittype="ZAKEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${creerzaak_identificatie_7}</ZKN:identificatie>
+                    <ZKN:auteur xsi:nil="true"/>
+                </ZKN:gerelateerde>
+                <ZKN:titel/>
+                <ZKN:registratiedatum xsi:nil="true"/>
+            </ZKN:heeftRelevant>
+            <ZKN:heeftRelevant StUF:entiteittype="ZAKEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${voegzaakdocumenttoe_identificatie_3}</ZKN:identificatie>
+                    <ZKN:auteur xsi:nil="true"/>
+                </ZKN:gerelateerde>
+                <ZKN:titel/>
+                <ZKN:registratiedatum xsi:nil="true"/>
+            </ZKN:heeftRelevant>
+        </ZKN:object>
+    </ZKN:antwoord>
+</ZDS:geefLijstZaakdocumenten_ZakLa01>

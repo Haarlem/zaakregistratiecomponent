@@ -25,12 +25,6 @@
     </ZKN:parameters>
     <ZKN:object StUF:verwerkingssoort="T" StUF:entiteittype="ZAK">
         <ZKN:identificatie>{{ gemeentecode }}{{ genereerzaakident_identificatie_4 }}</ZKN:identificatie>
-
-        <!-- TODO These fields do not exist in ZDS 1.201, but do exist in RGBZ 2.0 -->
-        <ZKN:bronorganisatie>1</ZKN:bronorganisatie>
-        <ZKN:archiefstatus>Gearchiveerd</ZKN:archiefstatus>
-        <ZKN:verantwoordelijkeOrganisatie>1</ZKN:verantwoordelijkeOrganisatie>
-
         <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
         <ZKN:toelichting>toelichting</ZKN:toelichting>
         <ZKN:kenmerk>
@@ -319,18 +313,15 @@
             </ZKN:lokatie>
             <ZKN:registratie>registratie</ZKN:registratie>
         </ZKN:anderZaakObject>
-        <!-- TODO: resultaat has been changed in ZKN 3.2 -->
-        <!--
         <ZKN:resultaat>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
         </ZKN:resultaat>
-        -->
         <ZKN:startdatum>{{ datumVandaag }}</ZKN:startdatum>
         <ZKN:registratiedatum>{{ datumVandaag }}</ZKN:registratiedatum>
         <ZKN:publicatiedatum>{{ datumVandaag }}</ZKN:publicatiedatum>
         <ZKN:einddatumGepland>{{ datumVandaag }}</ZKN:einddatumGepland>
-        <ZKN:uiterlijkeEinddatumAfdoening>{{ datumVandaag }}</ZKN:uiterlijkeEinddatumAfdoening>
+        <ZKN:uiterlijkeEinddatum>{{ datumVandaag }}</ZKN:uiterlijkeEinddatum>
         <ZKN:einddatum>{{ datumVandaag }}</ZKN:einddatum>
         <ZKN:opschorting>
             <ZKN:indicatie>N</ZKN:indicatie>
@@ -342,28 +333,15 @@
         </ZKN:verlenging>
         <ZKN:betalingsIndicatie>(Nog) niet</ZKN:betalingsIndicatie>
         <ZKN:laatsteBetaaldatum>{{ datumVandaag }}</ZKN:laatsteBetaaldatum>
-        <!-- TODO: The value set has been changed in RGBZ 2.0 -->
-        <!--
         <ZKN:archiefnominatie>N</ZKN:archiefnominatie>
-        -->
-        <ZKN:archiefnominatie>Vernietigen</ZKN:archiefnominatie>
-        <!-- TODO: These are not part of RGBZ 2.0 -->
-        <!--
         <ZKN:datumVernietigingDossier>{{ datumVandaag }}</ZKN:datumVernietigingDossier>
         <ZKN:zaakniveau>1</ZKN:zaakniveau>
         <ZKN:deelzakenIndicatie>N</ZKN:deelzakenIndicatie>
-        -->
-        <!-- TODO: See Taiga Issue #150 -->
-        <!--
         <StUF:tijdvakGeldigheid>
             <StUF:beginGeldigheid>{{ datumEergisteren }}</StUF:beginGeldigheid>
             <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
         </StUF:tijdvakGeldigheid>
         <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-        -->
-        <!-- TODO In ZKN 3.2 'isVan' is flattened ('platgeslagen') isVan relatie-entiteit
-             has been replaced. -->
-        <!--
         <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
                 <ZKN:omschrijving>{{ zds_zaaktype_omschrijving }}</ZKN:omschrijving>
@@ -371,37 +349,26 @@
                 <ZKN:ingangsdatumObject>{{ datumVandaag }}</ZKN:ingangsdatumObject>
             </ZKN:gerelateerde>
         </ZKN:isVan>
-        -->
-        <ZKN:zkt.omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:zkt.omschrijving>
-        <ZKN:zkt.identificatie>{{zds_zaaktype_code}}</ZKN:zkt.identificatie>
         <ZKN:heeftBetrekkingOp StUF:verwerkingssoort="T" StUF:entiteittype="ZAKOBJ">
             <ZKN:gerelateerde>
                 <ZKN:adres StUF:entiteittype="AOA" StUF:verwerkingssoort="T">
                     <BG:identificatie>0123456789101112</BG:identificatie>
-                    <!--
                     <BG:authentiek StUF:metagegeven="true">N</BG:authentiek>
-                    -->
                     <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
                     <BG:gor.openbareRuimteNaam>openbareRuimteNaam</BG:gor.openbareRuimteNaam>
                     <BG:huisnummer>99999</BG:huisnummer>
                     <BG:huisletter>A</BG:huisletter>
                     <BG:huisnummertoevoeging/>
-                    <!--
                     <BG:postcode>1000</BG:postcode>
-                    -->
                 </ZKN:adres>
             </ZKN:gerelateerde>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakRelatie>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftBetrekkingOp>
-        {% comment %}
         <ZKN:heeftBetrekkingOp StUF:verwerkingssoort="T" StUF:entiteittype="ZAKOBJ">
             <ZKN:gerelateerde>
                 <ZKN:adres StUF:entiteittype="AOA" StUF:verwerkingssoort="T">
@@ -416,63 +383,32 @@
                 </ZKN:adres>
             </ZKN:gerelateerde>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakRelatie>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftBetrekkingOp>
-        {% endcomment %}
         <ZKN:heeftAlsBelanghebbende StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRBLH">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <!-- ORGANISATORISCHE EENHEID HEEFT KARDINALITEIT 1, MAAR IS NIET
-                    VERPLICHT hoortBij in XSD-->
-                    <!-- This what is was in RGBZ 1.0 -->
-                    <!--
                     <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
-                    -->
-                    <!-- This what it is (almost) in RGBZ 2.0 -->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>11111</ZKN:medewerkeridentificatie>
-                    <ZKN:achternaam>{{ gemeentecode }}56789</ZKN:achternaam>
-                    <ZKN:voorletters>voorletters</ZKN:voorletters>
-                    <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
-                    <ZKN:geslachtsaanduiding>O</ZKN:geslachtsaanduiding>
-                    <!-- TODO: This is required in RGBZ 2.0, but not in ZKN 3.2 -->
-                    <ZKN:functie>functie</ZKN:functie>
-                    <ZKN:roepnaam>roepnaam</ZKN:roepnaam>
-
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- TODO Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-
-            <!-- TODO: [TECH] Taiga #247 afwijkendCorrespondentieAdres ontbreekt op creeerZaak maar staat wel in ZDS 1.2. -->
-            <!-- Partially related: Taiga #159 -->
             <ZKN:afwijkendCorrespondentieAdres>
-                <!--
                 <BG:typering>Aanschrijvingsadres</BG:typering>
-                -->
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
-                <!--
                 <BG:aoa.woonplaatsWaarinGelegen>
                     <BG:wpl.identificatie>9999</BG:wpl.identificatie>
                     <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
                 </BG:aoa.woonplaatsWaarinGelegen>
-                -->
                 <BG:postcode>1000</BG:postcode>
-                <!--
                 <BG:aoa.identificatie>0123456789101112</BG:aoa.identificatie>
                 <BG:authentiek StUF:metagegeven="true">N</BG:authentiek>
                 <BG:wpl.identificatie>9999</BG:wpl.identificatie>
@@ -491,10 +427,7 @@
                 <BG:aoa.huisnummer>99999</BG:aoa.huisnummer>
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
-                -->
             </ZKN:afwijkendCorrespondentieAdres>
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -504,9 +437,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
-            {% comment %}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRBLHCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -538,59 +468,32 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
-                    <StUF:tijdvakRelatie>
-                        <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
-                        <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
-                    </StUF:tijdvakRelatie>
-                -->
+                <StUF:tijdvakRelatie>
+                    <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
+                    <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+                </StUF:tijdvakRelatie>
             </ZKN:heeftAlsAanspreekpunt>
-            {% endcomment %}
         </ZKN:heeftAlsBelanghebbende>
         <ZKN:heeftAlsBelanghebbende StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRBLH">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <!-- ORGANISATORISCHE EENHEID HEEFT KARDINALITEIT 1, MAAR IS NIET
-                    VERPLICHT hoortBij in XSD-->
-                    <!-- This what is was in RGBZ 1.0 -->
-                    <!--
                     <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
-                    -->
-                    <!-- This what it is (almost) in RGBZ 2.0 -->
-                    <!--<ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>-->
-                    <ZKN:medewerkeridentificatie>22222</ZKN:medewerkeridentificatie>
-                    <ZKN:achternaam>{{ gemeentecode }}56789</ZKN:achternaam>
-                    <ZKN:voorletters>voorletters</ZKN:voorletters>
-                    <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
-                    <ZKN:geslachtsaanduiding>O</ZKN:geslachtsaanduiding>
-                    <!-- TODO: This is required in RGBZ 2.0, but not in ZKN 3.2 -->
-                    <ZKN:functie>functie</ZKN:functie>
-                    <ZKN:roepnaam>roepnaam</ZKN:roepnaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
             <ZKN:afwijkendCorrespondentieAdres>
-            <!--
                 <BG:typering>Postadres</BG:typering>
-            -->
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
-            <!--
                 <BG:aoa.woonplaatsWaarinGelegen>
                     <BG:wpl.identificatie>9999</BG:wpl.identificatie>
                     <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
                 </BG:aoa.woonplaatsWaarinGelegen>
-            -->
                 <BG:postcode>1000</BG:postcode>
-            <!--
                 <BG:aoa.identificatie>0123456789101112</BG:aoa.identificatie>
                 <BG:authentiek StUF:metagegeven="true">N</BG:authentiek>
                 <BG:wpl.identificatie>9999</BG:wpl.identificatie>
@@ -609,10 +512,7 @@
                 <BG:aoa.huisnummer>99999</BG:aoa.huisnummer>
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
-            -->
             </ZKN:afwijkendCorrespondentieAdres>
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -622,9 +522,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
-            {% comment %}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRBLHCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -656,35 +553,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
-            {% endcomment %}
         </ZKN:heeftAlsBelanghebbende>
-        {# heeftAlsGemachtigde is gone in RGBZ 2.0 #}
-        {% comment %}
         <ZKN:heeftAlsGemachtigde StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRGMC">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>33333</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Aanschrijvingsadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -712,9 +598,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -724,8 +607,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRGMCCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -757,32 +638,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsGemachtigde>
         <ZKN:heeftAlsGemachtigde StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRGMC">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>44444</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Aanschrijvingsadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -810,9 +683,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -822,8 +692,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRGMCCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -855,29 +723,21 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsGemachtigde>
-        {% endcomment %}
         <ZKN:heeftAlsInitiator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRINI">
             <ZKN:gerelateerde>
                 <ZKN:organisatorischeEenheid StUF:verwerkingssoort="T" StUF:entiteittype="OEH">
-                    <ZKN:identificatie>1234987654</ZKN:identificatie>
+                    <ZKN:identificatie>organisatorischeEenheid</ZKN:identificatie>
                     <ZKN:naam>Naam</ZKN:naam>
-                    {% comment %}
-                    <!-- TODO: See Taiga issue #246 matchgegevens for VZO are missing in. -->
                     <ZKN:isGehuisvestIn StUF:verwerkingssoort="T" StUF:entiteittype="OEHVZO">
                         <ZKN:gerelateerde StUF:entiteittype="VZO" StUF:verwerkingssoort="T">
                             <ZKN:isEen StUF:entiteittype="VZOVES" StUF:verwerkingssoort="T">
                                 <ZKN:gerelateerde StUF:verwerkingssoort="T" StUF:entiteittype="VES">
-                                    <BG:naam>012345678910</BG:naam>
-                                    <BG:vestigingsnummer>012345678910</BG:vestigingsnummer>
                                     <BG:vestigingsNummer>012345678910</BG:vestigingsNummer>
                                     <BG:authentiek StUF:metagegeven="true">J</BG:authentiek>
                                     <BG:handelsnaam>handelsnaam</BG:handelsnaam>
@@ -897,18 +757,11 @@
                             </ZKN:isEen>
                         </ZKN:gerelateerde>
                     </ZKN:isGehuisvestIn>
-                    {% endcomment %}
                 </ZKN:organisatorischeEenheid>
             </ZKN:gerelateerde>
-        {% comment %}
-            <!-- TODO: Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See Taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Postadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -936,9 +789,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -948,10 +798,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-        {% endcomment %}
-            {# Missing in RGBZ 2.0 #}
-        {% comment %}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRINICTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -983,43 +829,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
-        {% endcomment %}
         </ZKN:heeftAlsInitiator>
-        <!-- Note: heeftAlsZaakcoordinator is new in ZKN 3.2 and is required-->
-        <ZKN:heeftAlsZaakcoordinator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRZKC">
-            <ZKN:gerelateerde>
-                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
-                </ZKN:medewerker>
-            </ZKN:gerelateerde>
-        </ZKN:heeftAlsZaakcoordinator>
-        {# heeftAlsUitvoerende, heeftAlsVerantwoordelijke and heeftAlsOverigBetrokkene are gone in RGBZ 2.0 #}
-        {% comment %}
         <ZKN:heeftAlsUitvoerende StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRUTV">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>66666</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Postadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -1047,9 +874,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -1059,8 +883,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRUTVCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -1092,32 +914,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsUitvoerende>
         <ZKN:heeftAlsUitvoerende StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRUTV">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>77777</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Postadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -1145,9 +959,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -1157,8 +968,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRUTVCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -1190,32 +999,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsUitvoerende>
         <ZKN:heeftAlsVerantwoordelijke StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRVRA">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>88888</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Postadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -1243,9 +1044,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -1255,8 +1053,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRVRACTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -1288,32 +1084,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsVerantwoordelijke>
         <ZKN:heeftAlsVerantwoordelijke StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRVRA">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>99999</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Postadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -1341,9 +1129,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -1353,8 +1138,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTRVRACTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -1386,32 +1169,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsVerantwoordelijke>
         <ZKN:heeftAlsOverigBetrokkene StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTROVR">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>101010</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Postadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -1439,9 +1214,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -1451,8 +1223,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
-            {# Missing in RGBZ 2.0 #}
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTROVRCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -1484,32 +1254,24 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsOverigBetrokkene>
         <ZKN:heeftAlsOverigBetrokkene StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTROVR">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>121212</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
                     <ZKN:achternaam>achternaam</ZKN:achternaam>
                     <ZKN:voorletters>voorletters</ZKN:voorletters>
                     <ZKN:voorvoegselAchternaam>voorvoeg</ZKN:voorvoegselAchternaam>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- Missing in RGBZ 2.0 -->
-            <!--
             <ZKN:code>code</ZKN:code>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
             <ZKN:toelichting>toelichting</ZKN:toelichting>
-            -->
-            <!-- See taiga issue #159 -->
-            <!--
             <ZKN:afwijkendCorrespondentieAdres>
                 <BG:typering>Aanschrijvingsadres</BG:typering>
                 <BG:wpl.woonplaatsNaam>woonplaatsNaam</BG:wpl.woonplaatsNaam>
@@ -1537,9 +1299,6 @@
                 <BG:aoa.huisletter>A</BG:aoa.huisletter>
                 <BG:aoa.huisnummertoevoeging/>
             </ZKN:afwijkendCorrespondentieAdres>
-            -->
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -1549,7 +1308,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
             <ZKN:heeftAlsAanspreekpunt StUF:entiteittype="ZAKBTROVRCTP" StUF:verwerkingssoort="T">
                 <ZKN:gerelateerde StUF:entiteittype="CTP" StUF:verwerkingssoort="T">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>
@@ -1581,15 +1339,11 @@
                         </ZKN:gerelateerde>
                     </ZKN:isAanspreekpuntNamens>
                 </ZKN:gerelateerde>
-                <!-- TODO: See Taiga Issue #150 -->
-                <!--
                 <StUF:tijdvakRelatie>
                     <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                     <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
                 </StUF:tijdvakRelatie>
-                -->
             </ZKN:heeftAlsAanspreekpunt>
         </ZKN:heeftAlsOverigBetrokkene>
-        {% endcomment %}
     </ZKN:object>
 </ZDS:creeerZaak_ZakLk01>

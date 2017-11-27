@@ -1,9 +1,9 @@
 from django.core.validators import (
-    MaxLengthValidator, MaxValueValidator, MinLengthValidator,
-    MinValueValidator
+    MaxLengthValidator, MaxValueValidator, MinLengthValidator
 )
 from django.db import models
 
+from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.fields import StUFDateField
 
 from ...rsgb.choices import TyperingOpenbareRuimte
@@ -78,7 +78,9 @@ class AppartementsRechtObject(ObjectMixin, Object):
     """
     kadastrale_identificatie = models.ForeignKey(
         'rsgb.CompositeID', help_text='De unieke aanduiding van een onroerende zaak, die door het kadaster wordt vastgesteld.')
-    datum_begin_geldigheid_kadastrale_onroerende_zaak = StUFDateField()
+    datum_begin_geldigheid_kadastrale_onroerende_zaak = StUFDateField(
+        default=stuf_datetime.today,
+    )
     datum_einde_geldigheid_kadastrale_onroerende_zaak = StUFDateField(null=True, blank=True)
 
     @property
@@ -104,6 +106,7 @@ class BuurtObject(ObjectMixin, Object):
         max_length=40, help_text='De naam van de buurt, zoals die door het CBS wordt gebruikt.')
 
     datum_begin_geldigheid_buurt = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de buurt is gecreëerd.'
     )
     datum_einde_geldigheid_buurt = StUFDateField(
@@ -139,6 +142,7 @@ class GemeenteObject(ObjectMixin, Object):
     gemeentenaam = models.CharField(
         max_length=80, help_text='De officiële door de gemeente vastgestelde gemeentenaam.')
     datum_begin_geldigheid_gemeente = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de gemeente is ontstaan')
     datum_einde_geldigheid_gemeente = StUFDateField(
         null=True, blank=True, help_text='De datum waarop de gemeente is opgeheven.')
@@ -178,6 +182,7 @@ class GemeentelijkeOpenbareRuimteObject(ExtraValidatorsMixin, ObjectMixin, Objec
         help_text='De aard van de als zodanig benoemde OPENBARERUIMTE.'
     )
     datum_begin_geldigheid_gemeentelijke_openbare_ruimte = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de OPENBARE RUIMTE formeel is benoemd.'
     )
     datum_einde_geldigheid_gemeentelijke_openbare_ruimte = StUFDateField(
@@ -207,12 +212,11 @@ class HuishoudenObject(AdresBaseClass, ObjectMixin, Object):
     huishoudensoort = models.CharField(
         max_length=2, choices=Huishoudensoort.choices, help_text='Typering van het huishouden naar grootte en verbondenheid.')
     datum_begin_geldigheid_huishouden = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop het HUISHOUDEN is ontstaan.')
     datum_einde_geldigheid_huishouden = StUFDateField(
         null=True, blank=True,
         help_text='De datum waarop het HUISHOUDEN is komen te vervallen.')
-
-    postcode = models.CharField(max_length=7, null=True, blank=True)
 
     class Meta:
         mnemonic = 'HHD'
@@ -256,6 +260,7 @@ class InrichtingsElementObject(ExtraValidatorsMixin, ObjectMixin, Object):
         help_text='Specificatie van de aard van het inrichtingselement.')
 
     datum_begin_geldigheid_inrichtingselement = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop het inrichtingselement is ontstaan.')
     datum_einde_geldigheid_inrichtingselement = StUFDateField(
         null=True, blank=True, help_text='De datum waarop het inrichtingselement ongeldig is geworden.')
@@ -288,6 +293,7 @@ class KadastraalPerceelObject(ExtraValidatorsMixin, ObjectMixin, Object):
         null=True, blank=True,
         help_text='Het geheel van lijnketens waarmee de vlakomtrek van een perceel wordt gevormd.')
     datum_begin_geldigheid_kadastrale_onroerende_zaak = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de gegevens van de kadastrale onroerende zaak voor het eerst geldig zijn geworden.')
     datum_einde_geldigheid_kadastrale_onroerende_zaak = StUFDateField(
         null=True, blank=True, help_text='De datum waarop de gegevens van de kadastrale '
@@ -312,9 +318,10 @@ class KunstwerkDeelObject(ExtraValidatorsMixin, ObjectMixin, Object):
     type_kunstwerk = models.CharField(
         max_length=40, choices=TyperingKunstwerk.choices,
         help_text='Specificatie van het soort Kunstwerk waartoe het kunstwerkdeel behoort.')
-    # TODO: [KING] Attribuut "naam kunstwerkdeel" van Objecttype KunstwerkDeel staat niet in het RGBZ of het RSGB
+    # TODO [KING]: Attribuut "naam kunstwerkdeel" van Objecttype KunstwerkDeel staat niet in het RGBZ of het RSGB
     naam_kunstwerkdeel = models.CharField(max_length=80)
     datum_begin_geldigheid_kunstwerkdeel = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop het kunstwerkdeel is ontstaan.')
     datum_einde_geldigheid_kunstwerkdeel = StUFDateField(
         null=True, blank=True, help_text='De datum waarop het kunstwerkdeel ongeldig is geworden.')
@@ -343,11 +350,12 @@ class LigplaatsObject(ObjectMixin, Object):
     De aan het RSGB ontleende gegevens van een LIGPLAATS die in het RGBZ gebruikt worden bij
     deze specialisatie van OBJECT. Zie voor de specificaties van deze gegevens het RSGB.
     """
-    # TODO: [KING] volgens rsgb 2.0 model, Zie BAG voor de specificatie, alleen, waar is de BAG documentatie..
+    # TODO [KING]: volgens rsgb 2.0 model, Zie BAG voor de specificatie, alleen, waar is de BAG documentatie..
     # http://www.gemmaonline.nl/index.php/INRICHTINGSELEMENT_(RGBView-RSGB_-in_gebruik-02.01)_-_EAID_82C50ACC_AFFB_486f_BA82_CE8462CBDD44
     # benoemd_terrein_identificatie =
 
     datum_begin_geldigheid_benoemd_terrein = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop van gemeentewege het benoemd terrein formeel is aangewezen.'
     )
     datum_einde_geldigheid_benoemd_terrein = StUFDateField(
@@ -408,8 +416,8 @@ class NummerAanduidingObject(AdresBaseClass, ObjectMixin, Object): # add bezoeka
     identificatiecode_adresseerbaar_object_aanduiding = models.ForeignKey(
         'rsgb.BAGObjectnummering', on_delete=models.CASCADE,
         help_text='De unieke aanduiding van een ADRESSEERBAAR OBJECT AANDUIDING')
-    postcode = models.CharField(max_length=7, null=True, blank=True)
     datum_begin_geldigheid_adresseerbaar_object_aanduiding = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de ADRESSEERBAAR OBJECT AANDUIDING formeel is vastgesteld.'
     )
     datum_einde_geldigheid_adresseerbaar_object_aanduiding = StUFDateField(
@@ -439,6 +447,7 @@ class OpenbareRuimteObject(ExtraValidatorsMixin, ObjectMixin, Object):
         help_text='De aard van de als zodanig benoemde OPENBARERUIMTE.'
     )
     datum_begin_geldigheid_openbare_ruimte = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de OPENBARE RUIMTE formeel is benoemd.'
     )
     datum_einde_geldigheid_openbare_ruimte = StUFDateField(
@@ -460,11 +469,12 @@ class OverigGebouwdObject(ObjectMixin, Object):
     gebruikt worden bij deze specialisatie van OBJECT. Zie voor de specificaties van deze gegevens
     het RSGB
     """
-    # TODO: [KING] Atribuut "overig_gebouwd_object_locatieaanduiding" in Objecttype OverigGebouwdObject staat niet in RGBZ of RSGB
+    # TODO [KING]: Atribuut "overig_gebouwd_object_locatieaanduiding" in Objecttype OverigGebouwdObject staat niet in RGBZ of RSGB
     # gebouwd_object_identificatie = models.ForeignKey(
     #     'rsgb.BAGObjectnummering')
 
     datum_begin_geldigheid = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop vangeldigheid gebouwd gemeentewege is vastgesteld dat de bouwwerkzaamheden '
                   'betreffende de oprichting van een GEBOUWD OBJECT conform de vergunning, '
                   'de melding of de aanschrijving zijn uitgevoerd.'
@@ -497,10 +507,11 @@ class OverigTerreinObject(ObjectMixin, Object):
     """
     benoemd_terrein_identificatie = models.ForeignKey(
         'rsgb.BAGObjectnummering', help_text='De unieke aanduiding van een OVERIG BENOEMD TERREIN.')
-    # TODO: [KING] Dubbel gedefinieerd in RGBZ 2.0?
+    # TODO [KING]: Dubbel gedefinieerd in RGBZ 2.0?
     # geometrie = models.TextField(
     #     help_text='De tweedimensionale geometrische representatie van de omtrekken van een BENOEMD TERREIN.')
     datum_begin_geldigheid = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop van gemeentewege het benoemd terrein formeel is aangewezen.'
     )
     datum_einde_geldigheid = StUFDateField(
@@ -520,6 +531,7 @@ class OverigeAdresseerbaarObjectAanduidingObject(ObjectMixin, Object, AdresBaseC
     # This used to be set, but checking the RGBZ, this seems to be a mistake.
     # woonplaatsnaam = None
     datum_begin_geldigheid_adresseerbaar_object_aanduiding = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de ADRESSEERBAAR OBJECT AANDUIDING formeel is vastgesteld.'
     )
     datum_einde_geldigheid_adresseerbaar_object_aanduiding = StUFDateField(
@@ -540,7 +552,7 @@ class PandObject(ObjectMixin, Object):
     # 'rsgb.BAGObjectnummering', help_text='De unieke aanduiding van een PAND')
 
     datum_begin_geldigheid_pand = StUFDateField(
-        null=True, blank=True,
+        default=stuf_datetime.today,
         help_text='De datum waarop van gemeentewege is vastgesteld dat de bouwwerkzaamheden betreffende de oprichting '
                   'van een PAND conform de vergunning, de melding of de aanschrijving zijn uitgevoerd.')
     datum_einde_geldigheid_pand = StUFDateField(null=True, blank=True,
@@ -571,7 +583,7 @@ class SpoorbaanDeelObject(ObjectMixin, Object):
         max_length=40, choices=TypeSpoorbaan.choices, help_text='Specificatie van het soort Spoorbaan')
 
     datum_begin_geldigheid_spoorbaandeel = StUFDateField(
-        null=True, blank=True,
+        default=stuf_datetime.today,
         help_text='De datum waarop het spoorbaandeel is ontstaan.')
     datum_einde_geldigheid_spoorbaandeel = StUFDateField(
         null=True, blank=True, help_text='De datum waarop het spoorbaandeel ongeldig is geworden.')
@@ -596,6 +608,7 @@ class StandPlaatsObject(ObjectMixin, Object):
     # geometrie = models.TextField(
     #     help_text='De tweedimensionale geometrische representatie van de omtrekken van een BENOEMD TERREIN.')
     datum_begin_geldigheid_benoemd_terrein = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop van gemeentewege het benoemd terrein formeel is aangewezen.')
     datum_eind_geldigheid_benoemd_terrein = StUFDateField(
         null=True, blank=True,
@@ -611,10 +624,11 @@ class TerreinDeelObject(ExtraValidatorsMixin, ObjectMixin, Object):
     De aan het RSGB ontleende gegevens van een TERREINDEEL die in het RGBZ gebruikt worden
     bij deze specialisatie van OBJECT. Zie voor de specificaties van deze gegevens het RSGB.
     """
-    # TODO: [KING] Issue #268 Terreindeel komt niet voor in RSGB
+    # TODO [KING]: Issue #268 Terreindeel komt niet voor in RSGB
     type_terrein = models.CharField(max_length=40)
 
     datum_begin_geldigheid_terreindeel = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop het terreindeel is ontstaan.')
     datum_einde_geldigheid_terreindeel = StUFDateField(
         null=True, blank=True,
@@ -636,6 +650,7 @@ class VerblijfsObject(ObjectMixin, Object):
     genoemd_object_identificatie = models.ForeignKey('rsgb.BAGObjectnummering')
 
     datum_begin_geldigheid_gebouwd_object = StUFDateField(
+        default=stuf_datetime.today,
         help_text='gemeentewege is vastgesteld dat de bouwwerkzaamheden betreffende de '
                   'oprichting van een GEBOUWD OBJECT conform de vergunning, de melding '
                   'of de aanschrijving zijn uitgevoerd.'
@@ -668,8 +683,9 @@ class WaterdeelObject(ExtraValidatorsMixin, ObjectMixin, Object):
         max_length=50, choices=TyperingWater.choices,
         help_text='Specificatie van het soort water')
 
-    # TODO: [KING] Atribuut "naam waterdeel" in Objecttype WaterdeelObject staat niet in RGBZ of RSGB
+    # TODO [KING]: Atribuut "naam waterdeel" in Objecttype WaterdeelObject staat niet in RGBZ of RSGB
     datum_begin_geldigheid_waterdeel = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop het waterdeel is ontstaan.')
     datum_einde_geldigheid_waterdeel = StUFDateField(
         null=True, blank=True, help_text='De datum waarop het waterdeel ongeldig is geworden.')
@@ -696,10 +712,12 @@ class WegdeelObject(ExtraValidatorsMixin, ObjectMixin, Object):
 
     Unieke aanduiding Identificatie wegdeel
     """
-    # TODO: [KING] Atribuut "type weg" in Objecttype WegdeelObject staat niet in RGBZ of RSGB
+    # TODO [KING]: Atribuut "type weg" in Objecttype WegdeelObject staat niet in RGBZ of RSGB
 
-    # TODO: [KING] Atribuut "naam wegdeel" in Objecttype WegdeelObject staat niet in RGBZ of RSGB
-    datum_begin_geldigheid_wegdeel = StUFDateField(help_text='De datum waarop het wegdeel is ontstaan')
+    # TODO [KING]: Atribuut "naam wegdeel" in Objecttype WegdeelObject staat niet in RGBZ of RSGB
+    datum_begin_geldigheid_wegdeel = StUFDateField(
+        default=stuf_datetime.today,
+        help_text='De datum waarop het wegdeel is ontstaan')
     datum_einde_geldigheid_wegdeel = StUFDateField(
         null=True, blank=True, help_text='De datum waarop het wegdeel ongeldig is geworden.')
 
@@ -730,6 +748,7 @@ class WijkObject(ObjectMixin, Object):
     wijknaam = models.CharField(
         max_length=40, help_text='De naam van de wijk, zoals die door het CBS wordt gebruikt.')
     datum_begin_geldigheid_wijk = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de wijk is gecreëerd.'
     )
     datum_eind_geldigheid_wijk = StUFDateField(
@@ -737,7 +756,7 @@ class WijkObject(ObjectMixin, Object):
     gemeentecode = models.CharField(
         max_length=4, help_text='Een numerieke aanduiding waarmee een Nederlandse gemeente uniek wordt aangeduid')
 
-    # TODO: [TECH] geometrie is verwijderd op Object
+    # TODO [TECH]: geometrie is verwijderd op Object
     # def wijkgeometrie(self):
     #     """
     #     :return: De tweedimensionale geometrische representatie van de omtrekken van de wijk.
@@ -762,6 +781,7 @@ class WoonplaatsObject(ObjectMixin, Object):
     woonplaatsnaam = models.CharField(
         max_length=80, help_text='De door het bevoegde gemeentelijke orgaan aan een WOONPLAATS toegekende benaming.')
     datum_begin_geldigheid_woonplaats = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de woonplaats is ontstaan'
     )
     datum_einde_geldigheid_woonplaats = StUFDateField(
@@ -797,6 +817,7 @@ class WozdeelObject(ObjectMixin, Object):
         max_length=6, help_text='Uniek identificatienummer voor het deelobject binnen een WOZ-object.')
     code_wozdeelobject = models.ForeignKey('rsgb.Deelobjectcode', models.CASCADE)
     datum_begin_geldigheid_deelobject = StUFDateField(
+        default=stuf_datetime.today,
         help_text='Een aanduiding op welk tijdstip een deelobject is ontstaan.')
     datum_einde_geldigheid_deelobject = StUFDateField(
         null=True, blank=True, help_text='Een aanduiding op welk tijdstip een deelobject is beëindigd.')
@@ -817,11 +838,12 @@ class WozObject(ObjectMixin, Object):
 
     Unieke aanduiding WOZ-objectnummer
     """
-    # TODO: [KING] Atribuut "locatieomschrijving" in Objecttype WozObject staat niet in RGBZ of RSGB
+    # TODO [KING]: Atribuut "locatieomschrijving" in Objecttype WozObject staat niet in RGBZ of RSGB
     soortobjectcode = models.ForeignKey(
         'rsgb.SoortWOZObject', help_text='Aanduiding van het soort object ten behoeve '
                                          'van een correcte bepaling van de waarde.')
     datum_begin_geldigheid_wozobject = StUFDateField(
+        default=stuf_datetime.today,
         help_text='Een aanduiding op welk tijdstip een object is ontstaan.'
     )
     datum_einde_geldigheid_wozobject = StUFDateField(
@@ -852,7 +874,7 @@ class WozWaardeObject(ObjectMixin, Object):
 
     Unieke aanduiding Combinatie van Waardepeildatum en WOZ-OBJECT
     """
-    # TODO: [KING] hier mist waarschijnlijk de relatie met het Woz-Object
+    # TODO [KING]: hier mist waarschijnlijk de relatie met het Woz-Object
     vastgestelde_waarde = models.CharField(
         max_length=11, help_text='Waarde van het WOZ-object zoals deze in het kader van de Wet WOZ is vastgesteld.')
     waardepeildatum = StUFDateField(
@@ -870,7 +892,7 @@ class ZakelijkRechtObject(ObjectMixin, Object):
 
     Unieke aanduiding Identificatie zakelijk recht
     """
-    # TODO: [KING] identificatie moet nog worden ingevuld, de unieke waarde is de FK..
+    # TODO [KING]: identificatie moet nog worden ingevuld, de unieke waarde is de FK..
     # name in rsgb3.0 does not have the prefix 'kadaster_'
     # kadaster_identificatie_zakelijk_recht = models.ForeignKey(
     # 'rsgb.CompositeID', help_text='Een door het Kadaster toegekende landelijk uniek nummer aan een recht.',
@@ -888,7 +910,7 @@ class ZakelijkRechtObject(ObjectMixin, Object):
     )
     kadastrale_identificatie = models.ForeignKey(
         'rsgb.CompositeID', related_name='kadastrale_identificatie')
-    # TODO: [KING] Staan niet in RSGB 3.0
+    # TODO [KING]: Staan niet in RSGB 3.0
     kadastrale_aanduiding_kadastraal_perceel = models.ForeignKey(
         'rsgb.KadastraleAanduidingKadastraalPerceel', related_name='kadastrale_aanduiding_kadastraal_perceel',
         null=True, blank=True

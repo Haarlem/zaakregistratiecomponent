@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.test import TestCase
 
 from ...rsgb.tests.factory_models import (
@@ -174,6 +176,7 @@ class VestigingTestCase(TestCase):
 
 
 class VestigingVanZaakBehandelendeOrganisatieTestCase(TestCase):
+    @skip('TODO [TECH]: VZO is no longer a subclass of Vestiging (VES), and the objecttype setup is not needed anymore.')
     def test_objects_create_objecttype(self):
         vzo = VestigingVanZaakBehandelendeOrganisatieFactory.create()
         vzo.refresh_from_db()

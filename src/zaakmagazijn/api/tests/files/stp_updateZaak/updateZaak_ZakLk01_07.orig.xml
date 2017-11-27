@@ -1,0 +1,245 @@
+<ZDS:updateZaak_ZakLk01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:gml="http://www.opengis.net/gml" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>Lk01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>ZAK</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:mutatiesoort>W</StUF:mutatiesoort>
+        <StUF:indicatorOvername>V</StUF:indicatorOvername>
+    </ZKN:parameters>
+    <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
+        <ZKN:identificatie>${gemeentecode}${creerzaak_identificatie_13}</ZKN:identificatie>
+        <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
+        <ZKN:kenmerk>
+            <ZKN:kenmerk>kenmerk</ZKN:kenmerk>
+            <ZKN:bron>bron</ZKN:bron>
+        </ZKN:kenmerk>
+        <ZKN:kenmerk>
+            <ZKN:kenmerk xsi:nil="true"/>
+            <ZKN:bron xsi:nil="true"/>
+        </ZKN:kenmerk>
+        <ZKN:opschorting>
+            <ZKN:indicatie xsi:nil="true"/>
+            <ZKN:reden xsi:nil="true"/>
+        </ZKN:opschorting>
+        <StUF:tijdvakGeldigheid>
+            <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+            <StUF:eindGeldigheid>${datumVandaag}</StUF:eindGeldigheid>
+        </StUF:tijdvakGeldigheid>
+        <ZKN:isVan StUF:verwerkingssoort="I" StUF:entiteittype="ZAKZKT">
+            <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
+                <ZKN:omschrijving>${zds_zaaktype_omschrijving}</ZKN:omschrijving>
+                <ZKN:code>${zds_zaaktype_code}</ZKN:code>
+                <ZKN:ingangsdatumObject>${zds_zaaktype_datum}</ZKN:ingangsdatumObject>
+            </ZKN:gerelateerde>
+        </ZKN:isVan>
+        <ZKN:heeftAlsBelanghebbende StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRBLH" xsi:nil="true"/>
+        <ZKN:heeftAlsGemachtigde StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRGMC" xsi:nil="true"/>
+        <ZKN:heeftAlsInitiator StUF:verwerkingssoort="R" StUF:entiteittype="ZAKBTRINI">
+            <ZKN:gerelateerde>
+                <ZKN:vestiging StUF:verwerkingssoort="I" StUF:entiteittype="VES">
+                    <BG:vestigingsNummer>010203040506</BG:vestigingsNummer>
+                </ZKN:vestiging>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie>${datumGisteren}</StUF:eindRelatie>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        </ZKN:heeftAlsInitiator>
+        <ZKN:heeftAlsUitvoerende StUF:verwerkingssoort="V" StUF:entiteittype="ZAKBTRUTV">
+            <ZKN:gerelateerde>
+                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
+                    <ZKN:identificatie>${gemeentecode}56783</ZKN:identificatie>
+                </ZKN:medewerker>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie>${datumVandaag}</StUF:eindRelatie>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        </ZKN:heeftAlsUitvoerende>
+        <ZKN:heeftAlsVerantwoordelijke StUF:verwerkingssoort="E" StUF:entiteittype="ZAKBTRVRA">
+            <ZKN:gerelateerde>
+                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
+                    <ZKN:identificatie>${gemeentecode}56784</ZKN:identificatie>
+                </ZKN:medewerker>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie>${datumVandaag}</StUF:eindRelatie>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumVandaag}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${datumVandaag}</StUF:tijdstipRegistratie>
+        </ZKN:heeftAlsVerantwoordelijke>
+        <ZKN:heeftAlsOverigBetrokkene StUF:verwerkingssoort="R" StUF:entiteittype="ZAKBTROVR">
+            <ZKN:gerelateerde>
+                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
+                    <ZKN:identificatie>${gemeentecode}56785</ZKN:identificatie>
+                </ZKN:medewerker>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie>${datumVandaag}</StUF:eindRelatie>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid>${datumVandaag}</StUF:eindGeldigheid>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        </ZKN:heeftAlsOverigBetrokkene>
+        <ZKN:heeftAlsOverigBetrokkene StUF:verwerkingssoort="R" StUF:entiteittype="ZAKBTROVR">
+            <ZKN:gerelateerde>
+                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
+                    <ZKN:identificatie>${gemeentecode}56786</ZKN:identificatie>
+                </ZKN:medewerker>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie>${datumVandaag}</StUF:eindRelatie>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid>${datumVandaag}</StUF:eindGeldigheid>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        </ZKN:heeftAlsOverigBetrokkene>
+    </ZKN:object>
+    <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
+        <ZKN:identificatie>${gemeentecode}${creerzaak_identificatie_13}</ZKN:identificatie>
+        <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
+        <ZKN:kenmerk>
+            <ZKN:kenmerk>kenmerk7</ZKN:kenmerk>
+            <ZKN:bron>bron7</ZKN:bron>
+        </ZKN:kenmerk>
+        <ZKN:kenmerk>
+            <ZKN:kenmerk>kenmerk72</ZKN:kenmerk>
+            <ZKN:bron>bron72</ZKN:bron>
+        </ZKN:kenmerk>
+        <ZKN:opschorting>
+            <ZKN:indicatie>J</ZKN:indicatie>
+            <ZKN:reden>reden7</ZKN:reden>
+        </ZKN:opschorting>
+        <StUF:tijdvakGeldigheid>
+            <StUF:beginGeldigheid>${datumVandaag}</StUF:beginGeldigheid>
+            <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        </StUF:tijdvakGeldigheid>
+        <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        <ZKN:isVan StUF:verwerkingssoort="I" StUF:entiteittype="ZAKZKT">
+            <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
+                <ZKN:omschrijving>${zds_zaaktype_omschrijving}</ZKN:omschrijving>
+                <ZKN:code>${zds_zaaktype_code}</ZKN:code>
+                <ZKN:ingangsdatumObject>${zds_zaaktype_datum}</ZKN:ingangsdatumObject>
+            </ZKN:gerelateerde>
+        </ZKN:isVan>
+        <ZKN:heeftAlsBelanghebbende StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRBLH">
+            <ZKN:gerelateerde>
+                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
+                    <ZKN:identificatie>${gemeentecode}56787</ZKN:identificatie>
+                </ZKN:medewerker>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumGisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumGisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        </ZKN:heeftAlsBelanghebbende>
+        <ZKN:heeftAlsGemachtigde StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRGMC">
+            <ZKN:gerelateerde>
+                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
+                    <ZKN:identificatie>${gemeentecode}56788</ZKN:identificatie>
+                </ZKN:medewerker>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumGisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumGisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        </ZKN:heeftAlsGemachtigde>
+        <ZKN:heeftAlsInitiator StUF:verwerkingssoort="R" StUF:entiteittype="ZAKBTRINI">
+            <ZKN:gerelateerde>
+                <ZKN:nietNatuurlijkPersoon StUF:verwerkingssoort="I" StUF:entiteittype="NNP">
+                    <BG:inn.nnpId>012345678</BG:inn.nnpId>
+                    <BG:authentiek StUF:metagegeven="true">J</BG:authentiek>
+                    <BG:statutaireNaam>statutaireNaam</BG:statutaireNaam>
+                    <BG:inn.rechtsvorm>rechtsvorm</BG:inn.rechtsvorm>
+                    <BG:bezoekadres/>
+                </ZKN:nietNatuurlijkPersoon>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumGisteren}</StUF:beginRelatie>
+                <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumGisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        </ZKN:heeftAlsInitiator>
+        <ZKN:heeftAlsUitvoerende StUF:verwerkingssoort="V" StUF:entiteittype="ZAKBTRUTV" StUF:noValue="geenWaarde" xsi:nil="true"/>
+        <ZKN:heeftAlsVerantwoordelijke StUF:verwerkingssoort="E" StUF:entiteittype="ZAKBTRVRA" StUF:noValue="geenWaarde" xsi:nil="true"/>
+        <ZKN:heeftAlsOverigBetrokkene StUF:verwerkingssoort="R" StUF:entiteittype="ZAKBTROVR">
+            <ZKN:gerelateerde>
+                <ZKN:natuurlijkPersoon StUF:verwerkingssoort="I" StUF:entiteittype="NPS">
+                    <BG:inp.bsn>123456789</BG:inp.bsn>
+                </ZKN:natuurlijkPersoon>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumVandaag}</StUF:beginRelatie>
+                <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumVandaag}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        </ZKN:heeftAlsOverigBetrokkene>
+        <ZKN:heeftAlsOverigBetrokkene StUF:verwerkingssoort="R" StUF:entiteittype="ZAKBTROVR">
+            <ZKN:gerelateerde>
+                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
+                    <ZKN:identificatie>${gemeentecode}56790</ZKN:identificatie>
+                </ZKN:medewerker>
+            </ZKN:gerelateerde>
+            <StUF:tijdvakRelatie>
+                <StUF:beginRelatie>${datumVandaag}</StUF:beginRelatie>
+                <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakRelatie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumVandaag}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        </ZKN:heeftAlsOverigBetrokkene>
+    </ZKN:object>
+</ZDS:updateZaak_ZakLk01>

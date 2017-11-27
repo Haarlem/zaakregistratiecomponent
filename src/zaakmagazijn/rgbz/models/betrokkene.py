@@ -4,20 +4,23 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
 from zaakmagazijn.cmis.models import CMISMixin
+from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.fields import StUFDateField, StUFDateTimeField
 
-from ...rsgb.choices import NaamGebruik
+from ...rsgb.choices import AdelijkeTitel, NaamGebruik
 from ...rsgb.models.mixins import BereikenMixin
 from ..choices import (
     AardRelatieVerzending, IndicatieMachtiging, Rolomschrijving,
     RolomschrijvingGeneriek
 )
+from ..validators import validate_non_negative_string
 from .basemodels import (
     NietNatuurlijkPersoonBaseClass, Object, OrganisatorischeEenheidBaseClass
 )
 from .mixins import (
     AfwijkendeCorrespondentieMixin, BSNMixin, GeslachtsAanduidingMixin,
-    RekeningnummerMixin, TypeMixin
+    RekeningnummerMixin, TijdstipRegistratieMixin, TijdvakGeldigheidMixin,
+    TijdvakRelatieMixin, TypeMixin
 )
 
 
@@ -105,7 +108,7 @@ class Medewerker(CMISMixin, GeslachtsAanduidingMixin, BereikenMixin, Betrokkene)
 
     CMIS_MAPPING = {
         'zsdms:medewerkeridentificatie': 'medewerkeridentificatie',  # v
-        # TODO: [TECH] is this correct?
+        # TODO [TECH]: is this correct?
         # 'zsdms:voorvoegsel': 'voorvoegsel_achternaam',  # o
         # 'zsdms:achternaam': 'achternaam',  # o
     }
@@ -130,26 +133,67 @@ class Medewerker(CMISMixin, GeslachtsAanduidingMixin, BereikenMixin, Betrokkene)
         if self.organisatorische_eenheid:
             id_prefix = self.organisatorische_eenheid.organisatieeenheididentificatie
         else:
-            # TODO: [KING] 'organisatorische_eenheid' can be blank, do we want to prefix with something ???? / 0000 / '    '
+            # TODO [KING]: 'organisatorische_eenheid' can be blank, do we want to prefix with something ???? / 0000 / '    '
             id_prefix = ''
 
-        return '{}{}'.format(id_prefix, self.medewerkeridentificatie)
+        return '{}{}'.format(
+            id_prefix, self.medewerkeridentificatie,
+        )
 
 
-class NatuurlijkPersoon(CMISMixin, BereikenMixin, GeslachtsAanduidingMixin, BSNMixin, RekeningnummerMixin, Betrokkene):
+class NatuurlijkPersoon(CMISMixin, BereikenMixin, GeslachtsAanduidingMixin, RekeningnummerMixin, Betrokkene):
     """
     De aan het RSGB ontleende gegevens van een NATUURLIJK PERSOON die in het RGBZ gebruikt
     worden. Zie voor de specificaties van deze gegevens het RSGB.
     """
+
+    """
+    Mixin voor een Burgerservicenummer veld, opgenomen als mixin om redudantie te voorkomen.
+
+    Alle nummers waarvoor geldt dat, indien aangeduid als (s0 s1 s2 s3 s4
+    s5 s6 s7 s8), het resultaat van (9*s0) + (8*s1) + (7*s2) +...+ (2*s7) -
+    (1*s8) deelbaar is door elf.
+    """
+    burgerservicenummer = models.CharField(null=True, blank=True, max_length=9, validators=[validate_non_negative_string, ],
+                                           help_text='Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.')
     nummer_ander_natuurlijk_persoon = models.CharField(
-        max_length=17, help_text='Het door de gemeente uitgegeven unieke nummer voor een ANDER NATUURLIJK PERSOON'
+        null=True, blank=True, max_length=17, help_text='Het door de gemeente uitgegeven unieke nummer voor een ANDER NATUURLIJK PERSOON'
     )
+
     verblijfadres = models.ForeignKey(
         'rsgb.VerblijfAdres', on_delete=models.SET_NULL, null=True, blank=True,
         help_text='De gegevens over het verblijf en adres van de NATUURLIJK PERSOON',
         related_name='verblijfadres'
     )
-    naam = models.ForeignKey('rgbz.Naam')
+
+    """
+    Following is the RGBZ 2.0 Group attribute 'Naam'
+    """
+    naam_voornamen = models.CharField(
+        null=True, blank=True, max_length=200, help_text='Voornamen bij de naam die de persoon wenst te voeren.'
+    )
+    naam_geslachtsnaam = models.CharField(
+        max_length=200, help_text='De stam van de geslachtsnaam.')
+    naam_adelijke_titel = models.CharField(
+        null=True, blank=True, max_length=1, choices=AdelijkeTitel.choices)
+    """
+    Following is the RGBZ 2.0 Group attribute 'Voorvoegsel' within the Group attribute 'Naam'
+    """
+    # Required in RGBZ 2.0 (when a Voorvoegsel geslachtsnaam is set)
+    # naam_voorvoegsel_geslachtsnaam_voorvoegselnummer = models.CharField(
+    #     null=True, max_length=3, validators=[RegexValidator(r'^\d{1,10}$')],
+    #     help_text='Het identificerende nummer van het voorvoegsel'
+    # )
+    # Required in RGBZ 2.0 (when a Voorvoegsel geslachtsnaam is set)
+    # naam_voorvoegsel_geslachtsnaam_lo3_voorvoegsel = models.CharField(
+    #     null=True, max_length=80)
+    # # Required in RGBZ 2.0 (when a Voorvoegsel geslachtsnaam is set)
+    naam_voorvoegsel_geslachtsnaam_voorvoegsel = models.CharField(
+        null=True, blank=True, max_length=80)
+    # Required in RGBZ 2.0 (when a Voorvoegsel geslachtsnaam is set)
+    # naam_voorvoegsel_geslachtsnaam_scheidingsteken = models.CharField(
+    #     null=True, max_length=1)
+
     academische_titel = models.ForeignKey(
         'rsgb.AcademischeTitel', null=True, blank=True)
     aanduiding_naamgebruik = models.CharField(
@@ -157,7 +201,24 @@ class NatuurlijkPersoon(CMISMixin, BereikenMixin, GeslachtsAanduidingMixin, BSNM
         help_text='Een aanduiding voor de wijze van aanschrijving van de NATUURLIJKe PERSOON.')
     geboortedatum_ingeschreven_persoon = StUFDateField()
     geboortedatum_ander_natuurlijk_persoon = StUFDateField(null=True, blank=True)
-    naam_aanschrijving = models.ForeignKey('rsgb.NaamAanschrijving', on_delete=models.CASCADE)
+
+    """
+    Following is the RGBZ 2.0 Group attribute 'Naam aanschrijving'
+    """
+    naam_aanschrijving_voorletters_aanschrijving = models.CharField(
+        max_length=20, null=True, blank=True,
+        help_text='De voorletters waarmee een persoon aangeschreven wil worden.')
+    naam_aanschrijving_voornamen_aanschrijving = models.CharField(
+        max_length=200, null=True, blank=True,
+        help_text='Voornamen bij de naam die de persoon wenst te voeren.'
+    )
+    naam_aanschrijving_geslachtsnaam_aanschrijving = models.CharField(
+        null=True, blank=True, max_length=200, help_text='Geslachtsnaam die de persoon wenst te voeren'
+    )
+    naam_aanschrijving_aanhef_aanschrijving = models.CharField(
+        null=True, blank=True, max_length=50, help_text='De aanhef waarmee de persoon aangeschreven wil worden.'
+    )
+
     overlijdensdatum_ingeschreven_persoon = StUFDateField(null=True, blank=True)
     overlijdensdatum_ander_natuurlijk_persoon = StUFDateField(null=True, blank=True)
     correspondentieadres = models.ForeignKey(
@@ -169,10 +230,10 @@ class NatuurlijkPersoon(CMISMixin, BereikenMixin, GeslachtsAanduidingMixin, BSNM
         'rsgb.PostAdres', on_delete=models.SET_NULL, null=True, blank=True)
 
     CMIS_MAPPING = {
-        # TODO: [COMPAT] ZSS has plural version
+        # TODO [KING]: ZDS has plural version
         # 'zsdms:voorvoegselsGeslachtsnaam': vv_geslachtsnaam,  # o
-        # 'zsdms:voorvoegselGeslachtsnaam': 'naam__voorvoegsel_geslachtsnaam__voorvoegsel',  # o
-        # 'zsdms:geslachtsnaam': 'naam__geslachtsnaam',  # o
+        # 'zsdms:voorvoegselGeslachtsnaam': 'naam_voorvoegsel_geslachtsnaam_voorvoegsel',  # o
+        # 'zsdms:geslachtsnaam': 'naam_geslachtsnaam',  # o
         'zsdms:inp.bsn': 'burgerservicenummer',  # v
         'zsdms:ann.identificatie': 'nummer_ander_natuurlijk_persoon',  # v
     }
@@ -197,6 +258,17 @@ class NatuurlijkPersoon(CMISMixin, BereikenMixin, GeslachtsAanduidingMixin, BSNM
 
     def create_identificatie(self):
         return self.burgerservicenummer or self.nummer_ander_natuurlijk_persoon
+
+    def clean(self):
+        if not (bool(self.burgerservicenummer) ^ bool(self.nummer_ander_natuurlijk_persoon)):
+            raise ValidationError('Het is alleen mogelijk om een burgerservicenummer '
+                                  'of een nummer ander natuurlijk persoon in te vullen.')
+        return super().clean()
+
+    def save(self, *args, **kwargs):
+        assert (bool(self.burgerservicenummer) ^ bool(self.nummer_ander_natuurlijk_persoon)), \
+            'Either \'burgerservicenummer\' or \'nummer_ander_natuurlijk_persoon\' should be set. Not both.'
+        super().save(*args, **kwargs)
 
 
 class NietNatuurlijkPersoon(CMISMixin, BereikenMixin, NietNatuurlijkPersoonBaseClass, RekeningnummerMixin, Betrokkene):
@@ -253,8 +325,9 @@ class Vestiging(CMISMixin, BereikenMixin, RekeningnummerMixin, Betrokkene):
         blank=True, help_text='De administratieve naam in het handelsregister indien de naam '
                               'langer is dan 45 karakters'
     )
+    # TODO [KING]: This is 'null' = False in RGBZ 2.0. But the kennisgevingsbericht code can't deal with this yet.
     locatieadres = models.ForeignKey(
-        'rsgb.Locatieadres', on_delete=models.CASCADE, related_name='locatieadres')
+        'rsgb.Locatieadres', on_delete=models.SET_NULL, related_name='locatieadres', null=True, blank=True)
     correspondentieadres = models.ForeignKey(
         'rsgb.Correspondentieadres', on_delete=models.SET_NULL, null=True, blank=True,
         help_text=''
@@ -266,6 +339,7 @@ class Vestiging(CMISMixin, BereikenMixin, RekeningnummerMixin, Betrokkene):
         'rsgb.VerblijfBuitenland', null=True, blank=True, help_text='De gegevens over het verblijf in het buitenland'
     )
     datum_aanvang = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum van aanvang van de vestiging.'
     )
     datum_beeindiging = StUFDateField(
@@ -311,7 +385,7 @@ class Vestiging(CMISMixin, BereikenMixin, RekeningnummerMixin, Betrokkene):
         ]
 
 
-class VestigingVanZaakBehandelendeOrganisatie(Vestiging):
+class VestigingVanZaakBehandelendeOrganisatie(models.Model):
     """
     Een VESTIGING van een onderneming of rechtspersoon zijnde de zaakbehandelende organisatie.
 
@@ -321,8 +395,7 @@ class VestigingVanZaakBehandelendeOrganisatie(Vestiging):
     class Meta:
         mnemonic = 'VZO'
 
-    def is_specialisatie_van(self):
-        return self.vestiging_ptr
+    is_specialisatie_van = models.ForeignKey(Vestiging, on_delete=models.CASCADE)
 
 
 class OrganisatorischeEenheid(CMISMixin, OrganisatorischeEenheidBaseClass, BereikenMixin, Betrokkene):
@@ -339,7 +412,7 @@ class OrganisatorischeEenheid(CMISMixin, OrganisatorischeEenheidBaseClass, Berei
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # TODO: [TECH] Remove this once we have a proper translation layer from RGBZ 1.0 to 2.0
+        # TODO [TECH]: Remove this once we have a proper translation layer from RGBZ 1.0 to 2.0
         if self.identificatie:
             try:
                 self.organisatieidentificatie = int(self.identificatie[:4])
@@ -368,7 +441,7 @@ class OrganisatorischeEenheid(CMISMixin, OrganisatorischeEenheidBaseClass, Berei
         related_name='organisatorische_eenheid_contactpersoon')
 
     # gevestigd in
-    # TODO: [TECH] Renamed, due to naming collision.
+    # TODO [TECH]: Renamed, due to naming collision.
     gevestigd_in = models.ForeignKey(
         'rgbz.VestigingVanZaakBehandelendeOrganisatie', on_delete=models.CASCADE)
 
@@ -451,7 +524,7 @@ class KlantContactpersoon(models.Model):
         mnemonic = 'CTP'
 
 
-class Rol(AfwijkendeCorrespondentieMixin):
+class Rol(TijdvakGeldigheidMixin, TijdvakRelatieMixin, TijdstipRegistratieMixin, AfwijkendeCorrespondentieMixin):
     """
     De taken, rechten en/of verplichtingen die een specifieke BETROKKENE heeft
     ten aanzien van een specifieke ZAAK
@@ -524,5 +597,5 @@ class Verzending(AfwijkendeCorrespondentieMixin):
                   'de BETROKKENE inzake het ontvangen of verzonden INFORMATIEOBJECT.')
 
     class Meta:
-        # TODO: [KING] De mnemonic van "Verzending" is "VERZENDING" volgens het RGBZ, dat kan niet kloppen?
+        # TODO [KING]: De mnemonic van "Verzending" is "VERZENDING" volgens het RGBZ, dat kan niet kloppen?
         mnemonic = 'VERZENDING'

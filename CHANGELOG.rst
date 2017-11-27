@@ -5,7 +5,30 @@ Change history
 0.9.4
 =====
 
-*Unreleased*
+*November 27, 2017*
+
+* Added compatibility layer between ZDS 1.2 and RGBZ 2.0 that mimics an RGBZ
+  1.0 data model. This resolves *most* compliancy issues with ZDS 1.2.
+* Added full support for test messages from the StUF test platform. This makes
+  copying tests from the StUF test platform easier.
+* Added pre- and post processing to requests and responses to overcome issues
+  with the StUF test platform.
+* Added ZDS 1.2 compliancy test run, as performed by the StUF test platform.
+* Added the KING reference WSDL and used this by default (instead of the
+  generated version).
+* Changed the WSDL endpoint ``Beantwoordvraag`` to ``BeantwoordVraag``, as per
+  specification. A redirect was added for convenience.
+* Added management command ``create_test_data`` to load the test data set
+  needed for the StUF test platform.
+* Fixed incorrect ``overdragenZaak`` message.
+* Various minor fixes to comply with the StUF test platform.
+* Added new setting ``ZAAKMAGAZIJN_REFERENCE_WSDL`` (defaults to ``True``)
+  indicating whether to use the KING reference WSDL. If ``False``, the
+  generated WSDL is used.
+* Added new setting ``ZAAKMAGAZIJN_STUF_TESTPLATFORM`` (defaults to
+  ``False``) indicating whether to use the StUF test platform workarounds.
+  This should only be used when setting up an environment to test against the
+  StUF test platform.
 
 
 0.9.3

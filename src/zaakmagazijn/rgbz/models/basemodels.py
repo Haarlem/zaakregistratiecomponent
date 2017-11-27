@@ -1,5 +1,6 @@
 from django.db import models
 
+from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.fields import GMLField, StUFDateField
 
 from .mixins import BSNMixin, GeslachtsAanduidingMixin, TypeMixin
@@ -14,6 +15,7 @@ class OrganisatorischeEenheidBaseClass(models.Model):
                   'persoon waarvan de ORGANISATORISCHE EENHEID deel uit maakt.'
     )
     datum_ontstaan = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de organisatorische eenheid is ontstaan.')
     datum_opheffing = StUFDateField(
         null=True, blank=True, help_text='De datum waarop de organisatorische eenheid is opgeheven.')
@@ -30,8 +32,9 @@ class NietNatuurlijkPersoonBaseClass(models.Model):
     """
     Basis klasse voor alle 'NietNatuurlijkPersoon' klasse die leven binnen de applicatie.
     """
-    rsin = models.PositiveIntegerField(
-        help_text='Het door een kamer toegekend uniek nummer voor de INGESCHREVEN NIET-NATUURLIJK PERSOON'
+    rsin = models.CharField(
+        help_text='Het door een kamer toegekend uniek nummer voor de INGESCHREVEN NIET-NATUURLIJK PERSOON',
+        max_length=17,  # BsVesNummerOfId
     )
     statutaire_naam = models.TextField(
         max_length=500, null=True, blank=True,
@@ -39,6 +42,7 @@ class NietNatuurlijkPersoonBaseClass(models.Model):
                   'in de vennootschapsovereenkomst is overeengekomen (Vennootschap onder firma of Commanditaire '
                   'vennootschap).')
     datum_aanvang = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum van aanvang van de NIET-NATUURLIJK PERSOON'
     )
     datum_beeindiging = StUFDateField(
@@ -55,7 +59,7 @@ class ObjectMixin(models.Model):
     naam = models.TextField(
         max_length=500, null=True, blank=True,
         help_text='De benaming van het OBJECT indien dit een SUBJECT of specialisatie daarvan is.')
-    # TODO: [COMPAT] Volgens Michiel Verhoef kan RGBZ 2.0 niet 1 op 1 mappen op de velden in de Berichten van Zaak-
+    # TODO [KING]: Volgens Michiel Verhoef kan RGBZ 2.0 niet 1 op 1 mappen op de velden in de Berichten van Zaak-
     # en Documentservices 1.2. De volgende 2 velden staan wel in het UML schema, maar niet in de specificatie:
     # adres_binnenland = models.ForeignKey(adres, null=True, blank=True)
     # adres_buitenland = models.ForeignKey(adres, null=True, blank=True)

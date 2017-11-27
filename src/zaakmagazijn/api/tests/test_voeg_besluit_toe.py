@@ -41,7 +41,7 @@ class voegBesluitToe_Di01Tests(BaseSoapTests):
         }
 
         response = client.service.voegBesluitToe_Di01(
-            stuurgegevens=stuf_factory.Di01_Stuurgegevens_vbt(
+            stuurgegevens=stuf_factory['Di01-Stuurgegevens-vbt'](
                 berichtcode='Di01',
                 zender=zender,
                 ontvanger=ontvanger,
@@ -49,22 +49,22 @@ class voegBesluitToe_Di01Tests(BaseSoapTests):
                 tijdstipBericht=stuf_datetime.now(),
                 functie='voegBesluitToe',
             ),
-            object=zkn_factory.VoegBesluitToe_object(
-                besluit=zkn_factory.VoegBesluitToe_BSL_kennisgeving(**{
+            object=zkn_factory['VoegBesluitToe_object'](
+                besluit=zkn_factory['VoegBesluitToe-BSL-kennisgeving'](**{
                     'identificatie': '12345ABC',
                     'bst.omschrijving': bst.besluittypeomschrijving,
                     'datumBeslissing': today,
                     'ingangsdatumWerking': today,
-                    'tijdvakGeldigheid': stuf_factory.tijdvakGeldigheid(
+                    'tijdvakGeldigheid': stuf_factory.TijdvakGeldigheid(
                         beginGeldigheid=today,
                     ),
-                    'isVastgelegdIn': zkn_factory.VoegBesluitToe_BSLEDC_kennisgeving(
-                        gerelateerde=zkn_factory.VoegBesluitToe_EDC_kerngegevensKennisgeving(
+                    'isVastgelegdIn': zkn_factory['VoegBesluitToe-BSLEDC-kennisgeving'](
+                        gerelateerde=zkn_factory['VoegBesluitToe-EDC-kerngegevensKennisgeving'](
                             identificatie=edc.informatieobjectidentificatie
                         )
                     )
                 }),
-                zaak=zkn_factory.VoegBesluitToe_ZAK_kerngegevensKennisgeving(
+                zaak=zkn_factory['VoegBesluitToe_ZAK-kerngegevensKennisgeving'](
                     identificatie=zaak.zaakidentificatie,
                 )
             )

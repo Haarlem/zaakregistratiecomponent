@@ -46,23 +46,28 @@ class geefZaakdocumentLezen_EdcLv01Tests(DMSMockMixin, BaseSoapTests):
         ZaakInformatieObjectFactory.create(zaak=zaak, informatieobject=edc1)
         ZaakInformatieObjectFactory.create(zaak=zaak, informatieobject=edc2)
 
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
         response = client.service.geefZaakdocumentLezen_EdcLv01(
-            stuurgegevens=stuf_factory.EDC_StuurgegevensGeefZaakdocumentLezenLv01(
+            # http://www.egem.nl/StUF/StUF0301:EDC-StuurgegevensLv01
+            stuurgegevens=stuf_factory['EDC-StuurgegevensLv01'](
                 berichtcode='Lv01',
                 entiteittype='EDC',
             ),
-            parameters=stuf_factory.EDC_parametersVraagSynchroon(
+            # http://www.egem.nl/StUF/StUF0301:EDC-parametersVraagSynchroon
+            parameters=stuf_factory['EDC-parametersVraagSynchroon'](
                 sortering=1,
                 indicatorVervolgvraag=False
             ),
-            scope=zkn_factory.GeefZaakdocumentLezen_vraagScope(
-                object=zkn_factory.GeefZaakdocumentLezen_EDC_vraagScope(**{
+            scope={
+                # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-EDC-vraagScope
+                'object': zkn_factory['GeefZaakdocumentLezen-EDC-vraagScope'](**{
                     'identificatie': Nil,  # v
-                    'isRelevantVoor': zkn_factory.GeefZaakdocumentLezen_EDCZAK_vraagScope(
+                    # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-EDCZAK-vraagScope
+                    'isRelevantVoor': zkn_factory['GeefZaakdocumentLezen-EDCZAK-vraagScope'](
                         # NOTE: the example WSDL specifies gerelateerdeVraagScope
-                        gerelateerde=zkn_factory.GeefZaakdocumentLezen_ZAK_vraagScope(
+                        # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-ZAK-gerelateerdeVraagScope
+                        gerelateerde=zkn_factory['GeefZaakdocumentLezen-ZAK-gerelateerdeVraagScope'](
                             identificatie=Nil  # v
                         )
                     ),
@@ -82,15 +87,16 @@ class geefZaakdocumentLezen_EdcLv01Tests(DMSMockMixin, BaseSoapTests):
                     'inhoud': Nil,
                     # 'link': Nil,
                 })
-            ),
-            gelijk=zkn_factory.GeefZaakdocumentLezen_EDC_vraagSelectie(
+            },
+            # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-EDC-vraagSelectie
+            gelijk=zkn_factory['GeefZaakdocumentLezen-EDC-vraagSelectie'](
                 identificatie=edc1.informatieobjectidentificatie,
             )
         )
-        self.assertEqual(len(response.antwoord.object), 1)
-        self.assertEqual(len(response.antwoord.object[0].isRelevantVoor), 1)
-        self.assertEqual(response.antwoord.object[0].identificatie, edc1.informatieobjectidentificatie)
-        self.assertEqual(response.antwoord.object[0].titel, 'doc 1')
+        self.assertEqual(len(response.antwoord), 1)
+        self.assertEqual(len(response.antwoord.object.isRelevantVoor), 1)
+        self.assertEqual(response.antwoord.object.identificatie._value_1, edc1.informatieobjectidentificatie)
+        self.assertEqual(response.antwoord.object.titel._value_1, 'doc 1')
 
 
 class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
@@ -109,25 +115,25 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
         self.assertEqual(self.document.identificatie, '123456789')
 
     def _do_simple_request(self, **options):
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         with client.options(**options):
             return client.service.geefZaakdocumentLezen_EdcLv01(
-                stuurgegevens=stuf_factory.EDC_StuurgegevensGeefZaakdocumentLezenLv01(
+                stuurgegevens=stuf_factory['EDC-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='EDC',
                 ),
-                parameters=stuf_factory.EDC_parametersVraagSynchroon(
+                parameters=stuf_factory['EDC-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False
                 ),
-                scope=zkn_factory.GeefZaakdocumentLezen_vraagScope(
-                    object=zkn_factory.GeefZaakdocumentLezen_EDC_vraagScope(**{
+                scope={
+                    'object': zkn_factory['GeefZaakdocumentLezen-EDC-vraagScope'](**{
                         'identificatie': Nil,  # v
-                        'isRelevantVoor': zkn_factory.GeefZaakdocumentLezen_EDCZAK_vraagScope(
+                        'isRelevantVoor': zkn_factory['GeefZaakdocumentLezen-EDCZAK-vraagScope'](
                             # NOTE: the example WSDL specifies gerelateerdeVraagScope
-                            gerelateerde=zkn_factory.GeefZaakdocumentLezen_ZAK_vraagScope(
+                            gerelateerde=zkn_factory['GeefZaakdocumentLezen-ZAK-gerelateerdeVraagScope'](
                                 identificatie=Nil  # v
                             )
                         ),
@@ -147,8 +153,8 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
                         'inhoud': Nil,
                         # 'link': Nil,
                     })
-                ),
-                gelijk=zkn_factory.GeefZaakdocumentLezen_EDC_vraagSelectie(
+                },
+                gelijk=zkn_factory['GeefZaakdocumentLezen-EDC-vraagSelectie'](
                     identificatie=self.document.informatieobjectidentificatie,
                 )
             )
@@ -163,7 +169,7 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
         ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.document)
         self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO(b'foobarbaz'))
 
-        response = self._do_simple_request()
+        response = self._do_simple_request(raw_response=True)
 
         root = etree.fromstring(response.content)
         body_root = self._get_body_root(root)
@@ -179,21 +185,14 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
         """
         Verify that the namespace of the response is as expected.
         """
-        self._dms_client.geef_inhoud.return_value = ('empty', BytesIO())
-
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO(b'foobarbaz'))
         result = self._do_simple_request(raw_response=True)
-
         root = etree.fromstring(result.content)
-        self.assertEquals(
-            set(root.nsmap.values()),
-            {
-                'http://www.egem.nl/StUF/sector/zkn/0310',
-                'http://www.egem.nl/StUF/StUF0301',
-                'http://www.stufstandaarden.nl/koppelvlak/zds0120',
-                'http://schemas.xmlsoap.org/soap/envelope/',
-                'http://www.w3.org/2001/XMLSchema-instance'
-            }
-        )
+        namespaces = {ns for el in root.iterdescendants() for ns in el.nsmap.values()}
+
+        self.assertIn('http://www.egem.nl/StUF/sector/zkn/0310', namespaces)
+        self.assertIn('http://www.egem.nl/StUF/StUF0301', namespaces)
+        self.assertIn('http://www.stufstandaarden.nl/koppelvlak/zds0120', namespaces)
 
     def test_root_element(self):
         """
@@ -275,7 +274,7 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
         ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.document)
         ZaakInformatieObjectFactory.create(zaak=zaak2, informatieobject=self.document)
 
-        response = self._do_simple_request()
+        response = self._do_simple_request(raw_response=True)
 
         root = etree.fromstring(response.content)
         body_root = self._get_body_root(root)
@@ -309,7 +308,7 @@ class STPgeefZaakdocumentlezen_EdcLv01Tests(DMSMockMixin, BaseTestPlatformTests)
     Dit scenario bevraagt documenten die in scenario's voegZaakdocumentToe (P) en maakZaakdocument (P)
     zijn toegevoegd en (deels) in scenario updateZaakdocument (P) zijn gewijzigd.
     """
-    porttype = 'Beantwoordvraag'
+    porttype = 'BeantwoordVraag'
     maxDiff = None
     test_files_subfolder = 'stp_geefZaakdocumentlezen'
 
@@ -404,7 +403,7 @@ class STPgeefZaakdocumentlezen_EdcLv01Tests(DMSMockMixin, BaseTestPlatformTests)
 
 class geefZaakdocumentLezen_EdcLv01RegressionTests(DMSMockMixin, BaseTestPlatformTests):
     test_files_subfolder = 'maykin_geefZaakdocumentLezen'
-    porttype = 'Beantwoordvraag'
+    porttype = 'BeantwoordVraag'
 
     def setUp(self):
         super().setUp()

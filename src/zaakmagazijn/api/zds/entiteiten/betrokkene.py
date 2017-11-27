@@ -1,17 +1,14 @@
-from ....rgbz.models import (
-    Klantcontact, Medewerker, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OrganisatorischeEenheid, Rol, Status, Vestiging,
-    VestigingVanZaakBehandelendeOrganisatie as VestigingVanZaakBehandelendeOrganisatieModel
+from zaakmagazijn.rgbz_mapping.models import (
+    ContactpersoonProxy, CorrespondentieadresProxy, LocatieadresProxy,
+    MedewerkerProxy, NatuurlijkPersoonProxy, NietNatuurlijkPersoonProxy,
+    OrganisatorischeEenheidProxy, PostAdresProxy, RolProxy,
+    VerblijfBuitenlandProxy, VestigingProxy,
+    VestigingVanZaakBehandelendeOrganisatieProxy
 )
-from ....rsgb.models import (
-    AdresMetPostcode, Correspondentieadres, PostAdres, VerblijfAdres,
-    VerblijfBuitenland
-)
+
 from ...stuf import (
     ForeignKeyRelation, OneToManyRelation, StUFEntiteit, StUFGegevensgroep
 )
-from ...stuf.constants import STUF_XML_NS
-from ...stuf.models import ExtraElementen
 
 
 class VestigingVerblijfsAdresGegevensGroep(StUFGegevensgroep):
@@ -19,183 +16,7 @@ class VestigingVerblijfsAdresGegevensGroep(StUFGegevensgroep):
     NOTE: The mapping here is a bit weird. In the XSD this is called 'verblijfsadres',
     in the RGBZ i've mapped it to 'locatie-adres', since there is nothing else.
     """
-    model = AdresMetPostcode
-    namespace = "http://www.egem.nl/StUF/sector/bg/0310"
-
-    field_mapping = (
-        # ('aoa.identificatie', ''),
-        # ('authentiek', '')
-        ('wpl.woonplaatsNaam', 'woonplaatsnaam'),
-        ('gor.openbareRuimteNaam', 'naam_openbare_ruimte'),
-        # TODO: [COMPAT] I think this exists in RGBZ, but does not in the model.
-        # ('gor.straatnaam', '?'),
-        ('aoa.postcode', 'postcode'),
-        ('aoa.huisnummer', 'huisnummer'),
-        ('aoa.huisletter', 'huisletter'),
-        ('aoa.huisnummertoevoeging', 'huisnummertoevoeging'),
-        # ('inp.locatiebeschrijving', '?')
-    )
-
-
-class VerblijfBuitenlandGegevensGroep(StUFGegevensgroep):
-    model = VerblijfBuitenland
-    namespace = "http://www.egem.nl/StUF/sector/bg/0310"
-
-    field_mapping = (
-        ('lnd.landnaam', 'land__landnaam'),
-        ('sub.adresBuitenland1', 'adres_buitenland_1'),
-        ('sub.adresBuitenland2', 'adres_buitenland_2'),
-        ('sub.adresBuitenland3', 'adres_buitenland_3'),
-    )
-
-
-class VestigingEntiteit(StUFEntiteit):
-    """
-    in xsd: ['vestigingsNummer', 'authentiek', 'handelsnaam', 'verblijfsadres', 'sub.verblijfBuitenland']
-    """
-    namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    mnemonic = 'VES'
-    model = Vestiging
-
-    field_mapping = (
-        ('vestigingsNummer', 'identificatie'),
-        ('handelsnaam', 'handelsnaam'),
-
-        # TODO: [TECH] 'authentiek' in xsd, niet in model
-        # ('authentiek', ''),
-    )
-    gegevensgroepen = (
-        ForeignKeyRelation('verblijfsadres', 'locatieadres', VestigingVerblijfsAdresGegevensGroep),
-        ForeignKeyRelation('sub.verblijfBuitenland', 'verblijf_buitenland', VerblijfBuitenlandGegevensGroep),
-    )
-    matching_fields = (
-        'vestigingsNummer',
-        # 'authentiek'
-        'handelsnaam',
-        # TODO: [TECH] Not supported yet.
-        # 'verblijfsadres',
-        # 'sub.verblijfBuitenland'
-    )
-
-
-class VZOVESEntiteit(StUFEntiteit):
-    mnemonic = 'VZOVES'
-    model = VestigingVanZaakBehandelendeOrganisatieModel
-
-    gerelateerde = ('vestiging_ptr', VestigingEntiteit)
-    field_mapping = ()
-
-    matching_fields = (
-        'gerelateerde',
-    )
-
-
-class VestigingVanZaakBehandelendeOrganisatie(StUFEntiteit):
-    # namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    mnemonic = 'VZO'
-    model = VestigingVanZaakBehandelendeOrganisatieModel
-
-    field_mapping = ()
-
-    related_fields = (
-        OneToManyRelation('isEen', 'self', VZOVESEntiteit, min_occurs=1, max_occurs=1),
-    )
-
-    matching_fields = (
-        # TODO: [KING] See https://discussie.kinggemeenten.nl/comment/5295#comment-5295
-    )
-
-
-class OEHVZOEntiteit(StUFEntiteit):
-    model = OrganisatorischeEenheid
-    mnemonic = 'OEHVZO'
-    gerelateerde = ('gevestigd_in', VestigingVanZaakBehandelendeOrganisatie)
-    field_mapping = ()
-
-    matching_fields = (
-        'gerelateerde'
-    )
-
-
-class OrganisatorischeEenheidEntiteit(StUFEntiteit):
-    mnemonic = 'OEH'
-    model = OrganisatorischeEenheid
-
-    field_mapping = (
-        ('identificatie', 'organisatieeenheididentificatie'),
-        ('naam', 'naam'),
-        ('naamVerkort', 'naam_verkort'),
-        ('omschrijving', 'omschrijving'),
-        ('toelichting', 'toelichting'),
-        ('telefoonnummer', 'telefoonnummer'),
-        ('faxnummer', 'faxnummer'),
-        ('emailadres', 'emailadres'),
-    )
-
-    # TODO: [TECH] Should be done: ingangsdatumObject, einddatumObject, bestaatUit,
-    # heeftAlsVerantwoordelijke, heeftAlsContactpersoon,
-    related_fields = (
-        OneToManyRelation('isGehuisvestIn', 'self', OEHVZOEntiteit, min_occurs=0, max_occurs=1),
-    )
-
-    fields = (
-        'identificatie',
-        'naam',
-        'naamVerkort',
-        'omschrijving',
-        'toelichting',
-        'telefoonnummer',
-        'faxnummer',
-        'emailadres',
-        'isGehuisvestIn',
-    )
-
-    matching_fields = (
-        'identificatie',
-    )
-
-
-class MDWOEHLIDEntiteit(StUFEntiteit):
-    mnemonic = 'MDWOEHLID'
-    model = Medewerker
-
-    gerelateerde = ('organisatorische_eenheid', OrganisatorischeEenheidEntiteit)
-    field_mapping = ()
-    matching_fields = (
-        'gerelateerde',
-    )
-
-
-class MedewerkerEntiteit(StUFEntiteit):
-    """
-    in xsd: ['identificatie', 'achternaam', 'voorletters', 'voorvoegselAchternaam']
-    """
-    mnemonic = 'MDW'
-    model = Medewerker
-
-    field_mapping = (
-        ('medewerkeridentificatie', 'medewerkeridentificatie'),
-        ('achternaam', 'achternaam'),
-        ('voorletters', 'voorletters'),
-        ('voorvoegselAchternaam', 'voorvoegsel_achternaam'),
-        ('geslachtsaanduiding', 'geslachtsaanduiding'),
-        ('functie', 'functie'),
-        ('roepnaam', 'roepnaam'),  # Not in ZDS 1.2
-        ('datumUitDienst', 'datum_uit_dienst'),
-    )
-    matching_fields = (
-        "medewerkeridentificatie",
-        "achternaam",
-        "voorletters",
-        "voorvoegselAchternaam",
-    )
-    related_fields = (
-        OneToManyRelation('hoortBij', 'self', MDWOEHLIDEntiteit, min_occurs=0, max_occurs=1),
-    )
-
-
-class VerblijfsAdresGegevensGroep(StUFGegevensgroep):
-    model = VerblijfAdres
+    model = LocatieadresProxy
     namespace = "http://www.egem.nl/StUF/sector/bg/0310"
 
     field_mapping = (
@@ -208,12 +29,24 @@ class VerblijfsAdresGegevensGroep(StUFGegevensgroep):
         ('aoa.huisnummer', 'huisnummer'),
         ('aoa.huisletter', 'huisletter'),
         ('aoa.huisnummertoevoeging', 'huisnummertoevoeging'),
-        ('inp.locatiebeschrijving', 'locatie_beschrijving')
+        # ('inp.locatiebeschrijving', '?')
+    )
+
+
+class VerblijfBuitenlandGegevensGroep(StUFGegevensgroep):
+    model = VerblijfBuitenlandProxy
+    namespace = "http://www.egem.nl/StUF/sector/bg/0310"
+
+    field_mapping = (
+        ('lnd.landnaam', 'land__landnaam'),
+        ('sub.adresBuitenland1', 'adres_buitenland_1'),
+        ('sub.adresBuitenland2', 'adres_buitenland_2'),
+        ('sub.adresBuitenland3', 'adres_buitenland_3'),
     )
 
 
 class CorrespondentieadresGegevensGroep(StUFGegevensgroep):
-    model = Correspondentieadres
+    model = CorrespondentieadresProxy
     namespace = "http://www.egem.nl/StUF/sector/bg/0310"
 
     field_mapping = (
@@ -237,21 +70,20 @@ class NatuurlijkPersoonEntiteit(StUFEntiteit):
     """
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
     mnemonic = "NPS"
-    model = NatuurlijkPersoon
+    model = NatuurlijkPersoonProxy
     field_mapping = (
         ('inp.bsn', 'burgerservicenummer'),
         ('anp.identificatie', 'nummer_ander_natuurlijk_persoon'),
-        ('geslachtsnaam', 'naam__geslachtsnaam'),
-        # TODO: [TECH] Issue #243 3rd Level mapping is not supported.
-        # ('voorvoegselGeslachtsnaam', 'naam__voorvoegsel_geslachtsnaam__voorvoegsel'),
-        # ('voorletters', 'naam__voorvoegsel_geslachtsnaam__voorletters'),
-        ('voornamen', 'naam__voornamen'),
-        ('aanhefAanschrijving', 'naam_aanschrijving__aanhef_aanschrijving'),
-        ('voornamenAanschrijving', 'naam_aanschrijving__voornamen_aanschrijving'),
-        ('geslachtsnaamAanschrijving', 'naam_aanschrijving__geslachtsnaam_aanschrijving'),
+        ('geslachtsnaam', 'geslachtsnaam'),
+        ('voorvoegselGeslachtsnaam', 'voorvoegsels_geslachtsnaam'),
+        ('voorletters', 'voorletters'),
+        ('voornamen', 'voornamen'),
+        ('aanhefAanschrijving', 'aanhef_aanschrijving'),
+        ('voornamenAanschrijving', 'voornamen_aanschrijving'),
+        ('geslachtsnaamAanschrijving', 'geslachtsnaam_aanschrijving'),
         ('geslachtsaanduiding', 'geslachtsaanduiding'),
-        ('geboortedatum', 'geboortedatum_ingeschreven_persoon'),
-        ('overlijdensdatum', 'overlijdensdatum_ingeschreven_persoon'),
+        ('geboortedatum', 'geboortedatum'),
+        ('overlijdensdatum', 'overlijdensdatum'),
     )
 
     gegevensgroepen = (
@@ -266,12 +98,12 @@ class NatuurlijkPersoonEntiteit(StUFEntiteit):
         # It's unclear what this is.
         # 'inp.a-nummer',
         'geslachtsnaam',
-        # 'voorvoegselGeslachtsnaam',
-        # 'voorletters',
+        'voorvoegselGeslachtsnaam',
+        'voorletters',
         'voornamen',
         'geslachtsaanduiding',
         'geboortedatum',
-        # TODO: [TECH] Add support for this.
+        # TODO [TECH]: Add support for this.
         # 'verblijfsadres',
         # 'sub.verblijfBuitenland',
     )
@@ -283,9 +115,9 @@ class NietNatuurlijkPersoonEntiteit(StUFEntiteit):
     """
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
     mnemonic = "NNP"
-    model = NietNatuurlijkPersoon
+    model = NietNatuurlijkPersoonProxy
     field_mapping = (
-        ('inn.nnpId', 'rsin'),
+        ('inn.nnpId', 'nnpid'),
         ('ann.identificatie', 'nummer_ander_buitenlands_nietnatuurlijk_persoon'),
         # ('sub.typering', '?'),
         ('statutaireNaam', 'statutaire_naam'),
@@ -296,18 +128,232 @@ class NietNatuurlijkPersoonEntiteit(StUFEntiteit):
 
     gegevensgroepen = (
         ForeignKeyRelation('sub.correspondentieAdres', 'correspondentieadres', CorrespondentieadresGegevensGroep),
-        # TODO: [TECH] This is for 'Ingeschreven niet natuurlijk persoon.'
+        # TODO [TECH]: This is for 'Ingeschreven niet natuurlijk persoon.'
         # ForeignKeyRelation('bezoekadres', '', ),
         ForeignKeyRelation('sub.verblijfBuitenland', 'verblijf_buitenland', VerblijfBuitenlandGegevensGroep),
     )
 
+    matching_fields = (
+        # Choice (
+        "inn.nnpId",
+        "authentiek",
+        # ,
+        "ann.identificatie",
+        # )
+        "statutaireNaam",
+        "inn.rechtsvorm",
+        # Choice (
+        "bezoekadres",
+        # ,
+        "sub.verblijfBuitenland",
+        # )
+    )
+
+
+class VestigingEntiteit(StUFEntiteit):
+    """
+    in xsd: ['vestigingsNummer', 'authentiek', 'handelsnaam', 'verblijfsadres', 'sub.verblijfBuitenland']
+    """
+    namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
+    mnemonic = 'VES'
+    model = VestigingProxy
+
+    field_mapping = (
+        ('vestigingsNummer', 'vestigingsnummer'),
+        ('handelsnaam', 'handelsnaam'),
+
+        # TODO [TECH]: 'authentiek' in xsd, niet in model
+        # ('authentiek', ''),
+    )
+    gegevensgroepen = (
+        ForeignKeyRelation('verblijfsadres', 'locatieadres', VestigingVerblijfsAdresGegevensGroep),
+        ForeignKeyRelation('sub.verblijfBuitenland', 'verblijf_buitenland', VerblijfBuitenlandGegevensGroep),
+    )
+    matching_fields = (
+        'vestigingsNummer',
+        # 'authentiek'
+        'handelsnaam',
+        'verblijfsadres',
+        'sub.verblijfBuitenland'
+    )
+    fields = (
+        'vestigingsNummer',
+        'handelsnaam',
+        'verblijfsadres',
+        'sub.verblijfBuitenland',
+    )
+
+
+class VZOVESEntiteit(StUFEntiteit):
+    mnemonic = 'VZOVES'
+    model = VestigingVanZaakBehandelendeOrganisatieProxy
+
+    gerelateerde = ('is_specialisatie_van', VestigingEntiteit)
+    field_mapping = ()
+
+    matching_fields = (
+        'gerelateerde',
+    )
+
+
+class VestigingVanZaakBehandelendeOrganisatieEntiteit(StUFEntiteit):
+    # namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
+    mnemonic = 'VZO'
+    model = VestigingVanZaakBehandelendeOrganisatieProxy
+
+    field_mapping = ()
+
+    related_fields = (
+        OneToManyRelation('isEen', 'self', VZOVESEntiteit, min_occurs=1, max_occurs=1),
+    )
+
+    matching_fields = (
+        'isEen',
+    )
+
+    @classmethod
+    def add_extra_obj_kwargs(cls, spyne_obj, obj):
+        spyne_vestiging = spyne_obj.isEen.gerelateerde
+        obj.update({
+            'is_specialisatie_van__vestigingsnummer': spyne_vestiging.vestigingsNummer,
+            'is_specialisatie_van__handelsnaam': spyne_vestiging.handelsnaam,
+            # TODO [KING]:         'verblijfsadres', 'sub.verblijfBuitenland',
+        })
+        return obj
+
+
+class OEHVZOEntiteit(StUFEntiteit):
+    model = OrganisatorischeEenheidProxy
+    mnemonic = 'OEHVZO'
+    gerelateerde = ('self', VestigingVanZaakBehandelendeOrganisatieEntiteit)
+    field_mapping = ()
+
+    matching_fields = (
+        'gerelateerde'
+    )
+
+    @classmethod
+    def add_extra_obj_kwargs(cls, spyne_obj, obj):
+        spyne_vestiging = spyne_obj.gerelateerde.isEen.gerelateerde
+        obj.update({
+            'gevestigd_in__is_specialisatie_van__vestigingsnummer': spyne_vestiging.vestigingsNummer,
+            'gevestigd_in__is_specialisatie_van__handelsnaam': spyne_vestiging.handelsnaam,
+            # TODO [KING]:         'verblijfsadres', 'sub.verblijfBuitenland',
+
+        })
+        return obj
+
+
+class OrganisatorischeEenheidEntiteit(StUFEntiteit):
+    mnemonic = 'OEH'
+    model = OrganisatorischeEenheidProxy
+
+    field_mapping = (
+        ('identificatie', 'organisatieidentificatie'),
+        ('naam', 'naam'),
+        ('naamVerkort', 'naam_verkort'),
+        ('omschrijving', 'omschrijving'),
+        ('toelichting', 'toelichting'),
+        ('telefoonnummer', 'telefoonnummer'),
+        ('faxnummer', 'faxnummer'),
+        ('emailadres', 'emailadres'),
+    )
+
+    # TODO [TECH]: Should be done: ingangsdatumObject, einddatumObject, bestaatUit,
+    # heeftAlsVerantwoordelijke, heeftAlsContactpersoon,
+    related_fields = (
+        ForeignKeyRelation('isGehuisvestIn', 'gevestigd_in', OEHVZOEntiteit),
+    )
+
+    fields = (
+        'identificatie',
+        'naam',
+        'naamVerkort',
+        'omschrijving',
+        'toelichting',
+        'telefoonnummer',
+        'faxnummer',
+        'emailadres',
+        'isGehuisvestIn',
+    )
+
+    matching_fields = (
+        'identificatie',
+        'naam',
+        'isGehuisvestIn',
+    )
+
+    @classmethod
+    def add_extra_obj_kwargs(cls, spyne_obj, obj):
+        if spyne_obj.isGehuisvestIn:
+            spyne_vestiging = spyne_obj.isGehuisvestIn.gerelateerde.isEen.gerelateerde
+            obj.update({
+                'gevestigd_in__is_specialisatie_van__vestigingsnummer': spyne_vestiging.vestigingsNummer,
+                'gevestigd_in__is_specialisatie_van__handelsnaam': spyne_vestiging.handelsnaam,
+                # TODO [KING]:         'verblijfsadres', 'sub.verblijfBuitenland',
+
+            })
+        return obj
+
+
+class MDWOEHLIDEntiteit(StUFEntiteit):
+    mnemonic = 'MDWOEHLID'
+    model = MedewerkerProxy
+
+    gerelateerde = ('organisatorische_eenheid', OrganisatorischeEenheidEntiteit)
+    field_mapping = ()
+    matching_fields = (
+        'gerelateerde',
+    )
+
+
+class MedewerkerEntiteit(StUFEntiteit):
+    """
+    in xsd: ['identificatie', 'achternaam', 'voorletters', 'voorvoegselAchternaam']
+    """
+    mnemonic = 'MDW'
+    model = MedewerkerProxy
+
+    field_mapping = (
+        ('identificatie', 'medewerkeridentificatie'),
+        ('achternaam', 'achternaam'),
+        ('voorletters', 'voorletters'),
+        ('voorvoegselAchternaam', 'voorvoegsel_achternaam'),
+        ('geslachtsaanduiding', 'geslachtsaanduiding'),
+        ('functie', 'functie'),
+        ('datumUitDienst', 'datum_uit_dienst'),
+    )
+    matching_fields = (
+        "identificatie",
+        # TODO [KING]: See https://discussie.kinggemeenten.nl/discussie/gemma/stuf-testplatform/medewerker-123456789
+        # "achternaam",
+        # "voorletters",
+        # "voorvoegselAchternaam",
+    )
+    related_fields = (
+        OneToManyRelation('hoortBij', 'self', MDWOEHLIDEntiteit, min_occurs=0, max_occurs=1),
+    )
+
+
+class ContactpersoonEntiteit(StUFEntiteit):
+    model = ContactpersoonProxy
+    field_mapping = (
+    )
+
+
+# heeftAlsAanspreekpunt
+class ZAKBTRVRACTPEntiteit(StUFEntiteit):
+    model = RolProxy
+    gerelateerde = ('contactpersoon', ContactpersoonEntiteit)
+    field_mapping = (
+    )
+
 
 class AfwijkendCorrespondentieAdresGegevensGroep(StUFGegevensgroep):
-    model = PostAdres
+    model = PostAdresProxy
     namespace = "http://www.egem.nl/StUF/sector/bg/0310"
 
     field_mapping = (
-        ('wpl.woonplaatsNaam', 'woonplaatsnaam'),
         ('postcode', 'postadres_postcode'),
         ('sub.postadresType', 'postadrestype'),
         ('sub.postadresNummer', 'postbus_of_antwoordnummer'),
@@ -315,15 +361,15 @@ class AfwijkendCorrespondentieAdresGegevensGroep(StUFGegevensgroep):
 
 
 class ZAKBTRBTREntiteit(StUFEntiteit):
-    model = Rol
+    model = RolProxy
     mnemonic = 'ZAKBTRBTR'
     custom_fields = (
-        ('extraElementen', ExtraElementen.customize(sub_ns=STUF_XML_NS, ref='extraElementen')),
+        # ('extraElementen', ExtraElementen.customize(sub_ns=STUF_XML_NS, ref='extraElementen')),
     )
     field_mapping = (
-        # TODO: [KING] (ZAKBTRBTR) Element "code" staat in de XSD maar niet in het ZDS.
-        # ('code', ???)
-        # In ZKN 3.2, no fields are specified here.
+        # ('code', '?'),
+        ('omschrijving', 'rolomschrijving'),
+        ('toelichting', 'roltoelichting'),
     )
     gegevensgroepen = (
         ForeignKeyRelation(
@@ -341,84 +387,56 @@ class ZAKBTRBTREntiteit(StUFEntiteit):
     ), )
     fields = (
         'gerelateerde',
-        'extraElementen',
+        # 'code'
+        'omschrijving',
+        'toelichting',
+        'tijdvakRelatie',
+        'tijdvakGeldigheid',
+        'tijdstipRegistratie',
+        # 'extraElementen',
     )
     matching_fields = (
         'gerelateerde'
     )
 
-
-class ZAKSTTBTREntiteit(ZAKBTRBTREntiteit):
-    model = Status
-    mnemonic = 'ZAKSTTBTR'
-
-    gegevensgroepen = ()
-    # 'is_gezet_door' being a callable will only work for Beantwoordvraag
-    # services, not for Kennisgevingsberichten.
-    gerelateerde = ('is_gezet_door', (
-        ('medewerker', MedewerkerEntiteit),
-        ('organisatorischeEenheid', OrganisatorischeEenheidEntiteit),
-        ('vestiging', VestigingEntiteit),
-        ('natuurlijkPersoon', NatuurlijkPersoonEntiteit),
-        ('nietNatuurlijkPersoon', NietNatuurlijkPersoonEntiteit),
-    ), )
-
-
-class ZAKBTRADVEntiteit(ZAKBTRBTREntiteit):
-    model = Rol
-    mnemonic = 'ZAKBTRADV'
+    begin_geldigheid = 'begin_geldigheid'
+    eind_geldigheid = 'eind_geldigheid'
+    begin_relatie = 'begin_relatie'
+    eind_relatie = 'eind_relatie'
+    tijdstip_registratie = 'tijdstip_registratie'
 
 
 class ZAKBTRBLHEntiteit(ZAKBTRBTREntiteit):
-    model = Rol
+    # heeftAlsBelanghebbende
+    model = RolProxy
     mnemonic = 'ZAKBTRBLH'
 
 
-class ZAKBTRBHLEntiteit(ZAKBTRBTREntiteit):
-    model = Rol
-    mnemonic = 'ZAKBTRBHL'
-
-
-class ZAKBRTBSSEntiteit(ZAKBTRBTREntiteit):
-    model = Rol
-    mnemonic = 'ZAKBRTBSS'
-
-
-class ZAKBTRINIEntiteit(ZAKBTRBTREntiteit):
-    model = Rol
-    mnemonic = 'ZAKBTRINI'
-
-
-class ZAKBTRKCREntiteit(ZAKBTRBTREntiteit):
-    model = Rol
-    mnemonic = 'ZAKBTRKCR'
-
-
-class ZAKBTRZKCEntiteit(ZAKBTRBTREntiteit):
-    model = Rol
-    mnemonic = 'ZAKBTRZKC'
-
-
 class ZAKBTRGMCEntiteit(ZAKBTRBTREntiteit):
-    model = Rol
+    # heeftAlsGemachtigde
+    model = RolProxy
     mnemonic = 'ZAKBTRGMC'
 
 
-class KlantcontactEntiteit(StUFEntiteit):
-    model = Klantcontact
-    mnemonic = 'KLC'
+class ZAKBTRINIEntiteit(ZAKBTRBTREntiteit):
+    # heeftAlsInitiator
+    model = RolProxy
+    mnemonic = 'ZAKBTRINI'
 
-    field_mapping = (
-        ('identificatie', 'identificatie'),
-        ('datumtijd', 'datumtijd'),
-        ('kanaal', 'kanaal'),
-        ('onderwerp', 'onderwerp'),
-        ('toelichting', 'toelichting'),
-    )
 
-    matching_fields = (
-        'identificatie',
-        # TODO: [COMPAT] verantwoordelijkeOrganisatie is specified in ZKN 3.2, but
-        # I can't find it in the model.
-        # 'verantwoordelijkeOrganisatie',
-    )
+class ZAKBTRUTVEntiteit(ZAKBTRBTREntiteit):
+    # heeftAlsUitvoerende
+    model = RolProxy
+    mnemonic = 'ZAKBTRUTV'
+
+
+class ZAKBTRVRAEntiteit(ZAKBTRBTREntiteit):
+    # heeftAlsVerantwoordelijke
+    model = RolProxy
+    mnemonic = 'ZAKBTRVRA'
+
+
+class ZAKBTROVREntiteit(ZAKBTRBTREntiteit):
+    # heeftAlsOverigBetrokkene
+    model = RolProxy
+    mnemonic = 'ZAKBTROVR'

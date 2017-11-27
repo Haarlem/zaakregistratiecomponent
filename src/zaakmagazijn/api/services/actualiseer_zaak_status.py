@@ -8,14 +8,11 @@ from ...rgbz.models import (
     Betrokkene, Medewerker, OrganisatorischeEenheid, Rol, Status, StatusType,
     Zaak
 )
-from ...utils import stuf_datetime
 from ..stuf import OneToManyRelation, StUFEntiteit, StUFKerngegevens
-from ..stuf.choices import (
-    BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
-)
+from ..stuf.choices import ClientFoutChoices, ServerFoutChoices
 from ..stuf.faults import StUFFault
 from ..stuf.models import Bv03Bericht
-from ..utils import create_unique_id
+from ..stuf.utils import get_bv03_stuurgegevens
 from ..zds import Lk01Builder
 from ..zds.entiteiten.betrokkene import OEHVZOEntiteit
 
@@ -81,7 +78,7 @@ class ZAKBTRBTREntiteit(StUFEntiteit):
     model = Rol
     mnemonic = 'ZAKBTRBTR'
     field_mapping = (
-        # TODO: [KING] Taiga #221 actualiseerZaakstatus_ZakLk01.object.heeft.isGezetDoor.[rolOmschrijving, rolomschrijvingGeneriek, rolToelichting] zijn verplicht in RGBZ 2.0 maar staan niet in ZDS 1.2.
+        # TODO [KING]: Taiga #221 actualiseerZaakstatus_ZakLk01.object.heeft.isGezetDoor.[rolOmschrijving, rolomschrijvingGeneriek, rolToelichting] zijn verplicht in RGBZ 2.0 maar staan niet in ZDS 1.2.
         # ('rolOmschrijving', 'rolomschrijving'),
         # ('rolomschrijvingGeneriek', 'rolomschrijving_generiek'),
         # ('rolToelichting', 'roltoelichting'),
@@ -163,7 +160,7 @@ class ActualiseerZaakstatus(ServiceBase):
     input_model = input_builder.create_model()
     output_model = Bv03Bericht
 
-    @rpc(input_model, _body_style="bare", _out_message_name="Bv03Bericht", _returns=output_model)
+    @rpc(input_model, _body_style="bare", _out_message_name="{http://www.egem.nl/StUF/StUF0301}Bv03Bericht", _returns=output_model)
     def actualiseerZaakstatus_ZakLk01(ctx, data):
         """
         Een lopende zaak heeft een nieuwe status bereikt.
@@ -223,7 +220,7 @@ class ActualiseerZaakstatus(ServiceBase):
         except StatusType.DoesNotExist:
             raise StUFFault(ServerFoutChoices.stuf064, stuf_details='StatusType met omschrijving "{}" bestaat niet'.format(stt_omschrijving))
 
-        # TODO: [KING] Taiga #223 Het ZS kan aan de hand van informatie uit de ZTC bepalen of een status een eindstatus van een zaak is.
+        # TODO [KING]: Taiga #223 Het ZS kan aan de hand van informatie uit de ZTC bepalen of een status een eindstatus van een zaak is.
 
         # Actual creation of the Status object.
         zaksttbtr = huidig.heeft[0].isGezetDoor
@@ -236,7 +233,7 @@ class ActualiseerZaakstatus(ServiceBase):
 
         betrokkene_obj = Betrokkene.objects.get(identificatie=btr_identificatie)
 
-        # TODO: [KING] Taiga #221
+        # TODO [KING]: Taiga #221
         zakbtrbtr_rolomschrijving = ''  # zaksttbtr.rolOmschrijving
         zakbtrbtr_rolomschrijving_generiek = ''  # zaksttbtr.rolomschrijvingGeneriek
         zakbtrbtr_roltoelichting = ''  # zaksttbtr.rolToelichting
@@ -248,11 +245,21 @@ class ActualiseerZaakstatus(ServiceBase):
             rol = Rol.objects.create(
                 zaak=zaak_obj,
                 betrokkene=betrokkene_obj,
-                # TODO: [KING] Taiga #221
+                # TODO [KING]: Taiga #221
                 rolomschrijving=zakbtrbtr_rolomschrijving or Rolomschrijving.behandelaar,
                 rolomschrijving_generiek=zakbtrbtr_rolomschrijving_generiek or RolomschrijvingGeneriek.behandelaar,
                 roltoelichting=zakbtrbtr_roltoelichting or ''
             )
+
+            # TODO [KING]: There is a unique constraint on zaak and
+            # datum_status_gezet. One of the tests in the STP creates two
+            # different statuses on the same zaak, on the same date. I've
+            # overwritten the date with a datetime below but we still have to
+            # wait one second so that we don't re-use the same timestamp, and
+            # violate the unique constraint.
+            if settings.ZAAKMAGAZIJN_STUF_TESTPLATFORM:
+                import time
+                time.sleep(1)
 
             Status.objects.create(
                 zaak=zaak_obj,
@@ -270,11 +277,5 @@ class ActualiseerZaakstatus(ServiceBase):
             zaak_obj.status_set.exclude(pk=laatst_gezette_status.pk).update(indicatie_laatst_gezette_status=JaNee.nee)
 
         return {
-            'stuurgegevens': {
-                'berichtcode': BerichtcodeChoices.bv03,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': data.stuurgegevens.zender,
-                'referentienummer': create_unique_id(),
-                'tijdstipBericht': stuf_datetime.now(),
-            },
+            'stuurgegevens': get_bv03_stuurgegevens(data),
         }

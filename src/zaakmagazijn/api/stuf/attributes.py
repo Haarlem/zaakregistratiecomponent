@@ -3,7 +3,7 @@ from spyne.model.complex import XmlAttribute
 
 from ...utils.stuf_datetime import IndicatieOnvolledigeDatum
 from ..stuf.choices import ScopeChoices
-from .constants import BG_XML_NS, STUF_XML_NS, XMIME_XML_NS
+from .constants import STUF_XML_NS, XMIME_XML_NS
 from .simple_types import Entiteittype, Exact, Functie
 
 Bestandsnaam = Unicode.customize(__namespace__=STUF_XML_NS, type_name='Bestandsnaam', max_len=255)

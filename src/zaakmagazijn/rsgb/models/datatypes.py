@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, RegexValidator
 from django.db import models
 
 from zaakmagazijn.rgbz.choices import JaNee
+from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.fields import StUFDateField
 
 from ..choices import TypeObjectCode
@@ -75,28 +76,19 @@ class TypeKadastraleAanduiding(models.Model):
     appartementsrechtvolgnummer = models.PositiveSmallIntegerField(validators=[MaxValueValidator(9999)])
 
 
-class Voorvoegsel(models.Model):
-    voorvoegselnummer = models.CharField(
-        max_length=3, validators=[RegexValidator(r'^\d{1,10}$')],
-        help_text='Het identificerende nummer van het voorvoegsel'
-    )
-    lo3_voorvoegsel = models.CharField(max_length=80)
-    voorvoegsel = models.CharField(max_length=80)
-    scheidingsteken = models.CharField(max_length=1)
-
-
 class AcademischeTitel(models.Model):
     academische_titelcode = models.CharField(
         max_length=3, validators=[RegexValidator('([A-Z,a-z])\w+')],
         help_text='Een code die aangeeft welke academische titel behoort tot de naam.')
     omschrijving_academische_titel = models.CharField(
         max_length=80, help_text='De omschrijving behorende bij NEN-tabel Academische titelcode.')
-    # TODO: [KING] De keuzes van attribuut "positie_academische_titel_tov_naam" van AcademischeTitel staan niet in het RGBZ
+    # TODO [KING]: De keuzes van attribuut "positie_academische_titel_tov_naam" van AcademischeTitel staan niet in het RGBZ
     positie_academische_titel_tov_naam = models.CharField(
         max_length=1, choices=JaNee.choices,
         help_text='Aanduiding of de academische titel voorafgaand '
                   'aan de voornamen of achter de geslachtsnaam wordt geplaatst.')
     datum_begin_geldigheid_titel = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop de ACADEMISCHE TITEL is ontstaan.')
     datum_einde_geldigheid_titel = StUFDateField(
         help_text='De datum waarop de ACADEMISCHE TITEL is opgeheven.', blank=True)

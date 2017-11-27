@@ -15,7 +15,7 @@ from .geef_zaakdocument_lezen import EnkelvoudigInformatieObjectEntiteit
 output_builder_edc_la01 = La01Builder(EnkelvoudigInformatieObjectEntiteit, 'geefZaakdocumentBewerken')
 
 
-# TODO: [TECH] Move to/merge in vrijeberichten?
+# TODO [TECH]: Move to/merge in vrijeberichten?
 # Vrij bericht met als namespace ZDS ipv ZKN
 class GeefZaakdocumentBewerkenInputBuilder(ComplexModelBuilder):
     berichtcode = BerichtcodeChoices.di02
@@ -113,7 +113,7 @@ class GeefZaakdocumentBewerkenOutputBuilder(ComplexModelBuilder):
 
         type_info = (
             ('stuurgegevens', stuurgegevens_model),
-            # TODO: [KING] Taiga #235 geefZaakdocumentbewerken antwoord bericht kent geen parameters in ZDS 1.2 maar dit lijkt ons de enige reden van dit bericht.
+            # TODO [KING]: Taiga #235 geefZaakdocumentbewerken antwoord bericht kent geen parameters in ZDS 1.2 maar dit lijkt ons de enige reden van dit bericht.
             ('parameters', self.create_parameters_model()),
             (self.object_element_name, self.output_builder_edc_la01_model),
         )

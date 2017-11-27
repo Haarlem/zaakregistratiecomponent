@@ -15,7 +15,7 @@
             <StUF:applicatie>{{ontvangerApplicatie}}</StUF:applicatie>
             <StUF:gebruiker/>
         </StUF:ontvanger>
-        <StUF:referentienummer>#{referentienummer}}</StUF:referentienummer>
+        <StUF:referentienummer>{{referentienummer}}</StUF:referentienummer>
         <StUF:tijdstipBericht>{{tijdstipBericht}}</StUF:tijdstipBericht>
         <StUF:entiteittype>ZAK</StUF:entiteittype>
     </ZKN:stuurgegevens>
@@ -25,25 +25,25 @@
     </ZKN:parameters>
     <ZKN:object StUF:verwerkingssoort="T" StUF:entiteittype="ZAK">
         <ZKN:identificatie>{{genereerzaakident_identificatie_2}}</ZKN:identificatie>
-        <ZKN:bronorganisatie>1</ZKN:bronorganisatie>
-        <ZKN:archiefstatus>Gearchiveerd</ZKN:archiefstatus>
-        <ZKN:verantwoordelijkeOrganisatie>1</ZKN:verantwoordelijkeOrganisatie>
         <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
         <ZKN:startdatum>{{datumVandaag}}</ZKN:startdatum>
         <ZKN:registratiedatum>{{datumVandaag}}</ZKN:registratiedatum>
-        <ZKN:zkt.omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:zkt.omschrijving>
-        <ZKN:zkt.identificatie>{{zds_zaaktype_code}}</ZKN:zkt.identificatie>
-
+        <ZKN:zaakniveau>1</ZKN:zaakniveau>
+        <ZKN:deelzakenIndicatie>J</ZKN:deelzakenIndicatie>
+        <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="T">
+            <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
+                <ZKN:omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:omschrijving>
+                <ZKN:code>{{zds_zaaktype_code}}</ZKN:code>
+                <ZKN:ingangsdatumObject>{{datumVandaag}}</ZKN:ingangsdatumObject>
+            </ZKN:gerelateerde>
+        </ZKN:isVan>
         <ZKN:heeftBetrekkingOp StUF:verwerkingssoort="T" StUF:entiteittype="ZAKOBJ">
             <ZKN:gerelateerde>
                 <ZKN:buurt StUF:entiteittype="BRT" StUF:verwerkingssoort="T">
                     <BG:buurtCode>{{ buurtcode }}</BG:buurtCode>
                     <BG:buurtNaam>{{ buurtnaam }}</BG:buurtNaam>
-                    <BG:geometrie>{{ geometrie|safe }}</BG:geometrie>
                     <BG:gem.gemeenteCode>{{ gem_gemeente_code }}</BG:gem.gemeenteCode>
                     <BG:wyk.wijkCode>{{ wijk_wijk_code }}</BG:wyk.wijkCode>
-                    <BG:ingangsdatumObject>{{ ingangsdatum_object }}</BG:ingangsdatumObject>
-                    <BG:einddatumObject>{{ einddatum_object }}</BG:einddatumObject>
                 </ZKN:buurt>
             </ZKN:gerelateerde>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
@@ -52,16 +52,9 @@
         <ZKN:heeftAlsInitiator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRINI">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
+                    <ZKN:identificatie>56789</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
         </ZKN:heeftAlsInitiator>
-        <ZKN:heeftAlsZaakcoordinator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRZKC">
-            <ZKN:gerelateerde>
-                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
-                </ZKN:medewerker>
-            </ZKN:gerelateerde>
-        </ZKN:heeftAlsZaakcoordinator>
     </ZKN:object>
 </ZDS:creeerZaak_ZakLk01>

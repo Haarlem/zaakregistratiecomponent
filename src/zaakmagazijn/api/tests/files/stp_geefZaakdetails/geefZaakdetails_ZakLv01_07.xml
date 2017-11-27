@@ -26,18 +26,14 @@
         <ZKN:object StUF:entiteittype="ZAK">
             <ZKN:identificatie xsi:nil="true"/>
             <ZKN:omschrijving xsi:nil="true"/>
-            <!--
             <ZKN:isVan StUF:entiteittype="ZAKZKT">
                 <ZKN:gerelateerde StUF:entiteittype="ZKT">
                     <ZKN:code xsi:nil="true"/>
                 </ZKN:gerelateerde>
             </ZKN:isVan>
-            -->
             <ZKN:heeftAlsInitiator StUF:entiteittype="ZAKBTRINI" xsi:nil="true"/>
-            <ZKN:heeftAlsDeelzaken StUF:entiteittype="ZAKZAKDEL" xsi:nil="true"/>
-            <!--
+            <ZKN:heeftAlsDeelzaak StUF:entiteittype="ZAKZAKDEL" xsi:nil="true"/>
             <ZKN:heeftBetrekkingOpAndere StUF:entiteittype="ZAKZAKBTR" xsi:nil="true"/>
-            -->
             <ZKN:leidtTot StUF:entiteittype="ZAKBSL" xsi:nil="true"/>
         </ZKN:object>
     </ZKN:scope>

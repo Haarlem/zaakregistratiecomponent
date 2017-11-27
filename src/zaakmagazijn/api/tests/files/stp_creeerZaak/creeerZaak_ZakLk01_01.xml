@@ -24,35 +24,17 @@
         <StUF:indicatorOvername>V</StUF:indicatorOvername>
     </ZKN:parameters>
     <ZKN:object StUF:verwerkingssoort="T" StUF:entiteittype="ZAK">
-        <ZKN:identificatie>{{genereerzaakident_identificatie_2}}</ZKN:identificatie>
-
-        <!-- TODO These fields do not exist in ZDS 1.201, but do exist in RGBZ 2.0 -->
-        <ZKN:bronorganisatie>1</ZKN:bronorganisatie>
-        <ZKN:archiefstatus>Gearchiveerd</ZKN:archiefstatus>
-        <ZKN:verantwoordelijkeOrganisatie>1</ZKN:verantwoordelijkeOrganisatie>
-
+        <ZKN:identificatie>{{gemeentecode}}{{genereerzaakident_identificatie_2}}</ZKN:identificatie>
         <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
         <ZKN:startdatum>{{datumVandaag}}</ZKN:startdatum>
         <ZKN:registratiedatum>{{datumVandaag}}</ZKN:registratiedatum>
-
-        <!-- TODO: zaakniveau and deelzakenIndicatie have been removed in RGBZ 2.0/ZKN 3.2-->
-        <!--
         <ZKN:zaakniveau>1</ZKN:zaakniveau>
         <ZKN:deelzakenIndicatie>J</ZKN:deelzakenIndicatie>
-        -->
-
-        <!--- TODO: See Taiga Issue #150 -->
-        <!--
         <StUF:tijdvakGeldigheid>
             <StUF:beginGeldigheid>{{datumEergisteren}}</StUF:beginGeldigheid>
             <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
         </StUF:tijdvakGeldigheid>
         <StUF:tijdstipRegistratie>{{tijdstipRegistratie}}</StUF:tijdstipRegistratie>
-        -->
-
-        <!-- TODO In ZKN 3.2 'isVan' is flattened ('platgeslagen') isVan relatie-entiteit
-             has been replaced. -->
-        <!--
         <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
                 <ZKN:omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:omschrijving>
@@ -60,18 +42,12 @@
                 <ZKN:ingangsdatumObject>{{datumVandaag}}</ZKN:ingangsdatumObject>
             </ZKN:gerelateerde>
         </ZKN:isVan>
-        -->
-        <ZKN:zkt.omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:zkt.omschrijving>
-        <ZKN:zkt.identificatie>{{zds_zaaktype_code}}</ZKN:zkt.identificatie>
-
         <ZKN:heeftAlsInitiator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRINI">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
+                    <ZKN:medewerkeridentificatie>{{gemeentecode}}56789</ZKN:medewerkeridentificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            <!-- TODO: See Taiga Issue #150 -->
-            <!--
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{datumEergisteren}}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -81,15 +57,6 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{tijdstipRegistratie}}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsInitiator>
-        <!-- Note: heeftAlsZaakcoordinator is new in ZKN 3.2 and is required-->
-        <ZKN:heeftAlsZaakcoordinator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRZKC">
-            <ZKN:gerelateerde>
-                <ZKN:medewerker StUF:verwerkingssoort="I" StUF:entiteittype="MDW">
-                    <ZKN:medewerkeridentificatie>56789</ZKN:medewerkeridentificatie>
-                </ZKN:medewerker>
-            </ZKN:gerelateerde>
-        </ZKN:heeftAlsZaakcoordinator>
     </ZKN:object>
 </ZDS:creeerZaak_ZakLk01>

@@ -44,17 +44,14 @@
         <ZKN:betalingsIndicatie>(Nog) niet</ZKN:betalingsIndicatie>
         <ZKN:laatsteBetaaldatum>{{ datumVandaag }}</ZKN:laatsteBetaaldatum>
         <ZKN:archiefnominatie>N</ZKN:archiefnominatie>
-        <!--<ZKN:datumVernietigingDossier>{{ datumVandaag }}</ZKN:datumVernietigingDossier>-->
-        <!-- TODO: zaakniveau and deelzakenIndicatie have been removed in RGBZ 2.0/ZKN 3.2
+        <ZKN:datumVernietigingDossier>{{ datumVandaag }}</ZKN:datumVernietigingDossier>
         <ZKN:zaakniveau>1</ZKN:zaakniveau>
         <ZKN:deelzakenIndicatie>N</ZKN:deelzakenIndicatie>
-        TODO: See Taiga Issue #150
         <StUF:tijdvakGeldigheid>
             <StUF:beginGeldigheid>{{ datumEergisteren }}</StUF:beginGeldigheid>
             <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
         </StUF:tijdvakGeldigheid>
         <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-        TODO In ZKN 3.2 'isVan' is flattened ('platgeslagen') isVan relatie-entiteit has been replaced.
         <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="T">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
                 <ZKN:omschrijving>{{ zds_zaaktype_omschrijving }}</ZKN:omschrijving>
@@ -62,14 +59,12 @@
                 <ZKN:ingangsdatumObject>{{ datumVandaag }}</ZKN:ingangsdatumObject>
             </ZKN:gerelateerde>
         </ZKN:isVan>
-        TODO:
         <ZKN:heeftAlsGemachtigde StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRGMC">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
                     <ZKN:identificatie>{{ gemeentecode }}56781</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            TODO: See Taiga Issue #150
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -80,16 +75,12 @@
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
         </ZKN:heeftAlsGemachtigde>
-        -->
         <ZKN:heeftAlsInitiator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRINI">
             <ZKN:gerelateerde>
-                <!--- vestiging
                 <ZKN:vestiging StUF:verwerkingssoort="T" StUF:entiteittype="VES">
                     <BG:vestigingsNummer>010203040506</BG:vestigingsNummer>
                 </ZKN:vestiging>
-                -->
             </ZKN:gerelateerde>
-            <!--- TODO: See Taiga Issue #150
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -99,16 +90,13 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            -->
         </ZKN:heeftAlsInitiator>
-        <!--- TODO:
         <ZKN:heeftAlsUitvoerende StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRUTV">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
                     <ZKN:identificatie>{{ gemeentecode }}56782</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            TODO: See Taiga Issue #150
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -125,7 +113,6 @@
                     <ZKN:identificatie>{{ gemeentecode }}56783</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            TODO: See Taiga Issue #150
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -136,14 +123,12 @@
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
         </ZKN:heeftAlsUitvoerende>
-        TODO: heeftAlsVerantwoordelijke
         <ZKN:heeftAlsVerantwoordelijke StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRVRA">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
                     <ZKN:identificatie>{{ gemeentecode }}56784</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            TODO: See Taiga Issue #150
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -154,14 +139,12 @@
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
         </ZKN:heeftAlsVerantwoordelijke>
-        TODO heeftAlsOverigBetrokkene
         <ZKN:heeftAlsOverigBetrokkene StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTROVR">
             <ZKN:gerelateerde>
                 <ZKN:medewerker StUF:verwerkingssoort="T" StUF:entiteittype="MDW">
                     <ZKN:identificatie>{{ gemeentecode }}56785</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            TODO: See Taiga Issue #150
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -178,7 +161,6 @@
                     <ZKN:identificatie>{{ gemeentecode }}56786</ZKN:identificatie>
                 </ZKN:medewerker>
             </ZKN:gerelateerde>
-            TODO: See Taiga Issue #150
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumEergisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
@@ -189,6 +171,5 @@
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
         </ZKN:heeftAlsOverigBetrokkene>
-        -->
     </ZKN:object>
 </ZDS:creeerZaak_ZakLk01>
