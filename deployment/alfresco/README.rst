@@ -30,8 +30,7 @@ To use this with your project you need to follow these steps:
 
 #. Click "Opslaan".
 
-#. Upload and activate the Alfresco ZDMS models, the
-``doc/files/alfresco/alfresco-zsdms-model.xml``:
+====
 
 #. You can find the Alfresco installation at::
 

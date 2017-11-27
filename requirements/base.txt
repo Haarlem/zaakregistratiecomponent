@@ -19,9 +19,9 @@ django-hijack==2.1.4
 django-redis==4.8.0
 django-rosetta==0.7.13
 django-sniplates==0.5.0
-django==1.11.1
+django==1.11.7
 first==2.0.1              # via pip-tools
-httplib2==0.10.3
+httplib2==0.8             # Pinned to 0.8 due to #387
 iso8601==0.1.11
 isodate==0.5.4            # via zeep
 lxml==3.7.3               # via zeep

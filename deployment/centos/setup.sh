@@ -5,6 +5,10 @@ CWD=`pwd`
 NOW=$(date +"%Y-%m-%d")
 SETUP_LOGFILE=$CWD/setup.log
 
+if [ ! -f $CWD/vars/$TARGET.py ]; then
+    echo "Configuration file '$CWD/vars/$TARGET.py' does not exist. Copy 'vars/settings_example.py' to vars/$TARGET.py and modify it to your needs."
+fi
+
 echo "[$NOW] Start..." > $SETUP_LOGFILE
 echo "Installing system packages..."
 
@@ -44,6 +48,12 @@ fi
 sed -i 's/^\(http {\)$/\1\n    disable_symlinks  off;/g' /etc/nginx/nginx.conf
 # Remove default server manually, since it can overrule our config.
 sed -i '/server {/,/#    }/d' /etc/nginx/nginx.conf
+
+# Redis cache server
+echo "Installing Redis..."
+yum install -y redis >> $SETUP_LOGFILE
+systemctl start redis >> $SETUP_LOGFILE
+systemctl enable redis >> $SETUP_LOGFILE
 
 # Supervisor
 echo "Installing Supervisor..."
@@ -103,8 +113,8 @@ env/bin/python src/manage.py collectstatic --link --noinput --settings=$SETTINGS
 env/bin/python src/manage.py migrate --noinput --settings=$SETTINGS >> $SETUP_LOGFILE
 
 # Create superuser
-echo "Creating Zaakmagazijn superuser \"maykin\""
-env/bin/python src/manage.py createsuperuser --username maykin --email=support@maykinmedia.nl --settings=$SETTINGS
+echo "Creating Zaakmagazijn superuser"
+env/bin/python src/manage.py createsuperuser --settings=$SETTINGS
 
 # Give the web-user permission to write to log and media paths.
 chown nginx:nginx -R . > /dev/null
