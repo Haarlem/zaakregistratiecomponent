@@ -1,12 +1,8 @@
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import MaxValueValidator
 from django.db import models
 
-from zaakmagazijn.utils.fields import (
-    GMLField, StUFDateField, StUFDateTimeField
-)
+from zaakmagazijn.utils.fields import GMLField, StUFDateField
 
-from ...rsgb.choices import AdelijkeTitel
 from ..choices import (
     AardRelatieGerelateerdeExterneZaak, JaNee, OmschrijvingVoorwaarden
 )
@@ -14,21 +10,6 @@ from ..validators import (
     validate_continuous_numbers, validate_non_negative_string,
     validate_physical_file_name
 )
-
-
-class Naam(models.Model):
-    """
-    Informatiemodel afwijking, representatie van de GroepAttribuutsoort 'naam'
-    """
-    voornamen = models.CharField(null=True, blank=True,
-                                 max_length=200, help_text='Voornamen bij de naam die de persoon wenst te voeren.'
-                                 )
-    geslachtsnaam = models.CharField(
-        max_length=200, help_text='De stam van de geslachtsnaam.')
-    voorvoegsel_geslachtsnaam = models.ForeignKey(
-        'rsgb.Voorvoegsel', null=True, blank=True, help_text='Voorvoegsel bij de naam die de persoon wenst te voeren.')
-    adelijke_titel = models.CharField(null=True, blank=True,
-                                      max_length=1, choices=AdelijkeTitel.choices)
 
 
 class GebruiksRechten(models.Model):
@@ -101,7 +82,7 @@ class ZaakOpschorting(models.Model):
     """
 
     zaak = models.ForeignKey('rgbz.Zaak')
-    # TODO: [KING] De keuzes voor attribuut "indicatie opschorting" op ZaakOpschorting staan nergens gespecificeerd.
+    # TODO [KING]: De keuzes voor attribuut "indicatie opschorting" op ZaakOpschorting staan nergens gespecificeerd.
     indicatie_opschorting = models.CharField(max_length=1, choices=JaNee.choices,
                                              help_text='Aanduiding of de behandeling van de ZAAK tijdelijk is opgeschort.')
     reden_opschorting = models.CharField(

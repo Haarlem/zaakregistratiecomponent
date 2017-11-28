@@ -16,9 +16,12 @@ class DMSFieldDescriptor:
         }
 
     def __set__(self, instance, inhoud: BinaireInhoud):
+        if inhoud is None:
+            return
+
         dms_client.maak_zaakdocument(instance, filename=inhoud.bestandsnaam)
         content = inhoud.to_cmis()
-        # TODO: [TECH] set bestandsnaam/contentType even if no data is present?
+        # TODO [TECH]: set bestandsnaam/contentType even if no data is present?
         if content is not None:
             dms_client.zet_inhoud(instance, content, inhoud.contentType)
 

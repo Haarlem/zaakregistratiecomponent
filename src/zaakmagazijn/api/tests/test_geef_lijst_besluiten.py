@@ -1,3 +1,4 @@
+
 from lxml import etree
 from zeep.xsd.const import Nil
 
@@ -14,25 +15,30 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
         BesluitFactory.create(zaak=zaak)
         BesluitFactory.create()
 
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         response = client.service.geefLijstBesluiten_ZakLv01(
-            stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefLijstBesluitenLv01(
+            # http://www.egem.nl/StUF/StUF0301:ZAK-StuurgegevensLv01
+            stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                 berichtcode='Lv01',
                 entiteittype='ZAK',
             ),
-            parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+            # http://www.egem.nl/StUF/StUF0301:ZAK-parametersVraagSynchroon
+            parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                 sortering=1,
                 indicatorVervolgvraag=False
             ),
-            scope=zkn_factory.GeefLijstBesluiten_vraagScope(
-                object=zkn_factory.GeefLijstBesluiten_ZAK_vraagScope(
+            scope={
+                # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstBesluiten-ZAK-vraagScope
+                'object': zkn_factory['GeefLijstBesluiten-ZAK-vraagScope'](
                     entiteittype='ZAK',
                     identificatie=Nil,
-                    leidtTot=zkn_factory.GeefLijstBesluiten_ZAKBSL_vraagScope(
+                    # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstBesluiten-ZAKBSL-vraag
+                    leidtTot=zkn_factory['GeefLijstBesluiten-ZAKBSL-vraag'](
                         entiteittype='ZAKBSL',
-                        gerelateerde=zkn_factory.GeefLijstBesluiten_BSL_vraagScope(
+                        # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstBesluiten-BSL-gerelateerdeVraag
+                        gerelateerde=zkn_factory['GeefLijstBesluiten-BSL-gerelateerdeVraag'](
                             entiteittype='BSL',
                             # Mandatory elements:
                             identificatie=Nil,
@@ -41,38 +47,39 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
                         )
                     )
                 )
-            ),
-            gelijk=zkn_factory.GeefLijstBesluiten_ZAK_vraagSelectie(
+            },
+            # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstBesluiten-ZAK-vraagSelectie
+            gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
                 identificatie=zaak.zaakidentificatie,
             )
         )
         self.assertEquals(len(response.antwoord.object), 1)
         self.assertEquals(len(response.antwoord.object[0].leidtTot), 2)
 
-    def test_scope(self):
+    def test_namespace_response(self):
         besluit = BesluitFactory.create()
         zaak = besluit.zaak
 
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         with client.options(raw_response=True):
             response = client.service.geefLijstBesluiten_ZakLv01(
-                stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefLijstBesluitenLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='ZAK',
                 ),
-                parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False
                 ),
-                scope=zkn_factory.GeefLijstBesluiten_vraagScope(
-                    object=zkn_factory.GeefLijstBesluiten_ZAK_vraagScope(
+                scope={
+                    'object': zkn_factory['GeefLijstBesluiten-ZAK-vraagScope'](
                         entiteittype='ZAK',
                         identificatie=Nil,
-                        leidtTot=zkn_factory.GeefLijstBesluiten_ZAKBSL_vraagScope(
+                        leidtTot=zkn_factory['GeefLijstBesluiten-ZAKBSL-vraag'](
                             entiteittype='ZAKBSL',
-                            gerelateerde=zkn_factory.GeefLijstBesluiten_BSL_vraagScope(**{
+                            gerelateerde=zkn_factory['GeefLijstBesluiten-BSL-gerelateerdeVraag'](**{
                                 'entiteittype': 'BSL',
                                 # Mandatory elements:
                                 'identificatie': Nil,
@@ -84,8 +91,8 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
                             })
                         )
                     )
-                ),
-                gelijk=zkn_factory.GeefLijstBesluiten_ZAK_vraagSelectie(
+                },
+                gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
                     identificatie=zaak.zaakidentificatie,
                 )
             )
@@ -114,7 +121,7 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
         self._assert_xpath_results(gerelateerde_element, 'zkn:tijdvakGeldigheid', 0, namespaces=self.nsmap)
         self._assert_xpath_results(gerelateerde_element, 'zkn:tijdvakGeldigheid/zkn:beginGeldigheid', 0, namespaces=self.nsmap)
         self._assert_xpath_results(gerelateerde_element, 'zkn:tijdvakGeldigheid/zkn:eindGeldigheid', 0, namespaces=self.nsmap)
-        # TODO: [TECH] Taiga #210
+        # TODO [TECH]: Taiga #210
         # self._assert_xpath_results(antwoord_obj, 'zkn:leidtTot/zkn:tijdstipRegistratie', 0, namespaces=self.nsmap)
 
     def test_tijdvak_geldigheid(self):
@@ -124,23 +131,23 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
         )
         zaak = besluit.zaak
 
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         with client.options(raw_response=True):
             response = client.service.geefLijstBesluiten_ZakLv01(
-                stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefLijstBesluitenLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='ZAK',
                 ),
-                parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False
                 ),
-                scope=zkn_factory.GeefLijstBesluiten_vraagScope(
-                    object=zkn_factory.GeefLijstBesluiten_ZAK_vraagScope(scope='alles')
-                ),
-                gelijk=zkn_factory.GeefLijstBesluiten_ZAK_vraagSelectie(
+                scope={
+                    'object': zkn_factory['GeefLijstBesluiten-ZAK-vraagScope'](scope='alles')
+                },
+                gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
                     identificatie=zaak.zaakidentificatie,
                 )
             )
@@ -167,26 +174,26 @@ class geefLijstBesluiten_ZakLa01Tests(BaseSoapTests):
         """
         Do a simple SOAP request.
         """
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         with client.options(raw_response=raw_response):
             return client.service.geefLijstBesluiten_ZakLv01(
-                stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefLijstBesluitenLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='ZAK',
                 ),
-                parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False
                 ),
-                scope=zkn_factory.GeefLijstBesluiten_vraagScope(
-                    object=zkn_factory.GeefLijstBesluiten_ZAK_vraagScope(
+                scope={
+                    'object': zkn_factory['GeefLijstBesluiten-ZAK-vraagScope'](
                         entiteittype='ZAK',
                         identificatie=Nil,
-                        leidtTot=zkn_factory.GeefLijstBesluiten_ZAKBSL_vraagScope(
+                        leidtTot=zkn_factory['GeefLijstBesluiten-ZAKBSL-vraag'](
                             entiteittype='ZAKBSL',
-                            gerelateerde=zkn_factory.GeefLijstBesluiten_BSL_vraagScope(
+                            gerelateerde=zkn_factory['GeefLijstBesluiten-BSL-gerelateerdeVraag'](
                                 entiteittype='BSL',
                                 # Mandatory elements:
                                 identificatie=Nil,
@@ -195,8 +202,8 @@ class geefLijstBesluiten_ZakLa01Tests(BaseSoapTests):
                             )
                         )
                     )
-                ),
-                gelijk=zkn_factory.GeefLijstBesluiten_ZAK_vraagSelectie(
+                },
+                gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -207,16 +214,11 @@ class geefLijstBesluiten_ZakLa01Tests(BaseSoapTests):
         """
         result = self._do_simple_request(raw_response=True)
         root = etree.fromstring(result.content)
-        self.assertEquals(
-            set(root.nsmap.values()),
-            {
-                'http://www.egem.nl/StUF/sector/zkn/0310',
-                'http://www.egem.nl/StUF/StUF0301',
-                'http://www.stufstandaarden.nl/koppelvlak/zds0120',
-                'http://schemas.xmlsoap.org/soap/envelope/',
-                'http://www.w3.org/2001/XMLSchema-instance'
-            }
-        )
+        namespaces = {ns for el in root.iterdescendants() for ns in el.nsmap.values()}
+
+        self.assertIn('http://www.egem.nl/StUF/sector/zkn/0310', namespaces)
+        self.assertIn('http://www.egem.nl/StUF/StUF0301', namespaces)
+        self.assertIn('http://www.stufstandaarden.nl/koppelvlak/zds0120', namespaces)
 
     def test_root_element(self):
         """
@@ -275,7 +277,7 @@ class geefLijstBesluiten_Fo02BerichtTests(BaseSoapTests):
         self.zaak = besluit.zaak
 
     def test_validation_error_message(self):
-        client = self._get_client('Beantwoordvraag', strict=False)
+        client = self._get_client('BeantwoordVraag', strict=False)
 
         #
         # This is what we hope to receive.
@@ -309,21 +311,21 @@ class geefLijstBesluiten_Fo02BerichtTests(BaseSoapTests):
             stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
             response = client.service.geefLijstBesluiten_ZakLv01(
-                stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefLijstBesluitenLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='AAA',
                 ),
-                parameters=stuf_factory.ZAK_parametersVraagSynchroon(
-                    sortering=1,
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
+                    sortering=99,  # Is too high.
                     indicatorVervolgvraag=False
                 ),
-                scope=zkn_factory.GeefLijstBesluiten_vraagScope(
-                    object=zkn_factory.GeefLijstBesluiten_ZAK_vraagScope(
+                scope={
+                    'object': zkn_factory['GeefLijstBesluiten-ZAK-vraagScope'](
                         entiteittype='ZAK',
                         identificatie=Nil,
-                        leidtTot=zkn_factory.GeefLijstBesluiten_ZAKBSL_vraagScope(
+                        leidtTot=zkn_factory['GeefLijstBesluiten-ZAKBSL-vraag'](
                             entiteittype='ZAKBSL',
-                            gerelateerde=zkn_factory.GeefLijstBesluiten_BSL_vraagScope(
+                            gerelateerde=zkn_factory['GeefLijstBesluiten-BSL-gerelateerdeVraag'](
                                 entiteittype='BSL',
                                 # Mandatory elements:
                                 identificatie=Nil,
@@ -332,8 +334,8 @@ class geefLijstBesluiten_Fo02BerichtTests(BaseSoapTests):
                             )
                         )
                     )
-                ),
-                gelijk=zkn_factory.GeefLijstBesluiten_ZAK_vraagSelectie(
+                },
+                gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -348,8 +350,8 @@ class geefLijstBesluiten_Fo02BerichtTests(BaseSoapTests):
             'stuf:stuurgegevens',
             'stuf:stuurgegevens/stuf:berichtcode[text()="Fo02"]',
             'stuf:body',
-            'stuf:body/stuf:code[text()="StUF055"]',
-            'stuf:body/stuf:plek[text()="client"]',
+            'stuf:body/stuf:code[text()="StUF133"]',
+            'stuf:body/stuf:plek[text()="server"]',
         ]
         for expectation in expected_once:
             self._assert_xpath_results(self._get_body_root(root), expectation, 1, namespaces=self.nsmap)

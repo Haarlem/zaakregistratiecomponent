@@ -44,7 +44,7 @@ class DMSMixin:
     def setUp(self):
         self.client = CMISDMSClient()
         self.addCleanup(lambda: self._removeTree('/Zaken'))
-        self.addCleanup(lambda: self._removeTree('/documentLibrary'))
+        self.addCleanup(lambda: self._removeTree('/Sites/archief/documentLibrary'))
         self.addCleanup(lambda: self._removeTree('/_temp'))
         self.addCleanup(lambda: self._removeTree('/Unfiled'))
 
@@ -138,7 +138,7 @@ class CMISClientTests(DMSMixin, TestCase):
         root_folder = self.client._repo.getObjectByPath('/Sites/archief/documentLibrary')
 
         children = [child for child in root_folder.getChildren()]
-        self.assertEqual(len(children), 1) # TODO: Only succeeds once per dag without cleaning up Alfresco
+        self.assertEqual(len(children), 1)
 
         # zaaktype subfolder
         zaak_type_folder = children[0]
@@ -187,10 +187,10 @@ class CMISClientTests(DMSMixin, TestCase):
             zaaktype__zaaktypeomschrijving='SOAP is leuk',
         )
         np = NatuurlijkPersoonFactory.create(
-            nummer_ander_natuurlijk_persoon='anp 01',
+            # nummer_ander_natuurlijk_persoon='anp 01',
             burgerservicenummer='135798642',
-            naam__voorvoegsel_geslachtsnaam__voorvoegsel='van',
-            naam__geslachtsnaam='Druten',
+            naam_voorvoegsel_geslachtsnaam_voorvoegsel='van',
+            naam_geslachtsnaam='Druten',
         )
         RolFactory.create(
             zaak=zaak,
@@ -201,11 +201,11 @@ class CMISClientTests(DMSMixin, TestCase):
         folder = self.client.creeer_zaakfolder(zaak)
         self.assertExpectedProps(folder, {
             # 'zsdms:voorvoegselGeslachtsnaam': 'van',
-            # TODO: [COMPAT] ZDS has plural version
+            # TODO [KING]: ZDS has plural version
             # 'zsdms:voorvoegselsGeslachtsnaam': 'van',
             # 'zsdms:geslachtsnaam': 'Druten',
             'zsdms:inp.bsn': '135798642',
-            'zsdms:ann.identificatie': 'anp 01',
+            # 'zsdms:ann.identificatie': 'anp 01',
         })
 
     def test_maak_zaakdocument(self):

@@ -1,66 +1,97 @@
+from zaakmagazijn.api.stuf.models import Authentiek
 from zaakmagazijn.api.zds.entiteiten.besluiten import BesluitEntiteit
 from zaakmagazijn.api.zds.entiteiten.betrokkene import (
     MedewerkerEntiteit, VestigingEntiteit
 )
-from zaakmagazijn.rgbz.models import (
-    BuurtObject, EnkelvoudigInformatieObject,
-    GemeentelijkeOpenbareRuimteObject, GemeenteObject, HuishoudenObject,
-    InrichtingsElementObject, KadastraalPerceelObject, KunstwerkDeelObject,
-    MaatschappelijkeActiviteitObject, NatuurlijkPersoon, NietNatuurlijkPersoon,
-    OpenbareRuimteObject, OrganisatorischeEenheid,
-    OverigeAdresseerbaarObjectAanduidingObject, OverigGebouwdObject,
-    PandObject, SamengesteldInformatieObject, SpoorbaanDeelObject, Status,
-    TerreinDeelObject, WaterdeelObject, WegdeelObject, WijkObject,
-    WoonplaatsObject, WozdeelObject, WozObject, WozWaardeObject, Zaak,
-    ZaakObject, ZakelijkRechtObject
+from zaakmagazijn.rgbz_mapping.models import (
+    AdresMetPostcodeProxy, BuurtObjectProxy, EnkelvoudigDocumentProxy,
+    GemeentelijkeOpenbareRuimteObjectProxy, GemeenteObjectProxy,
+    HuishoudenObjectProxy, InrichtingsElementObjectProxy,
+    KadastraalPerceelObjectProxy, KadastraleAanduidingProxy,
+    KunstwerkDeelObjectProxy, MaatschappelijkeActiviteitObjectProxy,
+    OpenbareRuimteObjectProxy, OverigeAdresseerbaarObjectAanduidingObjectProxy,
+    OverigGebouwdObjectProxy, PandObjectProxy,
+    SamengesteldInformatieObjectProxy, SpoorbaanDeelObjectProxy, StatusProxy,
+    TerreinDeelObjectProxy, WaterdeelObjectProxy, WegdeelObjectProxy,
+    WijkObjectProxy, WoonplaatsObjectProxy, WozdeelObjectProxy, WozObjectProxy,
+    WozWaardeObjectProxy, ZaakObjectProxy, ZaakProxy, ZaakTypeProxy,
+    ZakelijkRechtObjectProxy
 )
-from zaakmagazijn.rsgb.models import AdresMetPostcode, KadastraleAanduiding
 
 from ...stuf import (
     ForeignKeyRelation, OneToManyRelation, StUFEntiteit, StUFGegevensgroep,
     StUFKerngegevens
 )
 from .betrokkene import (
-    NatuurlijkPersoonEntiteit, NietNatuurlijkPersoonEntiteit
+    NatuurlijkPersoonEntiteit, NietNatuurlijkPersoonEntiteit,
+    OrganisatorischeEenheidEntiteit
 )
+
+
+class ZKTEntiteit(StUFEntiteit):
+    model = ZaakTypeProxy
+    mnemonic = 'ZKT'
+
+    field_mapping = (
+        ('omschrijving', 'zaaktypeomschrijving'),
+        ('code', 'zaaktypecode'),
+        # TODO [KING]: This is not part of ZDS, but expected by STP.
+        ('ingangsdatumObject', 'datum_begin_geldigheid_zaaktype'),
+    )
+    matching_fields = (
+        'omschrijving',
+        'code',
+        'ingangsdatumObject',
+    )
+
+
+class ZAKZKTEntiteit(StUFEntiteit):
+    model = ZaakProxy
+    mnemonic = 'ZAKZKT'
+    field_mapping = ()
+    gerelateerde = ('self', ZKTEntiteit)
+    matching_fields = (
+        'gerelateerde',
+    )
 
 
 class ZaakKerngegevens(StUFKerngegevens):
     mnemonic = 'ZAK'
-    model = Zaak
+    model = ZaakProxy
     field_mapping = (
         ('identificatie', 'zaakidentificatie'),
-        ('bronorganisatie', 'bronorganisatie'),
         ('omschrijving', 'omschrijving'),
-        # TODO: [COMPAT] (ZAK) In ZDS 1.2 is "isVan" een relatie-entiteit met een gerelateerde, in ZKN 03.20 is dit platgeslagen.
-        ('zkt.omschrijving', 'zaaktype__zaaktypeomschrijving'),
-        ('zkt.identificatie', 'zaaktype__zaaktypeidentificatie'),
     )
-
+    related_fields = (
+        ForeignKeyRelation('isVan', 'zaaktype', ZAKZKTEntiteit),
+    )
     matching_fields = [
         'identificatie',
-        'bronorganisatie',
         'omschrijving',
-        # TODO: [COMPAT] In ZDS 1.2 is 'isVan' hier ook opgegenomen. Maar in ZKN 3.2 bestaat
-        # dit niet meer, mogelijk moet zkt.identificatie en zkt.omschrijving hier ook opgenomen
-        # worden.
+        'isVan',
     ]
+    fields = (
+        'identificatie',
+        'omschrijving',
+        # TODO [TECH]: Matching fields by relation are not supported yet.
+        # 'isVan',
+    )
 
 
 class AdresObjectEntiteit(StUFEntiteit):
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
     mnemonic = 'AOA'
-    model = OverigeAdresseerbaarObjectAanduidingObject
+    model = OverigeAdresseerbaarObjectAanduidingObjectProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
-        # ('authentiek', ?),
         ('wpl.woonplaatsNaam', 'woonplaatsnaam'),
         ('gor.openbareRuimteNaam', 'naam_openbare_ruimte'),
         ('huisnummer', 'huisnummer'),
         ('huisletter', 'huisletter'),
         ('huisnummertoevoeging', 'huisnummertoevoeging'),
-        # ('postcode', '?'),
+        ('postcode', 'postcode'),
         # ('num.indicatieHoofdadres', '?'),
+        # TODO [KING]: STP seems not to expect these:
         ('ingangsdatumObject', 'datum_begin_geldigheid_adresseerbaar_object_aanduiding'),
         ('einddatumObject', 'datum_einde_geldigheid_adresseerbaar_object_aanduiding'),
         # (<stuf:extraElementen>       ?)
@@ -76,6 +107,19 @@ class AdresObjectEntiteit(StUFEntiteit):
         "huisnummertoevoeging",
         "postcode",
     )
+    custom_fields = (
+        ('authentiek', Authentiek, {'data': 'N'}),
+    )
+    fields = (
+        'identificatie',
+        'authentiek',
+        'wpl.woonplaatsNaam',
+        'gor.openbareRuimteNaam',
+        'huisnummer',
+        'huisletter',
+        'huisnummertoevoeging',
+        'postcode',
+    )
 
 
 class BuurtObjectEntiteit(StUFEntiteit):
@@ -84,7 +128,7 @@ class BuurtObjectEntiteit(StUFEntiteit):
     """
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
     mnemonic = 'BRT'
-    model = BuurtObject
+    model = BuurtObjectProxy
     field_mapping = (
         ('buurtCode', 'buurtcode'),
         ('buurtNaam', 'buurtnaam'),
@@ -103,27 +147,18 @@ class BuurtObjectEntiteit(StUFEntiteit):
     )
 
 
-class EnkelvoudigInformatieObjectEntiteit(StUFEntiteit):
+class EnkelvoudigDocumentEntiteit(StUFEntiteit):
     """
     in xsd: ['identificatie', 'dct.omschrijving', 'titel']
     """
     mnemonic = 'EDC'
-    model = EnkelvoudigInformatieObject
-    # model has unique together on informatieobjectidentificatie and bronorganisatie
-    # i assume 'identificatie' from xsd is the combination of those two
+    model = EnkelvoudigDocumentProxy
     field_mapping = (
-        # ('identificatie', 'identificatie'),
-
-        # RGBZ 2.0 requires two identification fields:
-        ('informatieobjectidentificatie', 'informatieobjectidentificatie'),
-        ('bronorganisatie', 'bronorganisatie'),
-
-        ('dct.omschrijving', 'informatieobjecttype__informatieobjecttypeomschrijving'),
-        # TODO: [TECH] Not supported yet.
-        # ('dct.omschrijvingGeneriek', 'informatieobjecttype__informatieobjecttypeomschrijving_generiek__informatieobjecttypeomschrijving_generiek'),
-        ('creatiedatum', 'creatiedatum'),
-        ('ontvangstdatum', 'ontvangstdatum'),
-        ('titel', 'titel'),
+        ('identificatie', 'identificatie'),
+        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('creatiedatum', 'documentcreatiedatum'),
+        ('ontvangstdatum', 'documentontvangstdatum'),
+        ('titel', 'documenttitel'),
     )
     matching_fields = (
         "identificatie",
@@ -138,7 +173,7 @@ class GemeenteObjectEntiteit(StUFEntiteit):
     """
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
     mnemonic = 'GEM'
-    model = GemeenteObject
+    model = GemeenteObjectProxy
     field_mapping = (
         ('gemeenteCode', 'identificatie'),
         ('gemeenteNaam', 'gemeentenaam'),
@@ -153,7 +188,7 @@ class GemeenteObjectEntiteit(StUFEntiteit):
 
 class GemeentelijkeOpenbareRuimteEntiteit(StUFEntiteit):
     mnemonic = 'GOR'
-    model = GemeentelijkeOpenbareRuimteObject
+    model = GemeentelijkeOpenbareRuimteObjectProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
         # ('authentiek', '?'),
@@ -175,7 +210,7 @@ class GemeentelijkeOpenbareRuimteEntiteit(StUFEntiteit):
 class InrichtingselementEntiteit(StUFEntiteit):
     mnemonic = 'IRE'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = InrichtingsElementObject
+    model = InrichtingsElementObjectProxy
 
     field_mapping = (
         ('type', 'inrichtingselementtype'),
@@ -193,7 +228,7 @@ class InrichtingselementEntiteit(StUFEntiteit):
 
 
 class KadastraleAanduidingGegevensGroep(StUFGegevensgroep):
-    model = KadastraleAanduiding
+    model = KadastraleAanduidingProxy
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
     field_mapping = (
         ('kadastraleGemeentecode', 'kadastralegemeentecode'),
@@ -207,7 +242,7 @@ class KadastraleAanduidingGegevensGroep(StUFGegevensgroep):
 class KadastraleOnroerendeZaakEntiteit(StUFEntiteit):
     mnemonic = 'KOZ'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = KadastraalPerceelObject
+    model = KadastraalPerceelObjectProxy
 
     field_mapping = (
         ('kadastraleIdentificatie', 'identificatie'),
@@ -237,7 +272,7 @@ class KadastraleOnroerendeZaakEntiteit(StUFEntiteit):
     matching_fields = (
         "kadastraleIdentificatie",
         # "authentiek",
-        # TODO: [COMPAT] Not supported.
+        # TODO [TECH]: Matching fields by relation are not supported yet.
         # "kadastraleAanduiding",
     )
 
@@ -247,7 +282,7 @@ class HuishoudenObjectEntiteit(StUFEntiteit):
     in xsd: ['nummer', 'isGehuisvestIn']
     """
     mnemonic = 'HHD'
-    model = HuishoudenObject
+    model = HuishoudenObjectProxy
     field_mapping = (
         ('nummer', 'huishoudennummer'),
     )
@@ -263,7 +298,7 @@ class KunstwerkDeelObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'KWD'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = KunstwerkDeelObject
+    model = KunstwerkDeelObjectProxy
     field_mapping = (
         ('type', 'type_kunstwerk'),
         ('identificatie', 'identificatie'),
@@ -285,7 +320,7 @@ class MaatschappelijkeActiviteitObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'MAC'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = MaatschappelijkeActiviteitObject
+    model = MaatschappelijkeActiviteitObjectProxy
     field_mapping = (
         ('kvkNummer', 'identificatie'),
         # ('authentiek', ?),
@@ -307,7 +342,7 @@ class OpenbareRuimteObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'OPR'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = OpenbareRuimteObject  # TODO: [TECH] heeft identificatie
+    model = OpenbareRuimteObjectProxy  # TODO [TECH]: heeft identificatie
     field_mapping = (
         ('identificatie', 'identificatie'),
         # ('authentiek', ''),
@@ -327,38 +362,13 @@ class OpenbareRuimteObjectEntiteit(StUFEntiteit):
     )
 
 
-class OrganisatorischeEenheidObjectEntiteit(StUFEntiteit):
-    """
-    in xsd: ['identificatie', 'naam', 'isGehuisvestIn']
-
-    'isGehuisvestIn' is nested structure: FK isEen FK verstigingsnummer / verblijdsadres etc
-    """
-    mnemonic = 'OEH'
-    model = OrganisatorischeEenheid
-    field_mapping = (
-        # Organisatorisch Eenheid has unique together 'organisatieidentificatie', 'organisatieeenheididentificatie'
-        # I assume 'identificatie' from xsd is the combination of those two
-        # ('identificatie', 'identificatie'),
-        ('identificatie', 'organisatieeenheididentificatie'),
-        ('organisatieidentificatie', 'organisatieidentificatie'),
-        ('naam', 'naam'),
-        ('isGehuisvestIn', 'gevestigd_in'),  # FK, _id?
-    )
-    matching_fields = (
-        "identificatie",
-        "organisatieidentificatie",
-        "naam",
-        "isGehuisvestIn",
-    )
-
-
 class PandObjectEntiteit(StUFEntiteit):
     """
     in xsd: ['identificatie', 'authentiek']
     """
     mnemonic = 'PND'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = PandObject
+    model = PandObjectProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
         # ('authentiek', ''),
@@ -377,15 +387,15 @@ class SamengesteldInformatieoObjectEntiteit(StUFEntiteit):
     in xsd: ['identificatie', 'dct.omschrijving', 'titel']
     """
     mnemonic = 'SDC'
-    model = SamengesteldInformatieObject
+    model = SamengesteldInformatieObjectProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
-        ('dct.omschrijving', 'informatieobjecttype__informatieobjecttypeomschrijving'),
-        # TODO: [TECH] Not supported yet
+        ('dct.omschrijving', 'documenttype__omschrijving'),
+        # TODO [TECH]: Not supported yet
         # ('dct.omschrijvingGeneriek', 'informatieobjecttype__informatieobjecttypeomschrijving_generiek__informatieobjecttypeomschrijving_generiek'),
-        ('creatiedatum', 'creatiedatum'),
-        ('ontvangstdatum', 'ontvangstdatum'),
-        ('titel', 'titel'),
+        ('creatiedatum', 'documentcreatiedatum'),
+        ('ontvangstdatum', 'documentontvangstdatum'),
+        ('titel', 'documenttitel'),
     )
     matching_fields = (
         "identificatie",
@@ -400,7 +410,7 @@ class SpoorbaanDeelObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'SBD'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = SpoorbaanDeelObject
+    model = SpoorbaanDeelObjectProxy
     field_mapping = (
         ('type', 'type_spoorbaan'),
         ('identificatie', 'identificatie'),
@@ -414,7 +424,7 @@ class SpoorbaanDeelObjectEntiteit(StUFEntiteit):
 
 class STAZAKEntiteit(StUFEntiteit):
     mnemonic = 'STAZAK'
-    model = Status
+    model = StatusProxy
     gerelateerde = ('zaak', ZaakKerngegevens)
     field_mapping = ()
 
@@ -424,10 +434,10 @@ class StatusEntiteit(StUFEntiteit):
     in xsd: ['stt.volgnummer', 'datumStatusGezet', 'isVan']
     """
     mnemonic = 'STA'
-    model = Status
+    model = StatusProxy
     field_mapping = (
-        ('stt.volgnummer', 'status_type__statustypevolgnummer'),
-        ('stt.omschrijving', 'status_type__statustypeomschrijving'),
+        ('stt.volgnummer', 'status_type__volgnummer'),
+        ('stt.omschrijving', 'status_type__omschrijving'),
         ('datumStatusGezet', 'datum_status_gezet'),
     )
     related_fields = (
@@ -436,7 +446,7 @@ class StatusEntiteit(StUFEntiteit):
     matching_fields = (
         "stt.volgnummer",
         "datumStatusGezet",
-        # TODO: [COMPAT] Not supported yet.
+        # TODO [TECH]: Matching fields by relation are not supported yet.
         # "isVan",
     )
 
@@ -447,7 +457,7 @@ class TerreinDeelObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'TDL'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = TerreinDeelObject
+    model = TerreinDeelObjectProxy
     field_mapping = (
         ('type', 'type_terrein'),
         ('identificatie', 'identificatie'),
@@ -460,7 +470,7 @@ class TerreinDeelObjectEntiteit(StUFEntiteit):
 
 
 class AdresAanduidingGrp(StUFGegevensgroep):
-    model = AdresMetPostcode
+    model = AdresMetPostcodeProxy
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
     field_mapping = (
         # ('num.identificatie', ?),
@@ -479,7 +489,7 @@ class AdresAanduidingGrp(StUFGegevensgroep):
 class TerreinGebouwdObjectEntiteit(StUFEntiteit):
     mnemonic = 'TGO'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = OverigGebouwdObject
+    model = OverigGebouwdObjectProxy
 
     field_mapping = (
         # ('identificatie', ?),
@@ -508,7 +518,7 @@ class WaterdeelObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'WDL'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = WaterdeelObject
+    model = WaterdeelObjectProxy
 
     field_mapping = (
         ('type', 'type_waterdeel'),
@@ -531,7 +541,7 @@ class WegdeelObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'WGD'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = WegdeelObject
+    model = WegdeelObjectProxy
     field_mapping = (
         # ('type', ''),
         ('identificatie', 'identificatie'),
@@ -554,7 +564,7 @@ class WijkObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'WYK'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = WijkObject
+    model = WijkObjectProxy
     field_mapping = (
         ('wijkCode', 'wijkcode'),
         ('wijkNaam', 'wijknaam'),
@@ -577,7 +587,7 @@ class WoonplaatsObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'WPL'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = WoonplaatsObject
+    model = WoonplaatsObjectProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
         # ('authentiek', ''),
@@ -600,7 +610,7 @@ class WozdeelObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'WDO'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = WozdeelObject
+    model = WozdeelObjectProxy
     field_mapping = (
         ('nummerWOZDeelObject', 'nummer_wozdeelobject'),
         ('codeWOZDeelObject', 'code_wozdeelobject__deelobjectcode'),
@@ -622,7 +632,7 @@ class WozObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'WOZ'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = WozObject
+    model = WozObjectProxy
     field_mapping = (
         ('wozObjectNummer', 'identificatie'),
         # <bg:authentiek>N</bg:authentiek>
@@ -657,10 +667,10 @@ class WozWaardeObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'WRD'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = WozWaardeObject  # heeft identificatie
+    model = WozWaardeObjectProxy  # heeft identificatie
     field_mapping = (
         ('waardepeildatum', 'waardepeildatum'),
-        # TODO: [COMPAT] in xsd, niet in model
+        # TODO [KING]: in xsd, niet in model
         # ('isVoor', ''),
     )
     matching_fields = (
@@ -678,7 +688,7 @@ class ZakelijkRechtObjectEntiteit(StUFEntiteit):
     """
     mnemonic = 'ZKR'
     namespace = 'http://www.egem.nl/StUF/sector/bg/0310'
-    model = ZakelijkRechtObject
+    model = ZakelijkRechtObjectProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
         ('avr.aard', 'aanduiding_aard_verkregen_recht__code_aard_zakelijk_recht'),
@@ -701,7 +711,7 @@ class ZakelijkRechtObjectEntiteit(StUFEntiteit):
 
 class ZaakObjectEntiteit(StUFEntiteit):
     mnemonic = 'ZAKOBJ'
-    model = ZaakObject
+    model = ZaakObjectProxy
     field_mapping = (
         ('omschrijving', 'relatieomschrijving'),
     )
@@ -709,7 +719,7 @@ class ZaakObjectEntiteit(StUFEntiteit):
         ('adres', AdresObjectEntiteit),
         ('besluit', BesluitEntiteit),
         ('buurt', BuurtObjectEntiteit),
-        ('enkelvoudigDocument', EnkelvoudigInformatieObjectEntiteit),
+        ('enkelvoudigDocument', EnkelvoudigDocumentEntiteit),
         ('gemeente', GemeenteObjectEntiteit),
         ('gemeentelijkeOpenbareRuimte', GemeentelijkeOpenbareRuimteEntiteit),
         ('huishouden', HuishoudenObjectEntiteit),
@@ -721,7 +731,7 @@ class ZaakObjectEntiteit(StUFEntiteit):
         ('natuurlijkPersoon', NatuurlijkPersoonEntiteit),
         ('nietNatuurlijkPersoon', NietNatuurlijkPersoonEntiteit),
         ('openbareRuimte', OpenbareRuimteObjectEntiteit),
-        ('organisatorischeEenheid', OrganisatorischeEenheidObjectEntiteit),
+        ('organisatorischeEenheid', OrganisatorischeEenheidEntiteit),
         ('pand', PandObjectEntiteit),
         ('samengesteldDocument', SamengesteldInformatieoObjectEntiteit),
         ('spoorbaandeel', SpoorbaanDeelObjectEntiteit),
@@ -740,4 +750,8 @@ class ZaakObjectEntiteit(StUFEntiteit):
     ), )
     matching_fields = (
         'gerelateerde',
+    )
+    fields = (
+        'gerelateerde',
+        'omschrijving'
     )

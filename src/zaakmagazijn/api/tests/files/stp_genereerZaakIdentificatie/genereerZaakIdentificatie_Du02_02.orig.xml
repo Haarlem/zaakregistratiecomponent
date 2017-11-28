@@ -1,0 +1,20 @@
+<ZDS:genereerZaakIdentificatie_Du02 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZDS:stuurgegevens>
+        <StUF:berichtcode>Du02</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:functie>genereerZaakidentificatie</StUF:functie>
+    </ZDS:stuurgegevens>
+    <ZDS:melding/>
+    <ZDS:zaak StUF:functie="entiteit" StUF:entiteittype="ZAK">
+        <ZKN:identificatie>${genereerzaakident_identificatie_2}</ZKN:identificatie>
+    </ZDS:zaak>
+</ZDS:genereerZaakIdentificatie_Du02>

@@ -5,7 +5,7 @@ from spyne import (
     Unicode
 )
 
-from .constants import BG_XML_NS, STUF_XML_NS, XMIME_XML_NS
+from .constants import BG_XML_NS, STUF_XML_NS
 
 
 def Mandatory(cls, **_kwargs):

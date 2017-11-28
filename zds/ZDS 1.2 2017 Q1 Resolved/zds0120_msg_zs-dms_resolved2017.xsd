@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310" targetNamespace="http://www.stufstandaarden.nl/koppelvlak/zds0120" elementFormDefault="qualified" attributeFormDefault="unqualified" version="031001">
+	<xs:import namespace="http://www.egem.nl/StUF/sector/zkn/0310" schemaLocation="zds0120_ent_zs-dms_resolved2017.xsd"/>
+	<xs:import namespace="http://www.egem.nl/StUF/StUF0301" schemaLocation="zds0120_msg_stuf_zs-dms_resolved2017.xsd"/>
+	<xs:annotation>
+		<xs:documentation>
+			   Bestand bevat de berichtdefinities voor het opvragen van gegenereerde zaakidentificatie i.h.k.v. de ZS-DMS berichtencatalogus 
+			
+			   Wijzigingen t.b.v. patch 21 (1-4-2015) vergeleken met versie 031000 zijn de volgende wijzigingen doorgevoerd:			
+			   - ERR0353: Het schema is voorzien van de afgesproken structuur in 'appinfo'
+			
+			2015-07-01 Issue #406291 Michiel Verhoef Berichten GeefDocumentenBijZaak_Lv01 en GeefDocumentenBijZaak_La01 toegevoegd
+			2015-10-07 RFC #408621 op basis van RFC0382 Michiel Verhoef Vrije berichten opgenomen in eigen namespace.
+			2015-11-23 RFC #472258 Michiel Verhoef genereerDocumentIdentificatie_Di02 uitgebreid met zaaktype en documenttype
+			                 RFC #487325 Michiel Verhoef aangescherpte berichten op basis van StUF ZKN
+        </xs:documentation>
+		<xs:appinfo>
+			<StUF:onderdeel>http://www.stufstandaarden.nl/koppelvlak/zds0120</StUF:onderdeel>
+			<StUF:patch>zds120_20170401</StUF:patch>
+			<StUF:patchdatum>20170401</StUF:patchdatum>
+			<StUF:schemaversie>1</StUF:schemaversie>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>
+			   Bestand bevat de simpleTypes voor het ZS-DMS koppelvlak in de ZDS namespace die niet onder StUF ZKN vallen. 
+        </xs:documentation>
+		<xs:appinfo>
+			<StUF:onderdeel>http://www.stufstandaarden.nl/koppelvlak/zds0120</StUF:onderdeel>
+			<StUF:patch>zds120_20170401</StUF:patch>
+			<StUF:patchdatum>20170401</StUF:patchdatum>
+			<StUF:schemaversie>1</StUF:schemaversie>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>
+			   Bestand bevat de simpleTypes voor het ZS-DMS koppelvlak in de ZDS namespace die niet onder StUF ZKN vallen. 
+        </xs:documentation>
+		<xs:appinfo>
+			<StUF:onderdeel>http://www.stufstandaarden.nl/koppelvlak/zds0120</StUF:onderdeel>
+			<StUF:patch>zds120_20170401</StUF:patch>
+			<StUF:patchdatum>20170401</StUF:patchdatum>
+			<StUF:schemaversie>1</StUF:schemaversie>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:element name="genereerZaakIdentificatie_Di02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Di02-Stuurgegevens-gzi"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="genereerZaakIdentificatie_Du02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Du02-Stuurgegevens-gzi"/>
+				<xs:element name="melding" type="StUF:Melding" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="zaak" type="ZKN:ZAK-gzi-e"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="geefZaakdocumentBewerken_Di02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Di02-Stuurgegevens-gzdb"/>
+				<xs:element name="edcLv01" type="ZKN:Vraag-EDC"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="geefZaakdocumentBewerken_Du02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Du02-Stuurgegevens-gzdb"/>
+				<xs:element name="parameters" type="ZDS:Parameters-zs-dms"/>
+				<xs:element name="melding" type="StUF:Melding" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="edcLa01" type="ZKN:Antwoord-EDC"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="voegZaakdocumentToe_EdcLk01" type="ZKN:VoegZaakdocumentToe-EDC-Lk01"/>
+	<xs:element name="updateZaakdocument_Di02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Di02-Stuurgegevens-uzd"/>
+				<xs:element name="parameters" type="ZDS:Parameters-zs-dms-r"/>
+				<xs:element name="edcLk02" type="ZKN:Kennisgeving-EDC"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="genereerDocumentIdentificatie_Di02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Di02-Stuurgegevens-gdi"/>
+				<xs:element name="parameters" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="StUF:extraElementen" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="genereerDocumentIdentificatie_Du02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Du02-Stuurgegevens-gdi"/>
+				<xs:element name="melding" type="StUF:Melding" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="document" type="ZKN:EDC-gdi-e"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cancelCheckout_Di02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Di02-Stuurgegevens-cc"/>
+				<xs:element name="parameters" type="ZDS:Parameters-zs-dms-r"/>
+				<xs:element name="document" type="ZKN:EDC-cc-e"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="geefZaakstatus_ZakLv01" type="ZKN:GeefZaakStatus-ZAK-Lv01"/>
+	<xs:element name="geefZaakstatus_ZakLa01" type="ZKN:GeefZaakStatus-ZAK-La01"/>
+	<xs:element name="geefZaakdetails_ZakLv01" type="ZKN:GeefZaakDetails-ZAK-Lv01"/>
+	<xs:element name="geefZaakdetails_ZakLa01" type="ZKN:GeefZaakDetails-ZAK-La01"/>
+	<xs:element name="actualiseerZaakstatus_ZakLk01" type="ZKN:ActualiseerZaakstatus-ZAK-Lk01"/>
+	<xs:element name="creeerZaak_ZakLk01" type="ZKN:CreeerZaak-ZAK-Lk01"/>
+	<xs:element name="updateZaak_ZakLk01" type="ZKN:UpdateZaak-ZAK-Lk01"/>
+	<xs:element name="geefLijstZaakdocumenten_ZakLv01" type="ZKN:GeefLijstZaakDocumenten-ZAK-Lv01"/>
+	<xs:element name="geefLijstZaakdocumenten_ZakLa01" type="ZKN:GeefLijstZaakDocumenten-ZAK-La01"/>
+	<xs:element name="geefZaakdocumentLezen_EdcLv01" type="ZKN:GeefZaakdocumentLezen-EDC-Lv01"/>
+	<xs:element name="geefZaakdocumentLezen_EdcLa01" type="ZKN:GeefZaakdocumentLezen-EDC-La01"/>
+	<xs:element name="maakZaakdocument_EdcLk01" type="ZKN:MaakZaakdocument-EDC-Lk01"/>
+	<xs:element name="voegBesluitToe_Di01" type="ZKN:Di01_VoegBesluitToe"/>
+	<xs:element name="updateBesluit_BslLk01" type="ZKN:UpdateBesluit-BSL-Lk01"/>
+	<xs:element name="overdragenZaak_Di01" type="ZKN:DI01_overdragenZaak"/>
+	<xs:element name="overdragenZaak_Du01" type="ZKN:Du01_overdragenZaak"/>
+	<xs:element name="genereerBesluitIdentificatie_Di02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Di02-Stuurgegevens-gbi"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="genereerBesluitIdentificatie_Du02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Du02-Stuurgegevens-gbi"/>
+				<xs:element name="melding" type="StUF:Melding" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="besluit" type="ZKN:BSL-gbi-e"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="geefBesluitdetails_BslLv01" type="ZKN:GeefBesluitdetails-BSL-Lv01"/>
+	<xs:element name="geefBesluitdetails_BslLa01" type="ZKN:GeefBesluitdetails-BSL-La01"/>
+	<xs:element name="ontkoppelZaakdocument_Di02">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="stuurgegevens" type="StUF:Di02-Stuurgegevens-ozd"/>
+				<xs:element name="parameters" type="ZDS:Parameters-zs-dms-r"/>
+				<xs:element name="edcLk02" type="ZKN:Kennisgeving-EDC-ozd"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="geefLijstBesluiten_ZakLv01" type="ZKN:GeefLijstBesluiten-ZAK-Lv01"/>
+	<xs:element name="geefLijstBesluiten_ZakLa01" type="ZKN:GeefLijstBesluiten-ZAK-La01"/>
+	<xs:complexType name="Parameters-zs-dms">
+		<xs:sequence>
+			<xs:element name="checkedOutId" type="ZDS:checkedOutId" minOccurs="0"/>
+			<xs:element name="checkedOutBy" type="ZDS:checkedOutBy" nillable="true" minOccurs="0"/>
+			<xs:element name="versioningState" type="ZDS:versioningState" default="major" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Parameters-zs-dms-r">
+		<xs:sequence>
+			<xs:element name="checkedOutId" type="ZDS:checkedOutId" minOccurs="0"/>
+			<xs:element name="versioningState" type="ZDS:versioningState" default="major" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="checkedOutBy">
+		<xs:restriction base="string"/>
+	</xs:simpleType>
+	<xs:simpleType name="checkedOutId">
+		<xs:restriction base="string"/>
+	</xs:simpleType>
+	<xs:simpleType name="versioningState">
+		<xs:restriction base="string">
+			<xs:enumeration value="major"/>
+			<xs:enumeration value="minor"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

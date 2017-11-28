@@ -1,0 +1,59 @@
+<ZDS:geefBesluitdetails_BslLa01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>La01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>BSL</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:indicatorVervolgvraag>true</StUF:indicatorVervolgvraag>
+    </ZKN:parameters>
+    <ZKN:antwoord>
+        <ZKN:object StUF:entiteittype="BSL">
+            <ZKN:identificatie>${voegbesluittoe_identificatie_3}</ZKN:identificatie>
+            <ZKN:bst.omschrijving>omschrijving</ZKN:bst.omschrijving>
+            <ZKN:datumBeslissing>${datumVandaag}</ZKN:datumBeslissing>
+            <ZKN:toelichting>toelichting</ZKN:toelichting>
+            <ZKN:ingangsdatumWerking>${datumVandaag}</ZKN:ingangsdatumWerking>
+            <ZKN:einddatumWerking>${datumVandaag}</ZKN:einddatumWerking>
+            <ZKN:vervalreden>Besluit met tijdelijke werking</ZKN:vervalreden>
+            <ZKN:datumPublicatie>${datumVandaag}</ZKN:datumPublicatie>
+            <ZKN:datumVerzending>${datumVandaag}</ZKN:datumVerzending>
+            <ZKN:datumUiterlijkeReactie>${datumVandaag}</ZKN:datumUiterlijkeReactie>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+            <ZKN:isUitkomstVan StUF:entiteittype="BSLZAK">
+                <ZKN:gerelateerde StUF:entiteittype="ZAK">
+                    <ZKN:identificatie>${creerzaak_identificatie_7}</ZKN:identificatie>
+                </ZKN:gerelateerde>
+            </ZKN:isUitkomstVan>
+            <ZKN:isVastgelegdIn StUF:entiteittype="BSLEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${creerzaak_identificatie_7}</ZKN:identificatie>
+                    <ZKN:dct.omschrijving>omschrijving</ZKN:dct.omschrijving>
+                    <ZKN:titel>titel</ZKN:titel>
+                </ZKN:gerelateerde>
+            </ZKN:isVastgelegdIn>
+            <ZKN:isVastgelegdIn StUF:entiteittype="BSLEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${voegzaakdocumenttoe_identificatie_3}</ZKN:identificatie>
+                    <ZKN:dct.omschrijving>omschrijving</ZKN:dct.omschrijving>
+                    <ZKN:titel>titel</ZKN:titel>
+                </ZKN:gerelateerde>
+            </ZKN:isVastgelegdIn>
+        </ZKN:object>
+    </ZKN:antwoord>
+</ZDS:geefBesluitdetails_BslLa01>

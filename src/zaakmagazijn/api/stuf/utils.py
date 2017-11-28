@@ -1,15 +1,17 @@
 from copy import deepcopy
 from decimal import Decimal
 
+from django.conf import settings
 from django.contrib.admin.utils import get_fields_from_path
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db.models.constants import LOOKUP_SEP
 
 from lxml import etree
 from spyne import Unicode
-from spyne.model.complex import TypeInfo, XmlData
+from spyne.model.complex import TypeInfo
 from spyne.util.django import DEFAULT_FIELD_MAP as _DEFAULT_FIELD_MAP
 
+from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.fields import GMLField
 
 from .models import DatumMetIndicator, TijdstipMetIndicator
@@ -69,6 +71,9 @@ def get_model_field(model, field_name):
         <django.db.models.fields.CharField: zaaktypeomschrijving>
 
     """
+    from zaakmagazijn.rgbz_mapping.base import ModelProxy
+    if issubclass(model, ModelProxy):
+        return model.get_field(field_name)
     return get_fields_from_path(model, field_name)[-1]
 
 
@@ -83,6 +88,10 @@ def django_field_to_spyne_model(django_field, default=None, nullable=None, min_o
     :param nullable boolean The XML element can be nil.
     :param min_occurs int Amount of times The XML element can occur.
     """
+
+    from zaakmagazijn.rgbz_mapping.base import ProxyField
+    if isinstance(django_field, ProxyField):
+        django_field = django_field.get_django_field()
 
     field_type = django_field.__class__.__name__
     spyne_model = DEFAULT_FIELD_MAP[field_type]
@@ -146,7 +155,6 @@ def create_query_args(filter_obj, related_query_name='', recurse=False):
 
     if recurse:
         for field_name, related_name, related_cls in stuf_entiteit.get_related_fields(only_filter_fields=True):
-            filter_model = getattr(filter_obj, field_name)
             descriptor = getattr(django_model, related_name)
             related_obj = getattr(filter_obj, field_name)
             query_args.update(create_query_args(
@@ -158,6 +166,10 @@ def to_django_value(spyne_obj, django_field):
     """
     Convert a spyne model to a django value
     """
+    from zaakmagazijn.rgbz_mapping.base import ProxyField
+    if isinstance(django_field, ProxyField):
+        django_field = django_field.get_django_field()
+
     if hasattr(spyne_obj, 'to_django_value'):
         return spyne_obj.to_django_value(spyne_obj, django_field)
 
@@ -238,3 +250,53 @@ def get_spyne_field(spyne_model, *path):
     for field in fields:
         spyne_model = spyne_model._type_info[field]
     return spyne_model
+
+
+def get_systeem_zender():
+    """
+    Return the zender (sender) data, if we're the sender. sender data is based
+    on what is stored in the settings.
+    """
+    from .protocols import IgnoreAttribute
+    systeem = settings.ZAAKMAGAZIJN_SYSTEEM
+
+    zender = {
+        'organisatie': systeem['organisatie'] or IgnoreAttribute(),
+        'applicatie': systeem['applicatie'] or IgnoreAttribute(),
+        'administratie': systeem['administratie'] or IgnoreAttribute(),
+        'gebruiker': systeem['gebruiker'] or IgnoreAttribute(),
+    }
+    return zender
+
+
+def get_ontvanger(zender):
+    """
+    Based on the 'ontvanger' return the 'zender' data where we'll
+    be returning the data to.
+    """
+    from .protocols import IgnoreAttribute
+
+    if zender is None:
+        return None
+
+    ontvanger = {
+        'organisatie': zender.organisatie or IgnoreAttribute(),
+        'applicatie': zender.applicatie or IgnoreAttribute(),
+        'administratie': zender.administratie or IgnoreAttribute(),
+        'gebruiker': zender.gebruiker or IgnoreAttribute(),
+    }
+    return ontvanger
+
+
+def get_bv03_stuurgegevens(data):
+    from .choices import BerichtcodeChoices
+    from ..utils import create_unique_id
+
+    return {
+        'berichtcode': BerichtcodeChoices.bv03,
+        'zender': get_systeem_zender(),
+        'ontvanger': get_ontvanger(data.stuurgegevens.zender),
+        'referentienummer': create_unique_id(),
+        'crossRefnummer': data.stuurgegevens.referentienummer,
+        'tijdstipBericht': stuf_datetime.now()
+    }

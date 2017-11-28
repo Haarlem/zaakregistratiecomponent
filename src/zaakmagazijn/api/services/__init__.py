@@ -18,6 +18,6 @@ from .ontkoppel_zaakdocument import OntkoppelZaakdocument  # noqa
 from .overdragen_zaak import OverdragenZaak  # noqa
 from .update_besluit import UpdateBesluit  # noqa
 from .update_zaak import UpdateZaak  # noqa
-from .update_zaakdocument import UpdateZaakdocument
+from .update_zaakdocument import UpdateZaakdocument  # noqa
 from .voeg_besluit_toe import VoegBesluitToe  # noqa
 from .voeg_zaakdocument_toe import VoegZaakdocumentToe  # noqa

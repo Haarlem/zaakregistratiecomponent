@@ -1,3 +1,4 @@
+
 from lxml import etree
 from zeep.xsd.const import Nil
 
@@ -14,71 +15,70 @@ class geefBesluitDetails_BslLv01Tests(BaseSoapTests):
         # Should not show up, because the 'identificatie' field doesn't match.
         BesluitFactory.create()
 
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         response = client.service.geefBesluitdetails_BslLv01(
-            stuurgegevens=stuf_factory.BSL_StuurgegevensGeefBesluitDetailsLv01(
+            stuurgegevens=stuf_factory['BSL-StuurgegevensLv01'](
                 berichtcode='Lv01',
                 entiteittype='BSL',
             ),
-            parameters=stuf_factory.BSL_parametersVraagSynchroon(
+            parameters=stuf_factory['BSL-parametersVraagSynchroon'](
                 sortering=1,
                 indicatorVervolgvraag=False
             ),
-            scope=zkn_factory.GeefBesluitDetails_vraagScope(
-                object=zkn_factory.GeefBesluitDetails_BSL_vraagScope(**{
+            scope={
+                'object': zkn_factory['geefBesluitDetails-BSL-vraagScope'](**{
                     'entiteittype': 'BSL',  # v
                     'identificatie': Nil,  # v
                     'datumBeslissing': Nil,  # v
                     'ingangsdatumWerking': Nil,  # v
                     'bst.omschrijving': Nil,
-                }
-                )
-            ),
-            gelijk=zkn_factory.GeefBesluitDetails_BSL_vraagSelectie(
+                }),
+            },
+            gelijk=zkn_factory['geefBesluitDetails-BSL-vraagSelectie'](
                 identificatie=besluit.identificatie,  # v
             )
         )
-        self.assertEqual(len(response.antwoord.object), 1)
+        self.assertEqual(len(response.antwoord), 1)
         self.assertEqual(
-            response.antwoord.object[0].identificatie,
+            response.antwoord.object.identificatie._value_1,
             besluit.besluitidentificatie
         )
-        self.assertEquals(getattr(response.antwoord.object[0], 'bst.omschrijving'), besluit.besluittype.besluittypeomschrijving)
+        self.assertEquals(getattr(response.antwoord.object, 'bst.omschrijving')._value_1, besluit.besluittype.besluittypeomschrijving)
 
     def test_scope(self):
         informatieobject1 = EnkelvoudigInformatieObjectFactory.create()
         besluit = BesluitFactory.create(informatieobject=(informatieobject1,))
 
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         with client.options(raw_response=True):
             response = client.service.geefBesluitdetails_BslLv01(
-                stuurgegevens=stuf_factory.BSL_StuurgegevensGeefBesluitDetailsLv01(
+                stuurgegevens=stuf_factory['BSL-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='BSL',
                 ),
-                parameters=stuf_factory.BSL_parametersVraagSynchroon(
+                parameters=stuf_factory['BSL-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag='false'
                 ),
-                scope=zkn_factory.GeefBesluitDetails_vraagScope(
-                    object=zkn_factory.GeefBesluitDetails_BSL_vraagScope(**{
+                scope={
+                    'object': zkn_factory['geefBesluitDetails-BSL-vraagScope'](**{
                         'entiteittype': 'BSL',  # v
                         'identificatie': Nil,  # v
                         'datumBeslissing': Nil,  # v
                         'ingangsdatumWerking': Nil,  # v
                         'bst.reactietermijn': Nil,
                         'isUitkomstVan': {
-                            'gerelateerde': zkn_factory.GeefBesluitDetails_ZAK_vraagScope(**{
+                            'gerelateerde': zkn_factory['geefBesluitDetails-ZAK-gerelateerdeVraagScope'](**{
                                 'identificatie': Nil,
                             }),
                         },
                     })
-                ),
-                gelijk=zkn_factory.GeefBesluitDetails_BSL_vraagSelectie(
+                },
+                gelijk=zkn_factory['geefBesluitDetails-BSL-vraagSelectie'](
                     identificatie=besluit.identificatie,  # v
                 )
             )
@@ -133,29 +133,29 @@ class geefBesluitDetails_BslLa01Tests(BaseSoapTests):
         """
         Do a simple SOAP request.
         """
-        client = self._get_client('Beantwoordvraag')
+        client = self._get_client('BeantwoordVraag')
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
 
         with client.options(raw_response=raw_response):
             return client.service.geefBesluitdetails_BslLv01(
-                stuurgegevens=stuf_factory.BSL_StuurgegevensGeefBesluitDetailsLv01(
+                stuurgegevens=stuf_factory['BSL-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype='BSL',
                 ),
-                parameters=stuf_factory.BSL_parametersVraagSynchroon(
+                parameters=stuf_factory['BSL-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False
                 ),
-                scope=zkn_factory.GeefBesluitDetails_vraagScope(
-                    object=zkn_factory.GeefBesluitDetails_BSL_vraagScope(**{
+                scope={
+                    'object': zkn_factory['geefBesluitDetails-BSL-vraagScope'](**{
                         'entiteittype': 'BSL',  # v
                         'identificatie': Nil,  # v
                         'datumBeslissing': Nil,  # v
                         'ingangsdatumWerking': Nil,  # v
                         'bst.omschrijving': Nil,
                     })
-                ),
-                gelijk=zkn_factory.GeefBesluitDetails_BSL_vraagSelectie(
+                },
+                gelijk=zkn_factory['geefBesluitDetails-BSL-vraagSelectie'](
                     identificatie=self.besluit.identificatie,  # v
                 )
             )
@@ -166,13 +166,11 @@ class geefBesluitDetails_BslLa01Tests(BaseSoapTests):
         """
         result = self._do_simple_request(raw_response=True)
         root = etree.fromstring(result.content)
-        self.assertEquals(set(root.nsmap.values()), set([
-            'http://www.egem.nl/StUF/sector/zkn/0310',
-            'http://www.egem.nl/StUF/StUF0301',
-            'http://www.stufstandaarden.nl/koppelvlak/zds0120',
-            'http://schemas.xmlsoap.org/soap/envelope/',
-            'http://www.w3.org/2001/XMLSchema-instance'
-        ]))
+        namespaces = {ns for el in root.iterdescendants() for ns in el.nsmap.values()}
+
+        self.assertIn('http://www.egem.nl/StUF/sector/zkn/0310', namespaces)
+        self.assertIn('http://www.egem.nl/StUF/StUF0301', namespaces)
+        self.assertIn('http://www.stufstandaarden.nl/koppelvlak/zds0120', namespaces)
 
     def test_root_element(self):
         """
@@ -219,18 +217,10 @@ class geefBesluitDetails_BslLa01Tests(BaseSoapTests):
         self._assert_xpath_results(self._get_body_root(root), 'zkn:antwoord/zkn:object[@stuf:entiteittype]', 1, namespaces=self.nsmap)
 
 
-class geefBesluitDetails_Fo02BerichtTests(BaseSoapTests):
-    antwoord_xpath = '/soap11env:Envelope/soap11env:Body/soap11env:Fault/detail/stuf:Fo02Bericht'
-
-    def test_validation_error_message(self):
-        pass
-        # TODO: Implement
-
-
 class STPgeefBesluitDetailsTests(BaseTestPlatformTests):
     maxDiff = None
     test_files_subfolder = 'stp_geefBesluitDetails'
-    porttype = 'Beantwoordvraag'
+    porttype = 'BeantwoordVraag'
 
     def setUp(self):
         super().setUp()

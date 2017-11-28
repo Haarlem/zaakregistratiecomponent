@@ -1,18 +1,6 @@
 import factory
 
-from ....rgbz.models import (
-    AdelijkeTitel, AnderZaakObject, Contactpersoon, Naam, ZaakKenmerk
-)
-
-
-class NaamFactory(factory.django.DjangoModelFactory):
-    voornamen = factory.sequence(lambda n: 'Willekeurige voornamen {0}'.format(n))
-    geslachtsnaam = factory.sequence(lambda n: 'Willekeurige geslachtsnamen {0}'.format(n))
-    voorvoegsel_geslachtsnaam = factory.SubFactory('zaakmagazijn.rgbz.tests.factory_models.VoorvoegselFactory')
-    adelijke_titel = AdelijkeTitel.baron
-
-    class Meta:
-        model = Naam
+from ....rgbz.models import AnderZaakObject, Contactpersoon, ZaakKenmerk
 
 
 class ContactpersoonFactory(factory.django.DjangoModelFactory):

@@ -311,6 +311,7 @@ ZAAKMAGAZIJN_OPEN_ACCESS = True
 
 # Based on XSD parametersVraag -> maximumAantal
 ZAAKMAGAZIJN_DEFAULT_MAX_NR_RESULTS = 15
+
 # Indentificatie van systeem
 ZAAKMAGAZIJN_SYSTEEM = {
     'organisatie': 'ORG',
@@ -321,6 +322,22 @@ ZAAKMAGAZIJN_SYSTEEM = {
 
 ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
 # ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id'
+
+# Absolute URL of the Zaakmagazijn. Used in the WSDL and should not be altered.
+ZAAKMAGAZIJN_ZDS_URL = '/static/schema/'
+ZAAKMAGAZIJN_ZDS_PATH = os.path.join(BASE_DIR, 'zds', 'ZDS 1.2 2017 Q1 Resolved')
+
+# Whether soap/wsdl/schema locations in the WSDL should be rewritten on-the-fly to
+# the proper locations or if the original schema's should be used.
+ZAAKMAGAZIJN_REFERENCE_WSDL = True
+
+# Use the workaround for the StUF testplatform.
+ZAAKMAGAZIJN_STUF_TESTPLATFORM = False
+
+# Schema's are distributed as static files.
+STATICFILES_DIRS = list(STATICFILES_DIRS) + [
+    ('schema', os.path.join(ZAAKMAGAZIJN_ZDS_PATH)),
+]
 
 # Toelichtingen, en omschrijvingen die automatisch worden ingevuld bij het
 # aanmaken van het Relatietype Rol, voor een Zaak.
@@ -376,6 +393,7 @@ ZAAKMAGAZIJN_ROLOMSCHRIJVINGEN = {
 CMIS_ZAKEN_TYPE_ENABLED = False
 CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to'
 # CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to_date_based'
+CMIS_CLIENT_CLASS = 'zaakmagazijn.cmis.client.CMISDMSClient'
 CMIS_CLIENT_URL = 'http://localhost:8080/alfresco/cmisatom'
 CMIS_CLIENT_USER = 'Admin'
 CMIS_CLIENT_USER_PASSWORD = 'admin'

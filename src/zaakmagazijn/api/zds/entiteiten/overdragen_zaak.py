@@ -48,7 +48,7 @@ class OverdragenZaak_ZAK_opdrachtbevestiging_e(ComplexModel):
     __extends__ = OverdragenZaak_ZAK_opdrachtbevestiging_r
     _type_info = [
         # Attributes
-        ('functie', XmlAttribute(simple_types.FunctieVrijBerichtElement.customize(fixed='entiteit'), ref='functie')), # use=required, default should be fixed
+        ('functie', XmlAttribute(simple_types.FunctieVrijBerichtElement.customize(fixed='entiteit'), ref='functie')),  # use=required, default should be fixed
         # Elements
         ('antwoord', simple_types.OverdragenZaak_antwoord),
     ]
@@ -140,7 +140,7 @@ class OverdragenZaak_ZAK_opdracht_e(ComplexModel):
     __extends__ = OverdragenZaak_ZAK_opdracht_r
     _type_info = [
         # Attributes
-        ('functie', XmlAttribute(simple_types.FunctieVrijBerichtElement.customize(fixed='entiteit'), ref='functie')), # use=required
+        ('functie', XmlAttribute(simple_types.FunctieVrijBerichtElement.customize(fixed='entiteit'), ref='functie')),  # use=required
     ]
 
 

@@ -16,7 +16,7 @@ class GenereerBesluitIdentificatie_Du02(BaseSoapTests):
 
         with client.options(raw_response=raw_response):
             return client.service.genereerBesluitIdentificatie_Di02(
-                stuurgegevens=stuf_factory.Di02_Stuurgegevens_gbi(
+                stuurgegevens=stuf_factory['Di02-Stuurgegevens-gbi'](
                     berichtcode='Di02',
                     referentienummer='123',
                     tijdstipBericht=stuf_datetime.now(),

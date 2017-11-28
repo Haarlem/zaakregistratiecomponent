@@ -5,21 +5,16 @@ from mock import patch
 
 from ...rgbz.choices import Rolomschrijving, RolomschrijvingGeneriek
 from ...rgbz.models import (
-    Medewerker, OrganisatorischeEenheid, Rol, WaterdeelObject, Zaak
+    Medewerker, NietNatuurlijkPersoon, Rol, WaterdeelObject, Zaak
 )
 from ...rgbz.tests.factory_models import (
-    BesluitFactory, BesluitTypeFactory, BetrokkeneFactory,
-    BetrokkeneMetRolFactory, BetrokkeneMetVerzendingFactory,
-    KlantcontactFactory, KlantcontactMetVestigingFactory, MedewerkerFactory,
-    NatuurlijkPersoonFactory, NietNatuurlijkPersoonFactory,
-    OrganisatorischeEenheidFactory, RolFactory, StatusFactory, Verzending,
-    VestigingFactory, VestigingVanZaakBehandelendeOrganisatieFactory,
-    ZaakFactory, ZaakKenmerk, ZaakTypeFactory
+    BesluitTypeFactory, MedewerkerFactory, NatuurlijkPersoonFactory,
+    NietNatuurlijkPersoonFactory, OrganisatorischeEenheidFactory, RolFactory,
+    VestigingFactory, WaterdeelObjectFactory, ZaakFactory, ZaakKenmerk,
+    ZaakTypeFactory
 )
-from ..stuf.choices import (
-    BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
-)
-from .base import BaseSoapTests, BaseTestPlatformTests
+from ..stuf.choices import BerichtcodeChoices, ServerFoutChoices
+from .base import BaseTestPlatformTests
 
 
 class MaykinupdateZaak_ZakLk01ZakObjectTests(BaseTestPlatformTests):
@@ -47,93 +42,101 @@ class MaykinupdateZaak_ZakLk01ZakObjectTests(BaseTestPlatformTests):
             omschrijving="omschrijving",
         )
 
-    def test_zakobj_buurt(self):
-        # TODO: Implement
-        pass
+    # def test_zakobj_buurt(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zakobj_enkelvoudig_document(self):
-        pass
+    # def test_zakobj_enkelvoudig_document(self):
+    #     pass
 
-    def test_zaakobject_gemeente(self):
-        pass
+    # def test_zaakobject_gemeente(self):
+    #     pass
 
-    def test_zaakobject_gemeentelijkeOpenbareRuimte(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_gemeentelijkeOpenbareRuimte(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_huishouden(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_huishouden(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_inrichtingselement(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_inrichtingselement(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_kadastraleOnroerendeZaak(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_kadastraleOnroerendeZaak(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_kunstwerkdeel(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_kunstwerkdeel(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_maatschappelijkeActiviteit(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_maatschappelijkeActiviteit(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_medewerker(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_medewerker(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_natuurlijkPersoon(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_natuurlijkPersoon(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_nietNatuurlijkPersoon(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_nietNatuurlijkPersoon(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_openbareRuimte(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_openbareRuimte(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_organisatorischeEenheid(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_organisatorischeEenheid(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_pand(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_pand(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_samengesteldDocument(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_samengesteldDocument(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_spoorbaandeel(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_spoorbaandeel(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_status(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_status(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_terreindeel(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_terreindeel(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_vestiging(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_vestiging(self):
+    #     # TODO: Implement
+    #     pass
 
     def test_zaakobject_waterdeel(self):
+        """
+        It is not possible to create  a Waterdeel via the service because
+        datum_begin_geldigheid_waterdeel and datum_einde_geldigheid_waterdeel are required
+        but can't be supplied via the service.
+        """
         vraag = 'updateZaak_ZakLk01_waterdeel.xml'
         self.context.update({
-            'waterdeel_type': 'Zee',
+            'waterdeel_type': 'zee',
             'waterdeel_naam': 'naam',
             'waterdeel_identificatie': 'BE.IMGEO.1234567890123456',
-            'waterdeel_ingangsdatum': '20170902',
-            'waterdeel_einddatum': '20170903',
         })
+        WaterdeelObjectFactory.create(
+            type_waterdeel=self.context['waterdeel_type'],
+            identificatie=self.context['waterdeel_identificatie'],
+            naam=self.context['waterdeel_naam'],
+        )
         response = self._do_request(self.porttype, vraag, self.context)
         self.assertEquals(response.status_code, 200, response.content)
         response_root = etree.fromstring(response.content)
@@ -143,36 +146,34 @@ class MaykinupdateZaak_ZakLk01ZakObjectTests(BaseTestPlatformTests):
         self.assertEquals(waterdeel.identificatie, self.context['waterdeel_identificatie'])
         self.assertEquals(waterdeel.naam, self.context['waterdeel_naam'])
         self.assertEquals(waterdeel.type_waterdeel, self.context['waterdeel_type'])
-        self.assertEquals(waterdeel.datum_begin_geldigheid_waterdeel, self.context['waterdeel_ingangsdatum'])
-        self.assertEquals(waterdeel.datum_einde_geldigheid_waterdeel, self.context['waterdeel_einddatum'])
 
-    def test_zaakobject_wegdeel(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_wegdeel(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_wijk(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_wijk(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_woonplaats(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_woonplaats(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_wozDeelobject(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_wozDeelobject(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_wozObject(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_wozObject(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_wozWaarde(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_wozWaarde(self):
+    #     # TODO: Implement
+    #     pass
 
-    def test_zaakobject_zakelijkRecht(self):
-        # TODO: Implement
-        pass
+    # def test_zaakobject_zakelijkRecht(self):
+    #     # TODO: Implement
+    #     pass
 
 
 class MaykinupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
@@ -311,7 +312,7 @@ class MaykinupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         self.assertEquals(response.status_code, 200, response.content)
         response_root = etree.fromstring(response.content)
 
-    @patch('zaakmagazijn.rgbz.models.zaken.Zaak.objects')
+    @patch('zaakmagazijn.rgbz_mapping.models.zaken.ZaakProxy.objects')
     def test_more_than_1_object_found(self, mock_zaak_objects):
         """
         Test that when more than 1 object is found, StUF067: "Dubbelen voor object gevonden"
@@ -420,9 +421,9 @@ class MaykinupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         self.assertEqual(response_berichtcode, BerichtcodeChoices.fo03, response.content)
 
         stuf_code = response_root.xpath('//stuf:body/stuf:code', namespaces=self.nsmap)[0].text
-        self.assertEqual(stuf_code, ClientFoutChoices.stuf055, response.content)
-
-        # Note: This is a schema validation error, and won't have a fully filled error response set.
+        self.assertEqual(stuf_code, ServerFoutChoices.stuf058, response.content)
+        details = response_root.xpath('//stuf:body/stuf:details', namespaces=self.nsmap)[0].text
+        self.assertEqual(details, "Alleen de mutatiesoort \'W\' is toegestaan", response.content)
 
     def test_updateZaak_zakLk01_ZAK_matching_fields(self):
         """
@@ -497,7 +498,6 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         super().setUp()
 
         self.context = {
-            # probably better set gemeentecode to '' or leave it out
             'gemeentecode': '1234',
             'datumVandaag': self.genereerdatum(),
             'datumGisteren': self.genereerdatum(-1),
@@ -518,28 +518,20 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         response_berichtcode = response_root.xpath('//stuf:stuurgegevens/stuf:berichtcode', namespaces=self.nsmap)[0].text
         self.assertEqual(response_berichtcode, BerichtcodeChoices.bv03, response.content)
 
+        self._validate_response(response)
+
     def test_updateZaak_ZakLk01_01(self):
         self.zaak = ZaakFactory.create(
             zaakidentificatie="{}{}".format(self.context['gemeentecode'], self.context['creerzaak_identificatie_7']),
             omschrijving="omschrijving",
+            zaaktype__zaaktypeomschrijving=self.context['zds_zaaktype_omschrijving'],
+            zaaktype__zaaktypeidentificatie=self.context['zds_zaaktype_code'],
+            zaaktype__datum_begin_geldigheid_zaaktype=self.context['datumVandaag'],
         )
-        identificatie = "{gemeentecode}98765".format(gemeentecode=self.context['gemeentecode'])
-        self.organisatorische_eenheid = OrganisatorischeEenheidFactory.create(
-            identificatie=identificatie,
-            organisatieeenheididentificatie=identificatie,
-            organisatieidentificatie=identificatie[:4],
-            naam=identificatie
-        )
-        self.assertEqual(self.organisatorische_eenheid.identificatie, identificatie)
 
-        rol = RolFactory.create(
-            zaak=self.zaak, betrokkene=self.organisatorische_eenheid,
-            rolomschrijving=Rolomschrijving.initiator, )
-
-        # In the test it says 'T', but a lot of required fields are missing. My assumption
-        # is that the test expected the medewerker to exist.
-        medewerker = MedewerkerFactory.create(
-            medewerkeridentificatie='12345')
+        niet_natuurlijk_persoon = NietNatuurlijkPersoonFactory.create(rsin='123456789')
+        rol = RolFactory.create(zaak=self.zaak, betrokkene=niet_natuurlijk_persoon, rolomschrijving=Rolomschrijving.initiator, )
+        medewerker = MedewerkerFactory.create(medewerkeridentificatie=self.context['gemeentecode'] + '56789')
 
         vraag = 'updateZaak_ZakLk01_01.xml'
         response = self._do_request(self.porttype, vraag, self.context)
@@ -551,14 +543,14 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         self.assertEquals(rol.zaak, self.zaak)
         self.assertEquals(rol.betrokkene.is_type(), medewerker)
 
-        # OEH should still exist.
-        self.assertTrue(OrganisatorischeEenheid.objects.filter(pk=self.organisatorische_eenheid).exists())
+        # NNPS should still exist.
+        self.assertTrue(NietNatuurlijkPersoon.objects.filter(pk=niet_natuurlijk_persoon).exists())
 
     def test_updateZaak_ZakLk01_03(self):
         self.context['creerzaak_identificatie_9'] = self.genereerID(10)
         self.context['zds_zaaktype_omschrijving'] = 'Aanvraag burgerservicenummer behandelen'
         self.context['zds_zaaktype_code'] = '12345678'
-        self.context['datumVandaag'] = self.genereerdatumtijd(0)
+        self.context['datumVandaag'] = self.genereerdatum(0)
         self.context['datumEergisteren'] = self.genereerdatumtijd(-2)
         self.context['datumGisteren'] = self.genereerdatumtijd(-1)
 
@@ -567,59 +559,74 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
             omschrijving="omschrijving",
             kenmerken=None,
         )
-        identificatie = "0123456785"
-        organisatorische_eenheid = OrganisatorischeEenheidFactory.create(
-            identificatie=identificatie,
-            organisatieeenheididentificatie=identificatie,
-            organisatieidentificatie=identificatie[:4],
-            naam='naam2',
-            gevestigd_in__identificatie='012345678910'
-        )
 
         medewerker1 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56781",
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56781",
             'achternaam': 'achternaam2',
             'voorletters': 'voorletters2',
             'voorvoegsel_achternaam': 'voorvoeg2',
         })
         medewerker2 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56782",
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56782",
             'achternaam': 'achternaam22',
             'voorletters': 'voorletters22',
             'voorvoegsel_achternaam': 'voorvoeg22',
         })
         medewerker3 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56783",
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56783",
             'achternaam': 'achternaam2',
             'voorletters': 'voorletters2',
             'voorvoegsel_achternaam': 'voorvoeg2',
         })
         medewerker4 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56784",
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56784",
             'achternaam': 'achternaam22',
             'voorletters': 'voorletters22',
             'voorvoegsel_achternaam': 'voorvoeg22',
         })
-        medewerker5 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56786",
+        oeh_identificatie = "0123456785"
+        organisatorische_eenheid = OrganisatorischeEenheidFactory.create(
+            identificatie=oeh_identificatie,
+            organisatieeenheididentificatie=oeh_identificatie,
+            organisatieidentificatie=oeh_identificatie[:4],
+            naam='naam2',
+            gevestigd_in__is_specialisatie_van__identificatie='012345678910',
+            gevestigd_in__is_specialisatie_van__handelsnaam=['handelsnaam', ],
+        )
+        medewerker6 = Medewerker.objects.create(**{
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56786",
             'achternaam': 'achternaam6',
             'voorletters': 'voorletters6',
             'voorvoegsel_achternaam': 'voorvoeg6',
         })
-        medewerker6 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56788",
+        medewerker7 = Medewerker.objects.create(**{
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56787",
+            'achternaam': 'achternaam22',
+            'voorletters': 'voorletters22',
+            'voorvoegsel_achternaam': 'voorvoeg22',
+        })
+        medewerker8 = Medewerker.objects.create(**{
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56788",
             'achternaam': 'achternaam2',
             'voorletters': 'voorletters2',
             'voorvoegsel_achternaam': 'voorvoeg2',
         })
-        medewerker7 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56790",
+
+        medewerker9 = Medewerker.objects.create(**{
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56789",
+            'achternaam': 'achternaam22',
+            'voorletters': 'voorletters22',
+            'voorvoegsel_achternaam': 'voorvoeg22',
+        })
+
+        medewerker10 = Medewerker.objects.create(**{
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56790",
             'achternaam': 'achternaam20',
             'voorletters': 'voorletters20',
             'voorvoegsel_achternaam': 'voorvoeg20',
         })
-        medewerker8 = Medewerker.objects.create(**{
-            'medewerkeridentificatie': "56791",
+        medewerker11 = Medewerker.objects.create(**{
+            'medewerkeridentificatie': self.context['gemeentecode'] + "56791",
             'achternaam': 'achternaam22',
             'voorletters': 'voorletters22',
             'voorvoegsel_achternaam': 'voorvoeg22',
@@ -629,8 +636,10 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         rol = RolFactory.create(zaak=zaak, betrokkene=vestiging, rolomschrijving=Rolomschrijving.initiator)
 
         # Make sure none of the test requirements are met before doing the update.
-        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker1).count(), 0)
-        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker2).count(), 0)
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene__in=[
+            medewerker1, medewerker2, medewerker3, medewerker4, medewerker6,
+            medewerker7, medewerker8, medewerker9, medewerker10, medewerker11
+        ]).count(), 0)
         self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=organisatorische_eenheid).count(), 0)
 
         self.assertFalse(ZaakKenmerk.objects.exists())
@@ -675,6 +684,60 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker2, rolomschrijving=Rolomschrijving.belanghebbende).count(), 1)
 
         # Oud:
+        # <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        #  <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T">
+        #     <ZKN:gerelateerde>
+        #         <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #             <ZKN:identificatie>{{ gemeentecode }}56783</ZKN:identificatie>
+        #             <ZKN:achternaam>achternaam2</ZKN:achternaam>
+        #             <ZKN:voorletters>voorletters2</ZKN:voorletters>
+        #             <ZKN:voorvoegselAchternaam>voorvoeg2</ZKN:voorvoegselAchternaam>
+        #         </ZKN:medewerker>
+        #     </ZKN:gerelateerde>
+        #     <ZKN:code>code2</ZKN:code>
+        #     <ZKN:omschrijving>omschrijving2</ZKN:omschrijving>
+        #     <ZKN:toelichting>toelichting2</ZKN:toelichting>
+        #     <StUF:tijdvakRelatie>
+        #         <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #         <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakRelatie>
+        #     <StUF:tijdvakGeldigheid>
+        #         <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #         <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakGeldigheid>
+        #     <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        # </ZKN:heeftAlsGemachtigde>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker3, rolomschrijving=Rolomschrijving.belanghebbende).count(), 1)
+
+        # Oud:
+        # <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        # <ZKN:heeftAlsGemachtigde StUF:entiteittype="ZAKBTRGMC" StUF:verwerkingssoort="T">
+        #     <ZKN:gerelateerde>
+        #         <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #             <ZKN:identificatie>{{ gemeentecode }}56784</ZKN:identificatie>
+        #             <ZKN:achternaam>achternaam22</ZKN:achternaam>
+        #             <ZKN:voorletters>voorletters22</ZKN:voorletters>
+        #             <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
+        #         </ZKN:medewerker>
+        #     </ZKN:gerelateerde>
+        #     <ZKN:code>code2</ZKN:code>
+        #     <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
+        #     <ZKN:toelichting>toelichting22</ZKN:toelichting>
+        #     <StUF:tijdvakRelatie>
+        #         <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #         <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakRelatie>
+        #     <StUF:tijdvakGeldigheid>
+        #         <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #         <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakGeldigheid>
+        #     <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        # </ZKN:heeftAlsGemachtigde>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker4, rolomschrijving=Rolomschrijving.belanghebbende).count(), 1)
+
+        # Oud:
         # <ZKN:heeftAlsInitiator StUF:entiteittype="ZAKBTRINI" StUF:verwerkingssoort="R">
         #     <ZKN:gerelateerde>
         #         <ZKN:vestiging StUF:verwerkingssoort="I" StUF:entiteittype="VES">
@@ -705,16 +768,171 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         # </ZKN:heeftAlsInitiator>
         self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=organisatorische_eenheid, rolomschrijving=Rolomschrijving.initiator).count(), 1)
 
+        # Oud:
+        # <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        # <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T">
+        #     <ZKN:gerelateerde>
+        #         <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #             <ZKN:identificatie>{{ gemeentecode }}56786</ZKN:identificatie>
+        #             <ZKN:achternaam>achternaam6</ZKN:achternaam>
+        #             <ZKN:voorletters>voorletters6</ZKN:voorletters>
+        #             <ZKN:voorvoegselAchternaam>voorvoeg6</ZKN:voorvoegselAchternaam>
+        #         </ZKN:medewerker>
+        #     </ZKN:gerelateerde>
+        #     <ZKN:code>code6</ZKN:code>
+        #     <ZKN:omschrijving>omschrijving6</ZKN:omschrijving>
+        #     <ZKN:toelichting>toelichting6</ZKN:toelichting>
+        #     <StUF:tijdvakRelatie>
+        #         <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #         <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakRelatie>
+        #     <StUF:tijdvakGeldigheid>
+        #         <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #         <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakGeldigheid>
+        #     <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        # </ZKN:heeftAlsUitvoerende>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker6, rolomschrijving=Rolomschrijving.behandelaar).count(), 1)
+
+        # Oud:
+        # <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        # <ZKN:heeftAlsUitvoerende StUF:entiteittype="ZAKBTRUTV" StUF:verwerkingssoort="T">
+        #     <ZKN:gerelateerde>
+        #         <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #             <ZKN:identificatie>{{ gemeentecode }}56787</ZKN:identificatie>
+        #             <ZKN:achternaam>achternaam22</ZKN:achternaam>
+        #             <ZKN:voorletters>voorletters22</ZKN:voorletters>
+        #             <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
+        #         </ZKN:medewerker>
+        #     </ZKN:gerelateerde>
+        #     <ZKN:code>code22</ZKN:code>
+        #     <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
+        #     <ZKN:toelichting>toelichting22</ZKN:toelichting>
+        #     <StUF:tijdvakRelatie>
+        #         <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #         <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakRelatie>
+        #     <StUF:tijdvakGeldigheid>
+        #         <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #         <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakGeldigheid>
+        #     <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        # </ZKN:heeftAlsUitvoerende>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker7, rolomschrijving=Rolomschrijving.behandelaar).count(), 1)
+
+        # Oud:
+        # <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        # <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T">
+        #     <ZKN:gerelateerde>
+        #         <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #             <ZKN:identificatie>{{ gemeentecode }}56788</ZKN:identificatie>
+        #             <ZKN:achternaam>achternaam2</ZKN:achternaam>
+        #             <ZKN:voorletters>voorletters2</ZKN:voorletters>
+        #             <ZKN:voorvoegselAchternaam>voorvoeg2</ZKN:voorvoegselAchternaam>
+        #         </ZKN:medewerker>
+        #     </ZKN:gerelateerde>
+        #     <ZKN:code>code2</ZKN:code>
+        #     <ZKN:omschrijving>omschrijving2</ZKN:omschrijving>
+        #     <ZKN:toelichting>toelichting2</ZKN:toelichting>
+        #     <StUF:tijdvakRelatie>
+        #         <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #         <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakRelatie>
+        #     <StUF:tijdvakGeldigheid>
+        #         <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #         <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakGeldigheid>
+        #     <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        # </ZKN:heeftAlsVerantwoordelijke>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker8, rolomschrijving=RolomschrijvingGeneriek.beslisser).count(), 1)
+
+        # Oud:
+        # <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        # <ZKN:heeftAlsVerantwoordelijke StUF:entiteittype="ZAKBTRVRA" StUF:verwerkingssoort="T">
+        #     <ZKN:gerelateerde>
+        #         <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #             <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
+        #             <ZKN:achternaam>achternaam22</ZKN:achternaam>
+        #             <ZKN:voorletters>voorletters22</ZKN:voorletters>
+        #             <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
+        #         </ZKN:medewerker>
+        #     </ZKN:gerelateerde>
+        #     <ZKN:code>code22</ZKN:code>
+        #     <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
+        #     <ZKN:toelichting>toelichting22</ZKN:toelichting>
+        #     <StUF:tijdvakRelatie>
+        #         <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #         <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakRelatie>
+        #     <StUF:tijdvakGeldigheid>
+        #         <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #         <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakGeldigheid>
+        #     <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        # </ZKN:heeftAlsVerantwoordelijke>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker9, rolomschrijving=RolomschrijvingGeneriek.beslisser).count(), 1)
+
+        # Oud:
+        # <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        # <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T">
+        #       <ZKN:gerelateerde>
+        #           <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #               <ZKN:identificatie>{{ gemeentecode }}56790</ZKN:identificatie>
+        #               <ZKN:achternaam>achternaam20</ZKN:achternaam>
+        #               <ZKN:voorletters>voorletters20</ZKN:voorletters>
+        #               <ZKN:voorvoegselAchternaam>voorvoeg20</ZKN:voorvoegselAchternaam>
+        #           </ZKN:medewerker>
+        #       </ZKN:gerelateerde>
+        #       <ZKN:code>code20</ZKN:code>
+        #       <ZKN:omschrijving>omschrijving20</ZKN:omschrijving>
+        #       <ZKN:toelichting>toelichting2</ZKN:toelichting>
+        #       <StUF:tijdvakRelatie>
+        #           <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #           <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #       </StUF:tijdvakRelatie>
+        #       <StUF:tijdvakGeldigheid>
+        #           <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #           <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #       </StUF:tijdvakGeldigheid>
+        #       <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        #   </ZKN:heeftAlsOverigBetrokkene>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker10, rolomschrijving=RolomschrijvingGeneriek.adviseur).count(), 1)
+
+        # Oud:
+        # <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T" xsi:nil="true"/>
+        # Huidig:
+        # <ZKN:heeftAlsOverigBetrokkene StUF:entiteittype="ZAKBTROVR" StUF:verwerkingssoort="T">
+        #     <ZKN:gerelateerde>
+        #         <ZKN:medewerker StUF:entiteittype="MDW" StUF:verwerkingssoort="I">
+        #             <ZKN:identificatie>{{ gemeentecode }}56791</ZKN:identificatie>
+        #             <ZKN:achternaam>achternaam22</ZKN:achternaam>
+        #             <ZKN:voorletters>voorletters22</ZKN:voorletters>
+        #             <ZKN:voorvoegselAchternaam>voorvoeg22</ZKN:voorvoegselAchternaam>
+        #         </ZKN:medewerker>
+        #     </ZKN:gerelateerde>
+        #     <ZKN:code>code22</ZKN:code>
+        #     <ZKN:omschrijving>omschrijving22</ZKN:omschrijving>
+        #     <ZKN:toelichting>toelichting22</ZKN:toelichting>
+        #     <StUF:tijdvakRelatie>
+        #         <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
+        #         <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakRelatie>
+        #     <StUF:tijdvakGeldigheid>
+        #         <StUF:beginGeldigheid>{{ datumGisteren }}</StUF:beginGeldigheid>
+        #         <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        #     </StUF:tijdvakGeldigheid>
+        #     <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
+        # </ZKN:heeftAlsOverigBetrokkene>
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=medewerker11, rolomschrijving=RolomschrijvingGeneriek.adviseur).count(), 1)
+
     def test_updateZaak_ZakLk01_05(self):
         self.context['zds_zaaktype_omschrijving'] = 'Aanvraag burgerservicenummer behandelen'
         self.context['zds_zaaktype_code'] = '12345678'
-
-        besluittype = BesluitTypeFactory.create(
-            besluittypeomschrijving='omschrijving5')
-        besluit = BesluitFactory.create(
-            identificatie='0123456789',
-            besluitdatum=self.context['datumVandaag'],
-            besluittype=besluittype)
 
         zaak_type = ZaakTypeFactory.create(
             zaaktypeidentificatie=self.context['zds_zaaktype_code'],
@@ -729,8 +947,10 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         )
         natuurlijk_persoon = NatuurlijkPersoonFactory.create(
             burgerservicenummer='012345678',
-            naam__geslachtsnaam='geslachtsnaam5',
-            naam__voornamen='voornamen5',
+            naam_geslachtsnaam='geslachtsnaam5',
+            naam_voorvoegsel_geslachtsnaam_voorvoegsel='voorvoeg5',
+            naam_aanschrijving_voorletters_aanschrijving='voorletters5',
+            naam_voornamen='voornamen5',
             geslachtsaanduiding='M',
             geboortedatum_ingeschreven_persoon=self.context['datumVandaag'],
         )
@@ -740,24 +960,13 @@ class STPupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
             zaaktype=zaak_type,
         )
 
-        # Initially, no deelzaken should exist.
-        self.assertFalse(zaak.deelzaken.exists())
-        # No besluiten should exist either.
-        self.assertFalse(zaak.besluit_set.exists())
-
         response = self._do_request(self.porttype, vraag, self.context)
 
         self._test_response(response)
 
-        # After the update the deelzaak should be added as a deelzaak of zaak.
-        self.assertEquals(zaak.deelzaken.count(), 1)
-        self.assertEquals(zaak.deelzaken.filter(pk=deelzaak.pk).count(), 1)
+        self.assertEquals(Rol.objects.filter(zaak=zaak, betrokkene=natuurlijk_persoon, rolomschrijving=Rolomschrijving.initiator).count(), 1)
 
-        # And a besluit should be added as well.
-        self.assertEquals(zaak.besluit_set.count(), 1)
-        self.assertEquals(zaak.besluit_set.filter(pk=besluit.pk).count(), 1)
-
-    @skip('Test nog niet geimplementeerd')
+    @skip('TODO [TECH]: Missing test filename.')
     def test_updateZaak_zakLk01_07(self):
         self.zaak_13 = ZaakFactory.create()
 

@@ -48,7 +48,7 @@ class IncrementalYearIdTestCase(BaseSoapTests):
 
         with client.options(raw_response=True):
             result = client.service.genereerZaakIdentificatie_Di02(
-                stuurgegevens=stuf_factory.Di02_Stuurgegevens_gzi(
+                stuurgegevens=stuf_factory['Di02-Stuurgegevens-gzi'](
                     berichtcode='Di02',
                     referentienummer='123',
                     tijdstipBericht=stuf_datetime.now(),

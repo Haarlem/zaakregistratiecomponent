@@ -186,7 +186,7 @@ beantwoordvraag_app = Application(
      GeefLijstZaakdocumenten, GeefZaakdocumentLezen],
     tns='http://www.stufstandaarden.nl/koppelvlak/zds0120',
     name='Beantwoordvraag',
-    in_protocol=StUFSynchronous(validator='lxml'),
+    in_protocol=StUFSynchronous(validator=None),
     out_protocol=StUFSynchronous()
 )
 
@@ -196,7 +196,7 @@ verwerksynchroonvrijbericht_app = Application(
      OntkoppelZaakdocument, UpdateZaakdocument],
     tns='http://www.stufstandaarden.nl/koppelvlak/zds0120',
     name='VerwerkSynchroonVrijBericht',
-    in_protocol=StUFSynchronous(validator='lxml'),
+    in_protocol=StUFSynchronous(validator=None),
     out_protocol=StUFSynchronous()
 )
 
@@ -205,7 +205,7 @@ ontvangasynchroon_app = AsyncApplication(
      UpdateZaak, UpdateBesluit, VoegBesluitToe, VoegZaakdocumentToe],
     tns='http://www.stufstandaarden.nl/koppelvlak/zds0120',
     name='OntvangAsynchroon',
-    in_protocol=StUFSynchronous(validator='lxml'),
+    in_protocol=StUFSynchronous(validator=None),
     out_protocol=StUFSynchronous()
 )
 

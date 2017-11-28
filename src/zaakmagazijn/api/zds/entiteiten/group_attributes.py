@@ -1,13 +1,13 @@
-from zaakmagazijn.rgbz.models import (
-    AnderZaakObject, Contactpersoon, ZaakKenmerk, ZaakOpschorting,
-    ZaakVerlenging
+from zaakmagazijn.rgbz_mapping.models import (
+    AnderZaakObjectProxy, ZaakKenmerkProxy, ZaakOpschortingProxy, ZaakProxy,
+    ZaakVerlengingProxy
 )
 
-from ...stuf import StUFEntiteit, StUFGegevensgroep
+from ...stuf import StUFGegevensgroep
 
 
 class KenmerkGegevensgroep(StUFGegevensgroep):
-    model = ZaakKenmerk
+    model = ZaakKenmerkProxy
     field_mapping = (
         ('kenmerk', 'kenmerk'),
         ('bron', 'kenmerk_bron'),
@@ -15,7 +15,7 @@ class KenmerkGegevensgroep(StUFGegevensgroep):
 
 
 class OpschortingGegevensgroep(StUFGegevensgroep):
-    model = ZaakOpschorting
+    model = ZaakOpschortingProxy
     field_mapping = (
         ('indicatie', 'indicatie_opschorting'),
         ('reden', 'reden_opschorting'),
@@ -23,7 +23,7 @@ class OpschortingGegevensgroep(StUFGegevensgroep):
 
 
 class VerlengingGegevensgroep(StUFGegevensgroep):
-    model = ZaakVerlenging
+    model = ZaakVerlengingProxy
     field_mapping = (
         ('duur', 'duur_verlenging'),
         ('reden', 'reden_verlenging'),
@@ -31,15 +31,21 @@ class VerlengingGegevensgroep(StUFGegevensgroep):
 
 
 class AnderZaakObjectGegevensgroep(StUFGegevensgroep):
-    model = AnderZaakObject
+    model = AnderZaakObjectProxy
     field_mapping = (
         ('omschrijving', 'ander_zaakobject_omschrijving'),
         ('aanduiding', 'ander_zaakobject_aanduiding'),
         ('lokatie', 'ander_zaakobject_lokatie'),
         ('registratie', 'ander_zaakobject_registratie'),
     )
+    required_fields = (
+        'lokatie',
+    )
 
 
-class CTPEntiteit(StUFEntiteit):
-    model = Contactpersoon
-    mnemonic = 'CTP'
+class ResultaatGegevensgroep(StUFGegevensgroep):
+    model = ZaakProxy
+    field_mapping = (
+        ('omschrijving', 'resultaatomschrijving'),
+        ('toelichting', 'resultaattoelichting'),
+    )

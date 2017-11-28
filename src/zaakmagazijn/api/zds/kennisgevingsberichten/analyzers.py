@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from ...stuf.choices import BerichtcodeChoices, ServerFoutChoices
+from ...stuf.choices import ServerFoutChoices
 from ...stuf.faults import StUFFault
 from ...stuf.protocols import Nil
 from .choices import EntiteitType, MutatiesoortChoices, VerwerkingssoortChoices
@@ -21,7 +21,7 @@ def iter_relations(obj1, obj2, field_name):
         relations_length = len(relation_list2)
 
     if not relation_list1 and not relation_list2:
-        return []
+        raise StopIteration()
 
     if relation_list1 and relation_list2 and len(relation_list1) != len(relation_list2):
         stuf_details = 'Het aantal {}-elementen komt niet overeen in de oude en de huidige situatie.'.format(field_name)
@@ -66,7 +66,7 @@ class Mutation:
         # Determine the kind of operation this is.
         operation = get_operation(stuf_entiteit, entiteit_type, self.mutatiesoort, obj1, obj2, parent_operation)
         if operation is None:
-            # TODO: [TECH] stuf_details:
+            # TODO [TECH]: stuf_details:
             # Kan dit berict niet verwerken met een verwerkingssoort '$verwerkingssoort' voor het oude bericht
             # en '$verwerkingssoort' voor het nieuwe bericht.
             raise StUFFault(ServerFoutChoices.stuf058,
@@ -87,7 +87,7 @@ class Mutation:
                 operation.add_relation(related_field, child_operation)
 
         #
-        # TODO: [KING] For attributes/gegevensgroepen that can occur more than 1 times, It is unclear how these should be processed.
+        # TODO [KING]: For attributes/gegevensgroepen that can occur more than 1 times, It is unclear how these should be processed.
         # See the discussion below, and the excerpt from the StUF standard.
         #
         # See https://discussie.kinggemeenten.nl/discussie/gemma/stuf-zkn-310/verwerken-van-kenmerk-een-update-van-een-zaak-zaklk01#comment-5308
@@ -179,7 +179,7 @@ class UpdateMutation(Mutation):
             # StUF058: Proces voor afhandelen bericht geeft fout
             raise StUFFault(ServerFoutChoices.stuf058, stuf_details=error_msg)
 
-        # TODO: [KING] 'I' is technically also allowed See StUF 3.01 - Tabel 5.3
+        # TODO [KING]: 'I' is technically also allowed See StUF 3.01 - Tabel 5.3
         if (isinstance(obj1, Nil) or obj2 is None) or (isinstance(obj2, Nil) or obj2 is None):
             error_msg = 'Zowel oud als huidig moeten worden gevuld voor een (W)ijziging.'.format(VerwerkingssoortChoices.wijziging)
             # StUF058: Proces voor afhandelen bericht geeft fout

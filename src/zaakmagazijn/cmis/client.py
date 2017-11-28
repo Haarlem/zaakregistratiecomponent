@@ -331,7 +331,7 @@ class CMISDMSClient(DMSClient):
         # since it doesn't know which url to retrieve then. We create documents with empty
         # content, that make it then impossible to set the content later, because that
         # content url is missing.
-        # TODO: [TECH] find a way to replace a non-existing stream with an actual stream
+        # TODO [TECH]: find a way to replace a non-existing stream with an actual stream
         filename = doc.properties['cmis:name']
         empty = doc.properties['cmis:contentStreamId'] is None
         if empty:
@@ -364,7 +364,7 @@ class CMISDMSClient(DMSClient):
 
         if inhoud is not None:
             content = inhoud.to_cmis()
-            # TODO: [TECH] support content type
+            # TODO [TECH]: support content type
             self.zet_inhoud(document, content, None, checkout_id=checkout_id)
 
         # all went well so far, so if we have a checkout_id, we must check the document back in
@@ -471,7 +471,7 @@ class CMISDMSClient(DMSClient):
         # * Wijzigingen in het ZS mogen niet tot nieuwe wijzigingen in het DMS
         #   leiden (een oneindige loop van updateberichten);
 
-        # TODO: [TECH] We should prolly update the ZS changelog token after WE update the DMS ourselves to prevent duplicate updates?
+        # TODO [TECH]: We should prolly update the ZS changelog token after WE update the DMS ourselves to prevent duplicate updates?
         self._repo.reload()
         try:
             dms_change_log_token = int(self._repo.info['latestChangeLogToken'])
@@ -598,9 +598,53 @@ class CMISDMSClient(DMSClient):
         ])
 
 
+class DummyDMSClient(DMSClient):
+    """
+    Dummy DMS client which returns a bogus response. Useful for testing purposes.
+    """
+    def creeer_zaakfolder(self, zaak: Zaak) -> None:
+        return None
+
+    def maak_zaakdocument(self, document, zaak: Zaak=None, filename: str=None) -> dict:
+        return {
+            'title': 'some document'
+        }
+
+    def geef_inhoud(self, document) -> tuple:
+        return (BytesIO(), 'test')
+
+    def zet_inhoud(self, document, stream: BytesIO, content_type=None, checkout_id: str=None) -> None:
+        return None
+
+    def relateer_aan_zaak(self, document, zaak: Zaak) -> None:
+        return None
+
+    def update_zaakdocument(self, document, checkout_id: str=None, inhoud: BinaireInhoud=None):
+        return None
+
+    def checkout(self, document) -> tuple:
+        return ('1234', '1234')
+
+    def cancel_checkout(self, document, checkout_id: str) -> None:
+        return None
+
+    def ontkoppel_zaakdocument(self, document, zaak: Zaak) -> None:
+        return None
+
+    def is_locked(self, document) -> bool:
+        return False
+
+    def verwijder_document(self, document) -> None:
+        return None
+
+    def sync(self, dryrun=False) -> OrderedDict:
+        return OrderedDict()
+
+
 class DefaultClient(LazyObject):
     def _setup(self):
-        self._wrapped = CMISDMSClient()
+        client_cls = import_string(settings.CMIS_CLIENT_CLASS)
+        self._wrapped = client_cls()
 
 
 default_client = DefaultClient()

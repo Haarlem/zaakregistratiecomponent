@@ -21,7 +21,6 @@ from ...utils.tests import on_jenkins, should_skip_cmis_tests
 from ..choices import ChangeLogStatus, CMISObjectType
 from ..client import CMISDMSClient
 from ..models import ChangeLog
-from .test_cmis_client import _stuffdate_to_datetime
 
 TEST_FILES_DIR = os.path.dirname(os.path.abspath(__file__))
 

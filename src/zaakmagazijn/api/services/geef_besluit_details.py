@@ -4,8 +4,9 @@ from ...rgbz.models import (
     Besluit, BesluitInformatieObject, InformatieObject, Zaak
 )
 from ..stuf import OneToManyRelation, StUFEntiteit
-from ..stuf.constants import STUF_XML_NS
-from ..stuf.models import BSL_parametersVraagSynchroon, TijdvakGeldigheid
+from ..stuf.models import (
+    BSL_parametersVraagSynchroon, ParametersAntwoordSynchroon
+)
 from ..zds.beantwoordvraag import La01Builder, Lv01Builder
 
 
@@ -14,11 +15,11 @@ class ZaakEntiteit(StUFEntiteit):
     mnemonic = 'ZAK'
     model = Zaak
     field_mapping = (
-        # TODO: [KING] Taiga #232 antwoord.object.isUitkomstVan.gerelateerde.zaakIdentificatie staat in de referentie XSD als "identificatie".
-        ('identificatie', 'zaakidentificatie'), # Overal is dit 'identificatie' behalve voor geefBesluitDetails?
+        # TODO [KING]: Taiga #232 antwoord.object.isUitkomstVan.gerelateerde.zaakIdentificatie staat in de referentie XSD als "identificatie".
+        ('identificatie', 'zaakidentificatie'),  # Overal is dit 'identificatie' behalve voor geefBesluitDetails?
         ('omschrijving', 'omschrijving'),
         ('toelichting', 'toelichting'),
-        # TODO: [TECH] Taiga #233 Resultaat, opschorting en verlenging in geefBesluitDetails Zaak entiteit ontbreken.
+        # TODO [TECH]: Taiga #233 Resultaat, opschorting en verlenging in geefBesluitDetails Zaak entiteit ontbreken.
         # <ns:resultaat>
         #    <ns:omschrijving stuf:noValue="?" stuf:exact="true">?</ns:omschrijving>
         #    <ns:toelichting stuf:noValue="?" stuf:exact="true">?</ns:toelichting>
@@ -112,6 +113,7 @@ class BesluitEntiteit(StUFEntiteit):
     ]
     filter_fields = ('identificatie', )
     input_parameters = BSL_parametersVraagSynchroon
+    output_parameters = ParametersAntwoordSynchroon
     fields = (
         'identificatie',
         'bst.omschrijving',
@@ -130,7 +132,7 @@ class BesluitEntiteit(StUFEntiteit):
         'datumVerzending',
         'datumUiterlijkeReactie',
         'tijdvakGeldigheid',
-        # TODO: [KING] Taiga #230 object.tijdstipRegistratie in geefBesluitDetails heeft geen RGBZ mapping.
+        # TODO [KING]: Taiga #230 object.tijdstipRegistratie in geefBesluitDetails heeft geen RGBZ mapping.
         'isUitkomstVan',
         'isVastgelegdIn',
     )

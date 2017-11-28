@@ -5,7 +5,6 @@ from lxml import etree
 from zaakmagazijn.api.stuf.choices import BerichtcodeChoices
 from zaakmagazijn.api.tests.base import BaseTestPlatformTests
 from zaakmagazijn.rgbz.choices import JaNee
-from zaakmagazijn.rgbz.models import EnkelvoudigInformatieObject
 from zaakmagazijn.rgbz.tests.factory_models import (
     EnkelvoudigInformatieObjectFactory, InformatieObjectTypeFactory,
     ZaakFactory, ZaakInformatieObjectFactory
@@ -39,17 +38,34 @@ class STPupdateZaakdocument_DI02Tests(DMSMockMixin, BaseTestPlatformTests):
     def setUp(self):
         super().setUp()
 
+        vandaag = self.genereerdatum()
+        self.context = {
+            'gemeentecode': '1234',
+            'datumVandaag': vandaag,
+            'datumGisteren': self.genereerdatum(-1),
+            'datumEergisteren': self.genereerdatum(-2),
+            'tijdstipRegistratie': self.genereerdatumtijd(),
+
+            'zds_zaaktype_code': '12345678',
+            'zds_zaaktype_omschrijving': 'Aanvraag burgerservicenummer behandelen',
+            'referentienummer': self.genereerID(10),
+            'creerzaak_identificatie_9': self.genereerID(10),
+            'voegzaakdocumenttoe_identificatie_5': self.genereerID(10),
+            'voegzaakdocumenttoe_identificatie_7': self.genereerID(10),
+            'maakzaakdocument_identificatie_5': self.genereerID(10),
+        }
+
         self._dms_client.geef_inhoud.return_value = 'dummy.txt', BytesIO()
 
-        vandaag = self.genereerdatum()
-
         self.zaak = ZaakFactory.create(
+            zaakidentificatie=self.context['gemeentecode'] + self.context['creerzaak_identificatie_9'],
             status_set__indicatie_laatst_gezette_status=JaNee.ja,
             omschrijving='omschrijving'
         )
         self.edc_type2 = InformatieObjectTypeFactory.create(informatieobjecttypeomschrijving='omschrijving1')
         self.zaakdocument = EnkelvoudigInformatieObjectFactory.create(
             informatieobjecttype__informatieobjecttypeomschrijving='omschrijving',
+            informatieobjectidentificatie=self.context['voegzaakdocumenttoe_identificatie_5'],
             formaat='formaat',
             creatiedatum=vandaag,
             titel='titel',
@@ -60,18 +76,19 @@ class STPupdateZaakdocument_DI02Tests(DMSMockMixin, BaseTestPlatformTests):
         )
         ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.zaakdocument)
 
-        self.context = {
-            'gemeentecode': '',
-            'datumVandaag': vandaag,
-            'datumGisteren': self.genereerdatum(-1),
-            'datumEergisteren': self.genereerdatum(-2),
-            'tijdstipRegistratie': self.genereerdatumtijd(),
+        self.zaakdocument2 = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjectidentificatie=self.context['voegzaakdocumenttoe_identificatie_7'],
+            vertrouwlijkaanduiding='VERTROUWELIJK',
+            auteur='auteur',
+        )
+        ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.zaakdocument2)
 
-            'checkout_id': 'some.checkout.id',
-            'zds_zaaktype_code': '12345678',
-            'zds_zaaktype_omschrijving': 'Aanvraag burgerservicenummer behandelen',
-            'referentienummer': self.genereerID(10),
-        }
+        self.zaakdocument3 = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjectidentificatie=self.context['maakzaakdocument_identificatie_5'],
+            vertrouwlijkaanduiding='VERTROUWELIJK',
+            auteur='auteur',
+        )
+        ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.zaakdocument3)
 
     def _test_response(self, response):
         self.assertEquals(response.status_code, 200, response.content)
@@ -83,58 +100,42 @@ class STPupdateZaakdocument_DI02Tests(DMSMockMixin, BaseTestPlatformTests):
         self.assertEqual(response_berichtcode, BerichtcodeChoices.bv02, response.content)
 
     def test_updateZaakdocument_Di02_01(self):
-        vraag = 'updateZaakdocument_Di02_01.xml'
+        vraag = 'updateZaakdocument_Di02_01.orig.xml'
         context = self.context.copy()
-        context.update({
-            'edc_identificatie': self.zaakdocument.informatieobjectidentificatie,
-            'creerzaak_identificatie': self.zaak.zaakidentificatie,
-        })
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
         self._test_response(response)
 
-        # TODO: [TECH] verify props
-        document = EnkelvoudigInformatieObject.objects.get()
-        self.assertEqual(document.titel, 'titel1')
-        self.assertEqual(document.beschrijving, 'beschrijving1')
-        self.assertEqual(document.formaat, 'formaat1')
-        self.assertEqual(document.versie, 'vers1')
-        self.assertEqual(document.informatieobject_status, 'status1')
-        self.assertEqual(document.taal, 'taal1')
+        self.zaakdocument.refresh_from_db()
+        self.assertEqual(self.zaakdocument.titel, 'titel1')
+        self.assertEqual(self.zaakdocument.beschrijving, 'beschrijving1')
+        self.assertEqual(self.zaakdocument.formaat, 'formaat1')
+        self.assertEqual(self.zaakdocument.versie, 'vers1')
+        self.assertEqual(self.zaakdocument.informatieobject_status, 'status1')
+        self.assertEqual(self.zaakdocument.taal, 'taal1')
         # link is not part of the ZDS 1.2 spec.
         # self.assertEqual(document.link, 'link1')
 
         # inhoud is specified
-        document = EnkelvoudigInformatieObject.objects.get()
         self.assertEqual(self._service_dms_client.update_zaakdocument.call_count, 1)
         call_args = self._service_dms_client.update_zaakdocument.call_args
-        self.assertEqual(call_args[0][0], document)
-        self.assertEqual(call_args[0][1], 'some.checkout.id')
+        self.assertEqual(call_args[0][0], self.zaakdocument)
+        self.assertEqual(call_args[0][1], self.context['voegzaakdocumenttoe_identificatie_5'])
         self.assertEqual(call_args[0][2].bestandsnaam, 'bestandsnaam')
 
     def test_updateZaakdocument_Di02_03(self):
-        vraag = 'updateZaakdocument_Di02_03.xml'
+        vraag = 'updateZaakdocument_Di02_03.orig.xml'
         context = self.context.copy()
-        context.update({
-            'edc_identificatie': self.zaakdocument.informatieobjectidentificatie,
-            'creerzaak_identificatie': self.zaak.zaakidentificatie,
-        })
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
         self._test_response(response)
 
         # no inhoud present
-        document = EnkelvoudigInformatieObject.objects.get()
-        self._service_dms_client.update_zaakdocument.assert_called_once_with(document, 'some.checkout.id', None)
+        self._service_dms_client.update_zaakdocument.assert_called_once_with(self.zaakdocument2, self.context['voegzaakdocumenttoe_identificatie_7'], None)
 
     def test_updateZaakdocument_Di02_05(self):
-        vraag = 'updateZaakdocument_Di02_05.xml'
+        vraag = 'updateZaakdocument_Di02_05.orig.xml'
         context = self.context.copy()
-        context.update({
-            'edc_identificatie': self.zaakdocument.informatieobjectidentificatie,
-            'creerzaak_identificatie': self.zaak.zaakidentificatie,
-        })
-        response = self._do_request(self.porttype, vraag, context)
+        response = self._do_request(self.porttype, vraag, context, stp_syntax=True)
         self._test_response(response)
 
         # no inhoud present
-        document = EnkelvoudigInformatieObject.objects.get()
-        self._service_dms_client.update_zaakdocument.assert_called_once_with(document, 'some.checkout.id', None)
+        self._service_dms_client.update_zaakdocument.assert_called_once_with(self.zaakdocument3, self.context['maakzaakdocument_identificatie_5'], None)

@@ -26,13 +26,10 @@
     <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
         <ZKN:identificatie>{{ gemeentecode }}{{ creerzaak_identificatie_11 }}</ZKN:identificatie>
         <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
-        {% comment %}
         <StUF:tijdvakGeldigheid>
             <StUF:beginGeldigheid>{{ datumEergisteren }}</StUF:beginGeldigheid>
             <StUF:eindGeldigheid>{{ datumVandaag }}</StUF:eindGeldigheid>
         </StUF:tijdvakGeldigheid>
-        {% endcomment %}
-        {% comment %}
         <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="I">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
                 <ZKN:omschrijving>{{ zds_zaaktype_omschrijving }}</ZKN:omschrijving>
@@ -40,29 +37,19 @@
                 <ZKN:ingangsdatumObject>{{ datumVandaag }}</ZKN:ingangsdatumObject>
             </ZKN:gerelateerde>
         </ZKN:isVan>
-        {% endcomment %}
-        <ZKN:zkt.omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:zkt.omschrijving>
-        <ZKN:zkt.identificatie>{{zds_zaaktype_code}}</ZKN:zkt.identificatie>
         <ZKN:heeftAlsInitiator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRINI" xsi:nil="true"/>
-        <ZKN:heeftAlsDeelzaken StUF:verwerkingssoort="T" StUF:entiteittype="ZAKZAKDEL" xsi:nil="true"/>
-        {% comment %}
+        <ZKN:heeftAlsDeelzaak StUF:verwerkingssoort="T" StUF:entiteittype="ZAKZAKDEL" xsi:nil="true"/>
         <ZKN:heeftBetrekkingOpAndere StUF:verwerkingssoort="T" StUF:entiteittype="ZAKZAKBTR" xsi:nil="true"/>
-        {% endcomment %}
         <ZKN:leidtTot StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBSL" xsi:nil="true"/>
     </ZKN:object>
     <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
         <ZKN:identificatie>{{ gemeentecode }}{{ creerzaak_identificatie_11 }}</ZKN:identificatie>
         <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
-        {% comment %}
         <StUF:tijdvakGeldigheid>
             <StUF:beginGeldigheid>{{ datumVandaag }}</StUF:beginGeldigheid>
             <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
         </StUF:tijdvakGeldigheid>
         <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-        {% endcomment %}
-        <!-- TODO In ZKN 3.2 'isVan' is flattened ('platgeslagen') isVan relatie-entiteit
-             has been replaced. -->
-        {% comment %}
         <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="I">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZKT">
                 <ZKN:omschrijving>{{ zds_zaaktype_omschrijving }}</ZKN:omschrijving>
@@ -70,27 +57,19 @@
                 <ZKN:ingangsdatumObject>{{ datumVandaag }}</ZKN:ingangsdatumObject>
             </ZKN:gerelateerde>
         </ZKN:isVan>
-        {% endcomment %}
-        <ZKN:zkt.omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:zkt.omschrijving>
-        <ZKN:zkt.identificatie>{{zds_zaaktype_code}}</ZKN:zkt.identificatie>
         <ZKN:heeftAlsInitiator StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBTRINI">
             <ZKN:gerelateerde>
                 <ZKN:natuurlijkPersoon StUF:verwerkingssoort="I" StUF:entiteittype="NPS">
                     <BG:inp.bsn>012345678</BG:inp.bsn>
                     <BG:geslachtsnaam>geslachtsnaam5</BG:geslachtsnaam>
-                    {% comment %}
                     <BG:voorvoegselGeslachtsnaam>voorvoeg5</BG:voorvoegselGeslachtsnaam>
                     <BG:voorletters>voorletters5</BG:voorletters>
-                    {% endcomment %}
                     <BG:voornamen>voornamen5</BG:voornamen>
                     <BG:geslachtsaanduiding>M</BG:geslachtsaanduiding>
                     <BG:geboortedatum>{{ datumVandaag }}</BG:geboortedatum>
-                    {% comment %}
                     <BG:verblijfsadres/>
-                    {% endcomment %}
                 </ZKN:natuurlijkPersoon>
             </ZKN:gerelateerde>
-            {% comment %}
             <ZKN:code>code5</ZKN:code>
             <ZKN:omschrijving>omschrijving5</ZKN:omschrijving>
             <ZKN:toelichting>toelichting5</ZKN:toelichting>
@@ -103,16 +82,11 @@
                 <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakGeldigheid>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            {% endcomment %}
         </ZKN:heeftAlsInitiator>
-        <ZKN:heeftAlsDeelzaken StUF:verwerkingssoort="T" StUF:entiteittype="ZAKZAKDEL">
+        <ZKN:heeftAlsDeelzaak StUF:verwerkingssoort="T" StUF:entiteittype="ZAKZAKDEL">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZAK">
                 <ZKN:identificatie>0123456789</ZKN:identificatie>
                 <ZKN:omschrijving>omschrijving5</ZKN:omschrijving>
-
-                <!-- TODO In ZKN 3.2 'isVan' is flattened ('platgeslagen') isVan relatie-entiteit
-                     has been replaced. -->
-                {% comment %}
                 <ZKN:isVan StUF:entiteittype="ZAKZKT" StUF:verwerkingssoort="I">
                     <ZKN:gerelateerde StUF:entiteittype="ZKT" StUF:verwerkingssoort="I">
                         <ZKN:omschrijving>{{ zds_zaaktype_omschrijving }}</ZKN:omschrijving>
@@ -120,19 +94,13 @@
                         <ZKN:ingangsdatumObject>{{ datumVandaag }}</ZKN:ingangsdatumObject>
                     </ZKN:gerelateerde>
                 </ZKN:isVan>
-                {% endcomment %}
-                <ZKN:zkt.omschrijving>{{zds_zaaktype_omschrijving}}</ZKN:zkt.omschrijving>
-                <ZKN:zkt.identificatie>{{zds_zaaktype_code}}</ZKN:zkt.identificatie>
             </ZKN:gerelateerde>
-            {% comment %}
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakRelatie>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-            {% endcomment %}
-        </ZKN:heeftAlsDeelzaken>
-        {% comment %}
+        </ZKN:heeftAlsDeelzaak>
         <ZKN:heeftBetrekkingOpAndere StUF:verwerkingssoort="T" StUF:entiteittype="ZAKZAKBTR">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="ZAK">
                 <ZKN:identificatie>{{ gemeentecode }}56789</ZKN:identificatie>
@@ -151,20 +119,17 @@
             </StUF:tijdvakRelatie>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
         </ZKN:heeftBetrekkingOpAndere>
-        {% endcomment %}
         <ZKN:leidtTot StUF:verwerkingssoort="T" StUF:entiteittype="ZAKBSL">
             <ZKN:gerelateerde StUF:verwerkingssoort="I" StUF:entiteittype="BSL">
                 <ZKN:identificatie>0123456789</ZKN:identificatie>
                 <ZKN:bst.omschrijving>omschrijving5</ZKN:bst.omschrijving>
                 <ZKN:datumBeslissing>{{ datumVandaag }}</ZKN:datumBeslissing>
             </ZKN:gerelateerde>
-        {% comment %}
             <StUF:tijdvakRelatie>
                 <StUF:beginRelatie>{{ datumGisteren }}</StUF:beginRelatie>
                 <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
             </StUF:tijdvakRelatie>
             <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
-        {% endcomment %}
         </ZKN:leidtTot>
     </ZKN:object>
 </ZDS:updateZaak_ZakLk01>

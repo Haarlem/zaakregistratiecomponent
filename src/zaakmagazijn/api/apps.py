@@ -12,6 +12,16 @@ class ApiConfig(AppConfig):
     def ready(self):
         register(check_gemeente_code, Tags.compatibility)
         register(check_rolomschrijvingen, Tags.compatibility)
+        register(check_zaakmagazijn_url, Tags.compatibility)
+
+
+def check_zaakmagazijn_url(app_configs, **kwargs):
+    zaakmagazijn_url = getattr(settings, 'ZAAKMAGAZIJN_URL', None)
+    if not zaakmagazijn_url:
+        return [
+            Error('Setting ZAAKMAGAZIJN_URL should be set.')
+        ]
+    return []
 
 
 def check_gemeente_code(app_configs, **kwargs):

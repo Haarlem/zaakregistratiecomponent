@@ -30,7 +30,7 @@
     </ZKN:gelijk>
     <ZKN:scope>
         <ZKN:object StUF:entiteittype="ZAK">
-            <!-- TODO: [KING] Taiga #258 StUF:noValue implementeren -->
+            <!-- TODO [KING]: Taiga #258 StUF:noValue implementeren -->
             <!--
             <ZKN:identificatie xsi:nil="true" StUF:noValue="geenWaarde"/>
             <ZKN:heeft StUF:entiteittype="ZAKSTT">

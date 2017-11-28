@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/schemas/conformanceClaim/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" name="StUF-ZKN0310" targetNamespace="http://www.stufstandaarden.nl/koppelvlak/zds0120">
+	<import namespace="http://www.egem.nl/StUF/StUF0301" location="stuf0301_types.wsdl"/>
+	<documentation>
+		<xs:documentation>
+			   Dit document definieert de webservices voor het portType BeantwoordVraag voor het ZS-DMS koppelvlak.
+		
+			   Versie 031000
+			
+			   Versie 031001, wijzigingen t.b.v. patch 21 (1-4-2015) vergeleken met versie 031000 zijn de volgende wijzigingen doorgevoerd:			
+			   - ERR0353: Het documentation element is voorzien van een standaard 'appinfo' structuur met daarin informatie over het schema.
+			   - 382488: De backslashes ('\') in het attribute 'schemaLocation' van het 'definitions/types/schema/import' vervangen door forward slashes ('/').
+		</xs:documentation>
+		<appinfo>
+			<StUF:onderdeel>http://www.stufstandaarden.nl/koppelvlak/zds0120</StUF:onderdeel>
+			<StUF:patch>zds120_20170401</StUF:patch>
+			<StUF:patchdatum>20170401</StUF:patchdatum>
+			<StUF:schemaversie>1</StUF:schemaversie>
+		</appinfo>
+	</documentation>
+	<types>
+		<xs:schema>
+			<xs:import namespace="http://www.stufstandaarden.nl/koppelvlak/zds0120" schemaLocation="zds0120_msg_zs-dms_resolved2017.xsd"/>
+		</xs:schema>
+	</types>
+	<message name="geefZaakdocumentLezen_EdcLv01">
+		<part name="body" element="ZDS:geefZaakdocumentLezen_EdcLv01"/>
+	</message>
+	<message name="geefZaakstatus_ZakLv01">
+		<part name="body" element="ZDS:geefZaakstatus_ZakLv01"/>
+	</message>
+	<message name="geefZaakdetails_ZakLv01">
+		<part name="body" element="ZDS:geefZaakdetails_ZakLv01"/>
+	</message>
+	<message name="geefLijstZaakdocumenten_ZakLv01">
+		<part name="body" element="ZDS:geefLijstZaakdocumenten_ZakLv01"/>
+	</message>
+	<message name="geefZaakdocumentLezen_EdcLa01">
+		<part name="body" element="ZDS:geefZaakdocumentLezen_EdcLa01"/>
+	</message>
+	<message name="geefZaakstatus_ZakLa01">
+		<part name="body" element="ZDS:geefZaakstatus_ZakLa01"/>
+	</message>
+	<message name="geefZaakdetails_ZakLa01">
+		<part name="body" element="ZDS:geefZaakdetails_ZakLa01"/>
+	</message>
+	<message name="geefLijstZaakdocumenten_ZakLa01">
+		<part name="body" element="ZDS:geefLijstZaakdocumenten_ZakLa01"/>
+	</message>
+	<message name="geefBesluitdetails_BslLv01">
+		<part name="body" element="ZDS:geefBesluitdetails_BslLv01"/>
+	</message>
+	<message name="geefBesluitdetails_BslLa01">
+		<part name="body" element="ZDS:geefBesluitdetails_BslLa01"/>
+	</message>
+	<message name="geefLijstBesluiten_ZakLv01">
+		<part name="body" element="ZDS:geefLijstBesluiten_ZakLv01"/>
+	</message>
+	<message name="geefLijstBesluiten_ZakLa01">
+		<part name="body" element="ZDS:geefLijstBesluiten_ZakLa01"/>
+	</message>
+	<portType name="BeantwoordVraag">
+		<documentation>
+		Dit portType ondersteunt als operaties alle synchrone vraagberichten gedefinieerd binnen het sectormodel
+	</documentation>
+		<operation name="geefZaakdocumentLezen_EdcLv01">
+			<input message="ZDS:geefZaakdocumentLezen_EdcLv01"/>
+			<output message="ZDS:geefZaakdocumentLezen_EdcLa01"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="geefZaakstatus_ZakLv01">
+			<input message="ZDS:geefZaakstatus_ZakLv01"/>
+			<output message="ZDS:geefZaakstatus_ZakLa01"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="geefZaakdetails_ZakLv01">
+			<input message="ZDS:geefZaakdetails_ZakLv01"/>
+			<output message="ZDS:geefZaakdetails_ZakLa01"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="geefLijstZaakdocumenten_ZakLv01">
+			<input message="ZDS:geefLijstZaakdocumenten_ZakLv01"/>
+			<output message="ZDS:geefLijstZaakdocumenten_ZakLa01"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="geefBesluitdetails_BslLv01">
+			<input message="ZDS:geefBesluitdetails_BslLv01"/>
+			<output message="ZDS:geefBesluitdetails_BslLa01"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="geefLijstBesluiten_ZakLv01">
+			<input message="ZDS:geefLijstBesluiten_ZakLv01"/>
+			<output message="ZDS:geefLijstBesluiten_ZakLa01"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+	</portType>
+	<binding name="SOAPBeantwoordVraag" type="ZDS:BeantwoordVraag">
+		<documentation>
+			Omdat de uit te wisselen berichten volledig gedefinieerd zijn in het sectormodel cq de StUF-standaard, kunnen we ze zonder verdere encoding (“literal”) opnemen in de body.
+Niet ondersteunde berichten kunnen uit de binding en portType worden verwijderd.
+		</documentation>
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+		<operation name="geefZaakdocumentLezen_EdcLv01">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/geefZaakdocumentLezen_EdcLv01" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<input>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</input>
+			<output>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</fault>
+		</operation>
+		<operation name="geefZaakstatus_ZakLv01">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/geefZaakstatus_ZakLv01" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<input>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</input>
+			<output>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</fault>
+		</operation>
+		<operation name="geefZaakdetails_ZakLv01">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/geefZaakdetails_ZakLv01" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<input>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</input>
+			<output>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</fault>
+		</operation>
+		<operation name="geefLijstZaakdocumenten_ZakLv01">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/geefLijstZaakdocumenten_ZakLv01" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<input>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</input>
+			<output>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</fault>
+		</operation>
+		<operation name="geefBesluitdetails_BslLv01">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/geefBesluitdetails_BslLv01" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<input>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</input>
+			<output>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</fault>
+		</operation>
+		<operation name="geefLijstBesluiten_ZakLv01">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/geefLijstBesluiten_ZakLv01" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<input>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</input>
+			<output>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</fault>
+		</operation>
+	</binding>
+	<service name="BeantwoordVraag">
+		<documentation>
+	Hieronder wordt de concreet aan te roepen service voor het ontvangen van synchrone ZKN0310-vraagberichten gedefinieerd. 
+		</documentation>
+		<port name="BeantwoordVraag" binding="ZDS:SOAPBeantwoordVraag">
+			<documentation>
+				<wsi:Claim conformsTo="http://ws-i.org/profiles/basic/1.1"/>
+			</documentation>
+			<soap:address location="http://example.com/BeantwoordVraag" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+		</port>
+	</service>
+</definitions>

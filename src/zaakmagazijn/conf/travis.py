@@ -22,6 +22,9 @@ CACHES = {
     }
 }
 
+# This should be overwritten with override_settings in test to the appropriate URL.
+ZAAKMAGAZIJN_URL = 'bogus.localhost'
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/stable/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []

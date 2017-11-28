@@ -3,9 +3,7 @@ import re
 
 from django.conf import settings
 
-from ..api.stuf.choices import (
-    BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
-)
+from ..api.stuf.choices import ClientFoutChoices, ServerFoutChoices
 from ..api.stuf.faults import StUFFault
 from .models import Application
 

@@ -2,7 +2,6 @@ from spyne import ServiceBase, Unicode, rpc
 
 from zaakmagazijn.cmis.client import default_client as dms_client
 
-from ...rgbz.models import EnkelvoudigInformatieObject
 from ..stuf import simple_types
 from ..stuf.attributes import entiteittype, functie, verwerkingssoort
 from ..stuf.base import ComplexModelBuilder, complex_model_factory

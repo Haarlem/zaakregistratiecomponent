@@ -1,0 +1,44 @@
+<ZDS:geefBesluitdetails_BslLv01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:gml="http://www.opengis.net/gml" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>Lv01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>BSL</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:sortering>0</StUF:sortering>
+        <StUF:indicatorVervolgvraag>false</StUF:indicatorVervolgvraag>
+        <StUF:maximumAantal>15</StUF:maximumAantal>
+        <StUF:indicatorAfnemerIndicatie>false</StUF:indicatorAfnemerIndicatie>
+        <StUF:indicatorAantal>false</StUF:indicatorAantal>
+    </ZKN:parameters>
+    <ZKN:gelijk StUF:entiteittype="BSL">
+        <ZKN:identificatie>${voegbesluittoe_identificatie_3}</ZKN:identificatie>
+    </ZKN:gelijk>
+    <ZKN:scope>
+        <ZKN:object StUF:entiteittype="BSL">
+            <ZKN:identificatie xsi:nil="true"/>
+            <ZKN:datumBeslissing xsi:nil="true"/>
+            <ZKN:ingangsdatumWerking xsi:nil="true"/>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <ZKN:isUitkomstVan StUF:entiteittype="BSLZAK">
+                <ZKN:gerelateerde StUF:entiteittype="ZAK">
+                    <ZKN:identificatie xsi:nil="true"/>
+                </ZKN:gerelateerde>
+            </ZKN:isUitkomstVan>
+        </ZKN:object>
+    </ZKN:scope>
+</ZDS:geefBesluitdetails_BslLv01>

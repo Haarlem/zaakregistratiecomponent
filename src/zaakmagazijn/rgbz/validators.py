@@ -35,13 +35,20 @@ class AlphanumericExcludingDiacritic(object):
 alphanumeric_excluding_diacritic = AlphanumericExcludingDiacritic()
 
 
+def validate_starts_with_gemeentecode(value):
+    """
+    Eerste 4 karakters moeten cijfers zijn.
+    """
+    if re.search('^[0-9]{4}', value) is None:
+        raise ValidationError('Identificatie waarde moet beginnen met de gemeentecode')
+
+
 def validate_id(value):
     """
     Volgens KING betekent alfanumeriek voor IDS, dat er alleen cijfers,
     letters en streepjes mogen voorkomen.
     """
-    if re.search('^[0-9]{4}', value) is None:
-        raise ValidationError('Identificatie waarde moet beginnen met de gemeentecode')
+    validate_starts_with_gemeentecode(value)
 
     if re.search('^[a-zA-Z0-9\-\_]+$', value) is None:
         raise ValidationError('Identificatie waarde mag alleen letters, cijfers en streepjes bevatten')

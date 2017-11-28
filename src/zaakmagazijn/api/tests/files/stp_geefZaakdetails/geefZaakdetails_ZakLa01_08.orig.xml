@@ -1,0 +1,95 @@
+<zds:geefZaakdetails_ZakLa01
+        xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310"
+        xmlns:StUF="http://www.egem.nl/StUF/StUF0301"
+        xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310"
+        xmlns:gml="http://www.opengis.net/gml"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120"
+        xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../../zds0120_msg_totaal.xsd">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>La01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>KING</StUF:organisatie>
+            <StUF:applicatie>NONE</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>ORG</StUF:organisatie>
+            <StUF:applicatie>TTA</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>5234646297</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>ZAK</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:indicatorVervolgvraag>true</StUF:indicatorVervolgvraag>
+    </ZKN:parameters>
+    <ZKN:antwoord>
+        <ZKN:object StUF:entiteittype="ZAK">
+            <ZKN:identificatie>${gemeentecode}${genereerzaakident_identificatie_6}</ZKN:identificatie>
+            <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
+            <ZKN:isVan StUF:entiteittype="ZAKZKT">
+                <ZKN:gerelateerde StUF:entiteittype="ZKT">
+                    <ZKN:code>${zds_zaaktype_code}</ZKN:code>
+                </ZKN:gerelateerde>
+            </ZKN:isVan>
+            <ZKN:heeftAlsInitiator StUF:entiteittype="ZAKBTRINI">
+                <ZKN:gerelateerde>
+                    <ZKN:natuurlijkPersoon StUF:entiteittype="NPS">
+                        <BG:inp.bsn>123456789</BG:inp.bsn>
+                        <BG:authentiek StUF:metagegeven="true" xsi:nil="true"/>
+                    </ZKN:natuurlijkPersoon>
+                </ZKN:gerelateerde>
+            </ZKN:heeftAlsInitiator>
+            <ZKN:heeftAlsDeelzaak StUF:entiteittype="ZAKZAKDEL">
+                <ZKN:gerelateerde StUF:entiteittype="ZAK">
+                    <ZKN:identificatie>0123456789</ZKN:identificatie>
+                    <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
+                    <ZKN:isVan StUF:entiteittype="ZAKZKT">
+                        <ZKN:gerelateerde StUF:entiteittype="ZKT">
+                            <ZKN:omschrijving>${zds_zaaktype_omschrijving}</ZKN:omschrijving>
+                            <ZKN:code>${zds_zaaktype_code}</ZKN:code>
+                            <ZKN:ingangsdatumObject>${datumVandaag}</ZKN:ingangsdatumObject>
+                        </ZKN:gerelateerde>
+                    </ZKN:isVan>
+                </ZKN:gerelateerde>
+                <StUF:tijdvakRelatie>
+                    <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                    <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+                </StUF:tijdvakRelatie>
+                <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+            </ZKN:heeftAlsDeelzaak>
+            <ZKN:heeftBetrekkingOpAndere StUF:entiteittype="ZAKZAKBTR">
+                <ZKN:gerelateerde StUF:entiteittype="ZAK">
+                    <ZKN:identificatie>0123456789</ZKN:identificatie>
+                    <ZKN:omschrijving>omschrijving</ZKN:omschrijving>
+                    <ZKN:isVan StUF:entiteittype="ZAKZKT">
+                        <ZKN:gerelateerde StUF:entiteittype="ZKT">
+                            <ZKN:omschrijving>${zds_zaaktype_omschrijving}</ZKN:omschrijving>
+                            <ZKN:code>${zds_zaaktype_code}</ZKN:code>
+                            <ZKN:ingangsdatumObject>${datumVandaag}</ZKN:ingangsdatumObject>
+                        </ZKN:gerelateerde>
+                    </ZKN:isVan>
+                </ZKN:gerelateerde>
+                <StUF:tijdvakRelatie>
+                    <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                    <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+                </StUF:tijdvakRelatie>
+                <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+            </ZKN:heeftBetrekkingOpAndere>
+            <ZKN:leidtTot StUF:entiteittype="ZAKBSL">
+                <ZKN:gerelateerde StUF:entiteittype="BSL">
+                    <ZKN:identificatie>0123456789</ZKN:identificatie>
+                    <ZKN:bst.omschrijving>omschrijving</ZKN:bst.omschrijving>
+                    <ZKN:datumBeslissing>${datumVandaag}</ZKN:datumBeslissing>
+                </ZKN:gerelateerde>
+                <StUF:tijdvakRelatie>
+                    <StUF:beginRelatie>${datumEergisteren}</StUF:beginRelatie>
+                    <StUF:eindRelatie StUF:noValue="geenWaarde" xsi:nil="true"/>
+                </StUF:tijdvakRelatie>
+                <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+            </ZKN:leidtTot>
+        </ZKN:object>
+    </ZKN:antwoord>
+</zds:geefZaakdetails_ZakLa01>

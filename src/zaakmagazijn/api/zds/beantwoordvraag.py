@@ -14,17 +14,19 @@ from ..stuf import (
 )
 from ..stuf.base import ComplexModelBuilder
 from ..stuf.choices import (
-    BerichtcodeChoices, ClientFoutChoices, ScopeChoices, ServerFoutChoices
+    BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
 )
 from ..stuf.constants import STUF_XML_NS, ZKN_XML_NS
 from ..stuf.exceptions import EmptyResultError
 from ..stuf.models import (
-    BinaireInhoud, ScopeAttribute, StufParameters, Systeem, TijdvakGeldigheid
+    BinaireInhoud, ScopeAttribute, StufParameters, Systeem, Tijdstip_e,
+    TijdvakGeldigheid, TijdvakRelatie
 )
 from ..stuf.protocols import IgnoreAttribute, Nil
 from ..stuf.utils import (
-    create_query_args, django_field_to_spyne_model, get_model_field,
-    get_model_value, get_spyne_field, reorder_type_info, to_spyne_value
+    create_query_args, django_field_to_spyne_model, get_model_value,
+    get_ontvanger, get_spyne_field, get_systeem_zender, reorder_type_info,
+    to_spyne_value
 )
 
 logger = logging.getLogger(__name__)
@@ -96,7 +98,6 @@ class Lv01Builder(ComplexModelBuilder):
         return root_model
 
     def create_stuurgegevens_model(self):
-        django_model = self.stuf_entiteit.get_model()
         type_info = (
             ('berichtcode', Unicode.customize(type_name='BerichtcodeLv01', fixed=BerichtcodeChoices.lv01, min_occurs=1, nillable=False)),
             ('zender', Systeem.customize(min_occurs=0, nillable=False)),
@@ -110,9 +111,8 @@ class Lv01Builder(ComplexModelBuilder):
         return stuurgegevens_model
 
     def create_gelijk_model(self, stuf_entiteit=None):
-        # TODO: [TECH] The gelijk model is required, and should always be set.
+        # TODO [TECH]: The gelijk model is required, and should always be set.
         stuf_entiteit = stuf_entiteit or self.stuf_entiteit
-        django_model = stuf_entiteit.get_model()
         type_info = TypeInfo()
         for related_field in stuf_entiteit.get_related_fields():
             try:
@@ -122,7 +122,7 @@ class Lv01Builder(ComplexModelBuilder):
                 pass
 
         # Create spyne model for 'gerelateerde'
-        # TODO: [TECH] In the WSDL this should be minOccurs and maxOccurs of 1.
+        # TODO [TECH]: In the WSDL this should be minOccurs and maxOccurs of 1.
         gerelateerde = stuf_entiteit.get_gerelateerde()
         if gerelateerde:
             _, gerelateerde_data = gerelateerde
@@ -164,7 +164,6 @@ class Lv01Builder(ComplexModelBuilder):
 
     def create_scope_model(self, stuf_entiteit=None):
         stuf_entiteit = stuf_entiteit or self.stuf_entiteit
-        django_model = stuf_entiteit.get_model()
 
         field_names = [field_name for field_name, _unused in stuf_entiteit.get_field_mapping()]
         type_info = [(field_name, ScopeAttribute) for field_name in field_names]
@@ -182,7 +181,7 @@ class Lv01Builder(ComplexModelBuilder):
             type_info.append((related_field.field_name, self.create_scope_model(related_field.stuf_entiteit)))
 
         # Create spyne model for 'gerelateerde'
-        # TODO: [TECH] In the WSDL this should be minOccurs and maxOccurs of 1.
+        # TODO [TECH]: In the WSDL this should be minOccurs and maxOccurs of 1.
         gerelateerde = stuf_entiteit.get_gerelateerde()
         if gerelateerde:
             _, gerelateerde_data = gerelateerde
@@ -204,6 +203,18 @@ class Lv01Builder(ComplexModelBuilder):
         if tijdvak_geldigheid:
             type_info.append(
                 ('tijdvakGeldigheid', TijdvakGeldigheid.customize(ref='tijdvakGeldigheid')),
+            )
+
+        tijdvak_relatie = stuf_entiteit.get_tijdvak_relatie()
+        if tijdvak_relatie:
+            type_info.append(
+                ('tijdvakRelatie', TijdvakRelatie.customize(ref='TijdvakRelatie')),
+            )
+
+        tijdstip_registratie = stuf_entiteit.get_tijdstip_registratie()
+        if tijdstip_registratie:
+            type_info.append(
+                ('tijdstipRegistratie', Tijdstip_e.customize(ref='tijdstipRegistratie')),
             )
 
         scope_model = self.create_reusable_model(self.create_scope_name(stuf_entiteit), stuf_entiteit.get_namespace(), type_info)
@@ -266,6 +277,18 @@ class La01Builder(ComplexModelBuilder):
                 ('tijdvakGeldigheid', TijdvakGeldigheid.customize(ref='tijdvakGeldigheid')),
             )
 
+        tijdvak_relatie = stuf_entiteit.get_tijdvak_relatie()
+        if tijdvak_relatie:
+            type_info.append(
+                ('tijdvakRelatie', TijdvakRelatie.customize(ref='TijdvakRelatie')),
+            )
+
+        tijdstip_registratie = stuf_entiteit.get_tijdstip_registratie()
+        if tijdstip_registratie:
+            type_info.append(
+                ('tijdstipRegistratie', Tijdstip_e.customize(ref='tijdstipRegistratie')),
+            )
+
         if getattr(stuf_entiteit, 'append_object_model', False):
             for key, append_complex_model in stuf_entiteit.append_object_model:
                 # assert False, append_complex_model.__dict__
@@ -277,7 +300,7 @@ class La01Builder(ComplexModelBuilder):
             )
 
         # Create spyne model for 'gerelateerde'
-        # TODO: [TECH] In the WSDL this should be minOccurs and maxOccurs of 1.
+        # TODO [TECH]: In the WSDL this should be minOccurs and maxOccurs of 1.
         gerelateerde = stuf_entiteit.get_gerelateerde()
         if gerelateerde:
             _, gerelateerde_data = gerelateerde
@@ -297,24 +320,24 @@ class La01Builder(ComplexModelBuilder):
                 sub_model = self.create_reusable_model(
                     self.create_object_name(stuf_entiteit, 'gerelateerde'),
                     stuf_entiteit.get_namespace(), sub_type_info
-                ).customize(min_occurs=1, max_occurs=1)  # TODO: [TECH] min/max_occurs does not show up in the WSDL for some reason.
+                ).customize(min_occurs=1, max_occurs=1)  # TODO [TECH]: min/max_occurs does not show up in the WSDL for some reason.
                 type_info.append(('gerelateerde', sub_model))
             else:
                 related_cls = gerelateerde_data
-                # TODO: [TECH] min/max_occurs does not show up in the WSDL for some reason.
+                # TODO [TECH]: min/max_occurs does not show up in the WSDL for some reason.
                 type_info.append(('gerelateerde', self.create_object_model(related_cls).customize(min_occurs=1, max_occurs=1)))
 
         # Build up spyne model
         field_mapping = stuf_entiteit.get_django_field_mapping()
         new_type_info = TypeInfo()
         file_fields = stuf_entiteit.get_file_fields()
+        required_fields = stuf_entiteit.get_required_fields()
         for field_name, _, django_field in field_mapping:
             if field_name in file_fields:
                 new_type_info[field_name] = BinaireInhoud
             else:
-                # TODO [TECH] Issue #207 When 'required' fields are implemented, make them required
-                # here as well.
-                new_type_info[field_name] = django_field_to_spyne_model(django_field, min_occurs=0)
+                min_occurs = 1 if field_name in required_fields else 0
+                new_type_info[field_name] = django_field_to_spyne_model(django_field, min_occurs=min_occurs)
 
         complex_model = self.create_reusable_model(
             self.create_object_name(stuf_entiteit),
@@ -325,8 +348,8 @@ class La01Builder(ComplexModelBuilder):
         for k, v in type_info:
             complex_model._type_info[k] = v
 
-        for k, v in stuf_entiteit.get_custom_fields():
-            complex_model._type_info[k] = v
+        for field_name, spyne_model, _ in stuf_entiteit.get_custom_fields():
+            complex_model._type_info[field_name] = spyne_model
 
         complex_model._type_info = reorder_type_info(stuf_entiteit.get_fields(), complex_model._type_info)
 
@@ -370,7 +393,6 @@ class La01Builder(ComplexModelBuilder):
         :param obj Instance of a ComplexModel
         :return queryset
         """
-        gelijk = obj.gelijk
         django_model = self.stuf_entiteit.get_model()
         queryset = django_model.objects.all()
         return queryset.all()
@@ -388,27 +410,26 @@ class La01Builder(ComplexModelBuilder):
         return params
 
     def create_data(self, request_obj, output_model):
-        django_model = self.stuf_entiteit.get_model()
         gelijk_obj = request_obj.gelijk
         scope_obj = request_obj.scope.object if request_obj.scope else None
         input_parameters_obj = request_obj.parameters if request_obj.parameters else None
         objects = self.create_object_data(gelijk_obj, scope_obj, input_parameters_obj,
                                           self.get_queryset(request_obj), output_model)
 
-        # TODO: [TECH] Maybe we should move the whole stuurgegevens (or at least zender/ontvanger) to the application level?
-        # TODO: [TECH] Reference etc. should also be logged.
+        # TODO [TECH]: Maybe we should move the whole stuurgegevens (or at least zender/ontvanger) to the application level?
+        # TODO [TECH]: Reference etc. should also be logged.
         ontvanger = request_obj.stuurgegevens.zender
         cross_refnummer = request_obj.stuurgegevens.referentienummer
 
         return {
             'stuurgegevens': {
                 'berichtcode': self.berichtcode,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': ontvanger.as_dict() if ontvanger is not None else None,
-                # TODO: [TECH] Generate reference
+                'zender': get_systeem_zender(),
+                'ontvanger': get_ontvanger(ontvanger),
+                # TODO [TECH]: Generate reference
                 'referentienummer': create_unique_id(),
                 'tijdstipBericht': stuf_datetime.now(),
-                'crossRefnummer': cross_refnummer,
+                'crossRefnummer': cross_refnummer or IgnoreAttribute(),
                 'entiteittype': self.stuf_entiteit.get_mnemonic()
             },
             'parameters': self.create_output_parameters_data(input_parameters_obj),
@@ -424,8 +445,8 @@ class La01Builder(ComplexModelBuilder):
 
         field_names = [field_name for field_name, _unused in stuf_entiteit.get_field_mapping()]
 
-        # TODO: [TECH] raise ClientFoutChoices.stuf097 als zowel scope attribute als elementen zijn gebruikt.
-        # TODO: [TECH] Implement other scope attribute choices, although it's
+        # TODO [TECH]: raise ClientFoutChoices.stuf097 als zowel scope attribute als elementen zijn gebruikt.
+        # TODO [TECH]: Implement other scope attribute choices, although it's
         # unclear why anyone would request anything else.
         if scope:  # in [ScopeChoices.alles, ScopeChoices....]
             return field_names
@@ -445,7 +466,6 @@ class La01Builder(ComplexModelBuilder):
         """
         if not parameters_obj or not getattr(parameters_obj, 'sortering', None):
             return []
-        django_model = stuf_entiteit.get_model()
         para_model = self.get_input_parameters_model()()
         if not getattr(para_model, 'ordering', None):
             return []
@@ -466,7 +486,6 @@ class La01Builder(ComplexModelBuilder):
         """
         if not parameters_obj or not getattr(parameters_obj, 'maximumAantal', None):
             return 0
-        django_model = stuf_entiteit.get_model()
         para_model = self.get_input_parameters_model()()
         if not getattr(para_model, 'maximumAantal', None):
             return 0
@@ -485,7 +504,7 @@ class La01Builder(ComplexModelBuilder):
 
         Return the data expected by the spyne model created by this factor for a given django model instance.
         """
-        # TODO: [KING] What should happen when an relation is specified in the scope, but does not
+        # TODO [KING]: What should happen when an relation is specified in the scope, but does not
         # not actually exist in the database (i.e. the foreign key is None), should all
         # the attributes of the relation be returned? For now, we return it with None.
         if obj is None and scope_obj:
@@ -498,14 +517,18 @@ class La01Builder(ComplexModelBuilder):
         model_answer = {}
         has_result = False
         fields_in_scope = self.get_fields_in_scope(stuf_entiteit, scope_obj, scope=scope)
+
+        for field_name, _, value in stuf_entiteit.get_custom_fields():
+            model_answer[field_name] = value
+
         for field_name, django_field_name, django_field in stuf_entiteit.get_django_field_mapping():
-            if field_name not in fields_in_scope:
+            spyne_field = get_spyne_field(spyne_model, field_name)
+            if field_name not in fields_in_scope and spyne_field.Attributes.min_occurs == 0:
                 model_answer[field_name] = IgnoreAttribute()
                 continue
 
             model_answer[field_name] = to_spyne_value(
-                get_model_value(obj, django_field_name), django_field,
-                get_spyne_field(spyne_model, field_name)
+                get_model_value(obj, django_field_name), django_field, spyne_field
             )
             has_result = True
 
@@ -536,7 +559,7 @@ class La01Builder(ComplexModelBuilder):
         for related_field in stuf_entiteit.get_related_fields():
             child_filter_obj = getattr(filter_obj, related_field.field_name, None) if filter_obj else None
             child_scope_obj = getattr(scope_obj, related_field.field_name, None) if scope_obj else None
-            child_parameters_obj = None  # TODO: [TECH] Taiga issue #208 ordering should be done on lower levels as well.
+            child_parameters_obj = None  # TODO [TECH]: Taiga issue #208 ordering should be done on lower levels as well.
 
             # If the attribute 'scope' in the root scope object, and there is no Nil, or ComplexType
             # set in the scope, do not include the entity in the result.
@@ -555,7 +578,10 @@ class La01Builder(ComplexModelBuilder):
             }
             try:
                 if isinstance(related_field, ForeignKeyRelation):
-                    fk_obj = getattr(obj, related_field.fk_name)
+                    if related_field.fk_name == 'self':
+                        fk_obj = obj
+                    else:
+                        fk_obj = getattr(obj, related_field.fk_name, None)
                     obj_answer[related_field.field_name] = [self._create_fundamenteel(obj=fk_obj, **kwargs), ]
                 elif isinstance(related_field, OneToManyRelation):
                     if related_field.related_name == 'self':
@@ -576,13 +602,13 @@ class La01Builder(ComplexModelBuilder):
         gerelateerde = stuf_entiteit.get_gerelateerde()
         if gerelateerde:
             gerelateerde_fk_name, gerelateerde_data = gerelateerde
-            child_scope_obj = getattr(scope_obj, 'gerelateerde') if scope_obj else None
+            child_scope_obj = getattr(scope_obj, 'gerelateerde', None) if scope_obj else None
             #
             # Deal with polymorphic foreign key relations.
             #
             if isinstance(gerelateerde_data, tuple) or isinstance(gerelateerde_data, list):
                 fk_object = getattr(obj, gerelateerde_fk_name)
-                # TODO: [TECH] This being a callable will only work for 'beantwoordvraag', for updates
+                # TODO [TECH]: This being a callable will only work for 'beantwoordvraag', for updates
                 # another method is required.
                 fk_object = fk_object() if callable(fk_object) else fk_object
                 assert hasattr(fk_object, 'is_type'), "The foreign key class should have a 'is_type' method to determine the subclass"
@@ -606,7 +632,7 @@ class La01Builder(ComplexModelBuilder):
                         else:
                             has_result = True
                     else:
-                        # TODO: [TECH] only one choice should show up in a choices element
+                        # TODO [TECH]: only one choice should show up in a choices element
                         # however, since we need specific control to deal with which elements should show up in the response
                         # and which ones should not show up in the result, I flipped the way spyne deals with None
                         # values, values with 'IgnoreAttribute()' are not serialized, and None values are serialized.
@@ -618,7 +644,7 @@ class La01Builder(ComplexModelBuilder):
             #
             else:
                 related_cls = gerelateerde_data
-                fk_value = obj if gerelateerde_fk_name == 'self' else getattr(obj, gerelateerde_fk_name)
+                fk_value = obj if gerelateerde_fk_name == 'self' else getattr(obj, gerelateerde_fk_name, None)
                 try:
                     obj_answer['gerelateerde'] = self._create_fundamenteel(
                         stuf_entiteit=related_cls,
@@ -642,10 +668,39 @@ class La01Builder(ComplexModelBuilder):
                 obj, tijdvak_geldigheid['eind_geldigheid']
             ) if tijdvak_geldigheid['eind_geldigheid'] else None
 
+            spyne_begin_geldigheid = get_spyne_field(object_model, 'tijdvakGeldigheid/beginGeldigheid')
+            spyne_eind_geldigheid = get_spyne_field(object_model, 'tijdvakGeldigheid/eindGeldigheid')
+
             obj_answer['tijdvakGeldigheid'] = {
-                'beginGeldigheid': {'data': begin_geldigheid},
-                'eindGeldigheid': {'data': eind_geldigheid}
+                'beginGeldigheid': to_spyne_value(begin_geldigheid, None, spyne_begin_geldigheid),
+                'eindGeldigheid': to_spyne_value(eind_geldigheid, None, spyne_eind_geldigheid),
             }
+
+        tijdvak_relatie = stuf_entiteit.get_tijdvak_relatie()
+        if tijdvak_relatie:
+            has_result = True
+            begin_relatie = get_model_value(
+                obj, tijdvak_relatie['begin_relatie']
+            ) if tijdvak_relatie['begin_relatie'] else None
+            eind_relatie = get_model_value(
+                obj, tijdvak_relatie['eind_relatie']
+            ) if tijdvak_relatie['eind_relatie'] else None
+
+            spyne_begin_relatie = get_spyne_field(object_model, 'tijdvakRelatie/beginRelatie')
+            spyne_eind_relatie = get_spyne_field(object_model, 'tijdvakRelatie/eindRelatie')
+
+            obj_answer['tijdvakRelatie'] = {
+                'beginRelatie': to_spyne_value(begin_relatie, None, spyne_begin_relatie),
+                'eindRelatie': to_spyne_value(eind_relatie, None, spyne_eind_relatie),
+            }
+
+        tijdstip_registratie = stuf_entiteit.get_tijdstip_registratie()
+        if tijdstip_registratie:
+            has_result = True
+            value = get_model_value(obj, tijdstip_registratie) if tijdstip_registratie else None
+            spyne_tijdstip_registratie = get_spyne_field(object_model, 'tijdstipRegistratie')
+
+            obj_answer['tijdstipRegistratie'] = to_spyne_value(value, None, spyne_tijdstip_registratie)
 
         if not has_result:
             raise EmptyResultError()
@@ -702,7 +757,10 @@ class La01Builder(ComplexModelBuilder):
         # Filter out all objects, on the highest level, which aren't needed based on the entire search query early.
         # I know, I know. early optimalization is the root of all evil.
         #
-        query_args = create_query_args(filter_obj, recurse=True)
+
+        # TODO [TECH]: Taiga task #376 Implement support for nested queries.
+        # query_args = create_query_args(filter_obj, recurse=True)
+        query_args = {}
 
         object_model = get_spyne_field(output_model, 'antwoord/object')
         try:

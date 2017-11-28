@@ -1,12 +1,17 @@
 import factory
 
+from zaakmagazijn.rsgb.tests.factory_models.groupattributes import (
+    KadastraleAanduidingFactory
+)
+
 from ....rgbz.models import (
     BuurtObject, GemeenteObject, InrichtingsElementObject,
     KadastraalPerceelObject, Object,
-    OverigeAdresseerbaarObjectAanduidingObject, WijkObject, ZaakObject
+    OverigeAdresseerbaarObjectAanduidingObject, WaterdeelObject, WijkObject,
+    ZaakObject
 )
 from ....utils import stuf_datetime
-from ...choices import TyperingInrichtingselement
+from ...choices import TyperingInrichtingselement, TyperingWater
 from .basemodels import AdresBaseClassFactory
 
 
@@ -71,6 +76,15 @@ class WijkObjectFactory(ObjectFactory):
         model = WijkObject
 
 
+class WaterdeelObjectFactory(ObjectFactory):
+    type_waterdeel = TyperingWater.zee
+
+    datum_begin_geldigheid_waterdeel = stuf_datetime.today()
+
+    class Meta:
+        model = WaterdeelObject
+
+
 class InrichtingsElementObjectFactory(ObjectFactory):
     inrichtingselementtype = TyperingInrichtingselement.bak
     datum_begin_geldigheid_inrichtingselement = stuf_datetime.today()
@@ -82,6 +96,8 @@ class InrichtingsElementObjectFactory(ObjectFactory):
 class KadastraalPerceelObjectFactory(ObjectFactory):
     begrenzing_perceel = 'abc'
     datum_begin_geldigheid_kadastrale_onroerende_zaak = stuf_datetime.today()
+
+    kadastrale_aanduiding = factory.SubFactory(KadastraleAanduidingFactory)
 
     class Meta:
         model = KadastraalPerceelObject

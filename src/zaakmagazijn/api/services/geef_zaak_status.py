@@ -1,6 +1,9 @@
 from spyne import ServiceBase, rpc
 
-from ...rgbz.models import Status, StatusType, Zaak
+from zaakmagazijn.rgbz_mapping.models import (
+    StatusProxy, StatusTypeProxy, ZaakProxy
+)
+
 from ..stuf import OneToManyRelation, StUFEntiteit
 from ..stuf.models import (
     ParametersAntwoordSynchroon, ZAK_parametersVraagSynchroon
@@ -10,19 +13,22 @@ from ..zds import La01Builder, Lv01Builder
 
 class StatusTypeEntiteit(StUFEntiteit):
     mnemonic = 'STT'
-    model = StatusType
+    model = StatusTypeProxy
     field_mapping = (
-        # ('zkt.omschrijving', 'zaaktype__zaaktypeomschrijving'),
-        ('volgnummer', 'statustypevolgnummer'),
-        ('omschrijving', 'statustypeomschrijving'),
+        ('zkt.omschrijving', 'zaaktype__zaaktypeomschrijving'),
+        ('volgnummer', 'volgnummer'),
+        ('omschrijving', 'omschrijving'),
+    )
+    required_fields = (
+        'zkt.omschrijving',
     )
 
 
 class StatusEntiteit(StUFEntiteit):
     mnemonic = 'ZAKSTT'
-    model = Status
+    model = StatusProxy
     field_mapping = (
-        ('toelichting', 'statustoelichting'),
+        ('toelichting', 'toelichting'),
         ('datumStatusGezet', 'datum_status_gezet'),
         ('indicatieLaatsteStatus', 'indicatie_laatst_gezette_status'),
     )
@@ -34,11 +40,14 @@ class StatusEntiteit(StUFEntiteit):
         'datumStatusGezet',
         'indicatieLaatsteStatus',
     )
+    required_fields = (
+        'toelichting',
+    )
 
 
 class ZaakEntiteit(StUFEntiteit):
     mnemonic = 'ZAK'
-    model = Zaak
+    model = ZaakProxy
     field_mapping = (
         ('identificatie', 'zaakidentificatie'),
     )

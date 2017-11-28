@@ -22,6 +22,7 @@
    <!--Optional:-->
    <ns:parameters>
       <!--Optional:-->
+      <stuf:sortering>1</stuf:sortering>
       <!--Optional:-->
       <stuf:indicatorVervolgvraag>false</stuf:indicatorVervolgvraag>
       <!--Optional:-->

@@ -30,7 +30,7 @@ class EnkelvoudigInformatieObjectManager(models.Manager):
             # informatieobjectcategorie=informatieobjectcategorie,
             defaults={
                 'datum_begin_geldigheid_informatieobjecttype': stuf_datetime.today(),
-                # TODO: [KING] De attributen "domein" en "rsin" zijn verplicht in het
+                # TODO [KING]: De attributen "domein" en "rsin" zijn verplicht in het
                 # RGBZ maar bestaan niet bij het InformatieObjectType in ZDS.
                 'domein': '?????',
                 'rsin': 1,
@@ -55,7 +55,7 @@ class EnkelvoudigInformatieObjectManager(models.Manager):
             set_model_value(edc, field_name, new_value)
 
         edc.informatieobjecttype = iot
-        # TODO: [KING] Attribuut "bronorganisatie" is verplicht in het
+        # TODO [KING]: Attribuut "bronorganisatie" is verplicht in het
         # RGBZ maar bestaat niet op het EDC in het ZDS.
         edc.bronorganisatie = 1
         edc.save()
@@ -64,7 +64,7 @@ class EnkelvoudigInformatieObjectManager(models.Manager):
         ZaakInformatieObject.objects.create(
             zaak=zaak,
             informatieobject=edc,
-            # TODO: [KING] Waar komen de ZAKEDC relatie "titel", "beschrijving", "registratiedatum" en "status" vandaan?
+            # TODO [KING]: Waar komen de ZAKEDC relatie "titel", "beschrijving", "registratiedatum" en "status" vandaan?
             titel=edc.titel,
             beschrijving=edc.beschrijving,
             registratiedatum=stuf_datetime.today(),

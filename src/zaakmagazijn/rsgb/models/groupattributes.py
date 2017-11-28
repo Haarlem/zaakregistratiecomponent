@@ -11,7 +11,7 @@ class AdresMetPostcode(AdresBaseClass):
     """
     AdresBaseClass Specialisatie voor GroepsAttribuutSoorten met een Postcode
     """
-    postcode = models.CharField(max_length=7, null=True, blank=True)
+    pass
 
 
 class Correspondentieadres(AdresMetPostcode):
@@ -30,17 +30,7 @@ class Locatieadres(Correspondentieadres):
 
 
 class Adres(AdresBaseClass):
-    """
-
-    """
-    identificatie = models.CharField(max_length=4)
-    # authentiek =
-
-
-class BasisAdres(AdresBaseClass):
-
-    class Meta:
-        abstract = False
+    pass
 
 
 class VerblijfAdres(AdresBaseClass):
@@ -51,7 +41,6 @@ class VerblijfAdres(AdresBaseClass):
         max_length=24, help_text='De officiële straatnaam zoals door het bevoegd gemeentelijk orgaan is vastgesteld, '
                                  'zo nodig ingekort conform de specificaties van de NEN 5825.'
     )
-    postcode = models.CharField(max_length=7, null=True, blank=True)
     locatie_beschrijving = models.CharField(
         max_length=35, null=True, blank=True,
         help_text='Een geheel of gedeeltelijke omschrijving van de ligging van een object.')
@@ -97,12 +86,12 @@ class KadastraleAanduiding(KadastraleAanduidingBaseClass):
 
 
 class KadastraleAanduidingAppartementsRecht(KadastraleAanduidingBaseClass):
-    # TODO: [KING] Schatting, waarde stond niet gedefineerd in RSGB 3.0
+    # TODO [KING]: Schatting, waarde stond niet gedefineerd in RSGB 3.0
     appartementsrecht = models.PositiveIntegerField()
 
 
 class KadastraleAanduidingKadastraalPerceel(KadastraleAanduidingBaseClass):
-    # TODO: [KING] Schatting, waarde stond niet gedefineerd in RSGB 3.0
+    # TODO [KING]: Schatting, waarde stond niet gedefineerd in RSGB 3.0
     deelperceelnummer = models.PositiveIntegerField()
 
 

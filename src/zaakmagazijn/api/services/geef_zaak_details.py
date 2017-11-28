@@ -1,51 +1,65 @@
 from spyne import ServiceBase, rpc
 
-from zaakmagazijn.rgbz.models import (
-    Besluit, InformatieObject as InformatieObjectModel, Status, StatusType,
-    Zaak, ZaakInformatieObject as ZaakInformatieObjectModel, ZaakObject,
-    ZaakType
+from zaakmagazijn.rgbz_mapping.models import (
+    StatusProxy, StatusTypeProxy, ZaakProxy, ZaakTypeProxy
 )
 
-from ..stuf import OneToManyRelation, StUFEntiteit, StUFKerngegevens
-from ..stuf.models import ZAK_parametersVraagSynchroon
+from ..stuf import ForeignKeyRelation, OneToManyRelation, StUFEntiteit
+from ..stuf.models import (
+    ParametersAntwoordSynchroon, ZAK_parametersVraagSynchroon
+)
 from ..zds import La01Builder, Lv01Builder
 from ..zds.entiteiten.betrokkene import (
-    ZAKBRTBSSEntiteit, ZAKBTRADVEntiteit, ZAKBTRBHLEntiteit, ZAKBTRBLHEntiteit,
-    ZAKBTRBTREntiteit, ZAKBTRGMCEntiteit, ZAKBTRINIEntiteit, ZAKBTRKCREntiteit,
-    ZAKBTRZKCEntiteit, ZAKSTTBTREntiteit
+    MedewerkerEntiteit, NatuurlijkPersoonEntiteit,
+    NietNatuurlijkPersoonEntiteit, OrganisatorischeEenheidEntiteit,
+    VestigingEntiteit, ZAKBTRBLHEntiteit, ZAKBTRGMCEntiteit, ZAKBTRINIEntiteit,
+    ZAKBTROVREntiteit, ZAKBTRUTVEntiteit, ZAKBTRVRAEntiteit
 )
 from ..zds.entiteiten.group_attributes import (
     AnderZaakObjectGegevensgroep, KenmerkGegevensgroep,
-    OpschortingGegevensgroep, VerlengingGegevensgroep
+    OpschortingGegevensgroep, ResultaatGegevensgroep, VerlengingGegevensgroep
 )
 from ..zds.entiteiten.objecten import ZaakObjectEntiteit
-from ..zds.entiteiten.zaken import ZAKBSLEntiteit, ZAKZAKDELEntiteit
 
 
 class StatusTypeEntiteit(StUFEntiteit):
-    """
-    Note: This is not really part of ZDS, but every relatie-entiteit needs a
-    gerelateerde.
-    """
     mnemonic = 'STT'
-    model = StatusType
+    model = StatusTypeProxy
     field_mapping = (
-        ('omschrijving', 'statustypeomschrijving'),
-        ('volgnummer', 'statustypevolgnummer'),
-        ('omschrijvingGeneriek', 'statustypeomschrijving_generiek'),
+        ('zkt.omschrijving', 'zaaktype__zaaktypeomschrijving'),
+        ('volgnummer', 'volgnummer'),
+        ('omschrijving', 'omschrijving'),
     )
-    matching_fields = [
-        'volgnummer',
-        'omschrijving',
-        'omschrijvingGeneriek',
-    ]
+
+
+class ZAKSTTBTREntiteit(StUFEntiteit):
+    model = StatusProxy
+    mnemonic = 'ZAKSTTBTR'
+    field_mapping = ()
+    gegevensgroepen = ()
+    # 'is_gezet_door' being a callable will only work for Beantwoordvraag
+    # services, not for Kennisgevingsberichten.
+    gerelateerde = ('is_gezet_door', (
+        ('medewerker', MedewerkerEntiteit),
+        ('organisatorischeEenheid', OrganisatorischeEenheidEntiteit),
+        ('vestiging', VestigingEntiteit),
+        ('natuurlijkPersoon', NatuurlijkPersoonEntiteit),
+        ('nietNatuurlijkPersoon', NietNatuurlijkPersoonEntiteit),
+    ), )
+    fields = (
+        'gerelateerde',
+        # 'extraElementen',
+    )
+    matching_fields = (
+        'gerelateerde'
+    )
 
 
 class StatusEntiteit(StUFEntiteit):
     mnemonic = 'ZAKSTT'
-    model = Status
+    model = StatusProxy
     field_mapping = (
-        ('toelichting', 'statustoelichting'),
+        ('toelichting', 'toelichting'),
         ('datumStatusGezet', 'datum_status_gezet'),
         ('indicatieLaatsteStatus', 'indicatie_laatst_gezette_status'),
     )
@@ -57,148 +71,143 @@ class StatusEntiteit(StUFEntiteit):
     matching_fields = [
         'gerelateerde'
     ]
+    fields = (
+        'gerelateerde',
+        'toelichting',
+        'datumStatusGezet',
+        'indicatieLaatsteStatus',
+    )
+    required_fields = (
+        'toelichting',
+    )
+
+
+class ZKTEntiteit(StUFEntiteit):
+    model = ZaakTypeProxy
+    mnemonic = 'ZKT'
+
+    field_mapping = (
+        ('omschrijving', 'zaaktypeomschrijving'),
+        ('code', 'zaaktypecode'),
+        # TODO [KING]: This is not part of ZDS, but expected by STP.
+        ('ingangsdatumObject', 'datum_begin_geldigheid_zaaktype'),
+    )
+    matching_fields = (
+        'omschrijving',
+        'code',
+        'ingangsdatumObject',
+    )
+
+
+class ZAKZKTEntiteit(StUFEntiteit):
+    model = ZaakProxy
+    mnemonic = 'ZAKZKT'
+    field_mapping = ()
+    gerelateerde = ('self', ZKTEntiteit)
+    matching_fields = (
+        'gerelateerde',
+    )
 
 
 class ZaakEntiteit(StUFEntiteit):
     mnemonic = 'ZAK'
-    model = Zaak
+    model = ZaakProxy
     field_mapping = (
         ('identificatie', 'zaakidentificatie'),
-        # TODO: [COMPAT] (ZAK) Element "bronorganisatie" in creeerZaak ontbreekt in ZDS maar bestaat wel in RGBZ.
-        ('bronorganisatie', 'bronorganisatie'),
-        # TODO: [COMPAT] (ZAK) Element "archiefstatus" in creeerZaak ontbreekt in ZDS maar bestaat wel in RGBZ.
-        ('archiefstatus', 'archiefstatus'),
-        # TODO: [COMPAT] (ZAK) Element "verantwoordelijkeOrganisatie" in creeerZaak ontbreekt in ZDS maar bestaat wel in RGBZ.
-        ('verantwoordelijkeOrganisatie', 'verantwoordelijke_organisatie'),
         ('einddatum', 'einddatum'),
         ('einddatumGepland', 'einddatum_gepland'),
         ('omschrijving', 'omschrijving'),
-        # TODO: [KING] This deviates from the ZDS
-        ('resultaatomschrijving', 'resultaatomschrijving'),
-        ('resultaattoelichting', 'resultaattoelichting'),
+        # Kenmerk
+        # Resultaat
         ('startdatum', 'startdatum'),
         ('toelichting', 'toelichting'),
-        # We use the ZKN 0320 name "uiterlijkeEinddatumAfdoening" instead of the 0310 version "uiterlijkeEinddatum"
-        ('uiterlijkeEinddatumAfdoening', 'uiterlijke_einddatum_afdoening'),
-        # TODO: [COMPAT] Missing from the RGBZ
-        # ('zaakniveau', 'zaakniveau'),
-        # TODO: [COMPAT] Missing form the RGBZ
-        # ('deelzakenIndicatie', 'deelzakenIndicatie'),
+        ('uiterlijkeEinddatum', 'uiterlijke_einddatum_afdoening'),
+        ('zaakniveau', 'zaakniveau'),
+        ('deelzakenIndicatie', 'deelzakenindicatie'),
         ('registratiedatum', 'registratiedatum'),
         ('publicatiedatum', 'publicatiedatum'),
         ('archiefnominatie', 'archiefnominatie'),
-        # TODO: [COMPAT] Missing from RGBZ
-        # ('datumVernietigingDossier', 'datumVernietigingDossier'),
+        ('datumVernietigingDossier', 'datum_vernietiging_dossier'),
         ('betalingsIndicatie', 'betalingsindicatie'),
         ('laatsteBetaaldatum', 'laatste_betaaldatum'),
-        ('zkt.omschrijving', 'zaaktype__zaaktypeomschrijving'),
-        ('zkt.identificatie', 'zaaktype__zaaktypeidentificatie'),
+        # opschorting
+        # verlenging
+        # anderZaakObject
+        # heeftBetrekkingOp
+        # <heeftAlsBelanghebbende,
+        # heeftAlsGemachtigde,
+        # heeftAlsInitiator,
+        # heeftAlsUitvoerende,
+        # heeftAlsVerantwoordelijke,
+        # heeftAlsOverigBetrokkene>
+        # heeft
+        # isVan
     )
     filter_fields = ('identificatie', )
     input_parameters = ZAK_parametersVraagSynchroon
-    # TODO: [TECH] output_parameters = ???
-    related_fields = (
-        # TODO: [COMPAT] isVan staat wel in ZDS 1.2, maar bestaat niet meer in ZKN 3.2. in ZKN 3.2, is
-        # Zaaktype platgeslagen. isVan is vervangen met (zkt.omschrijving, zkt.identificatie)
-        # ('isVan', 'zaaktype', ZaakTypeEntiteit),
-
-        # from ZDS 1.2
-        # ('heeftAlsUitvoerende', '', ZAKBTRUTVEntiteit),
-        # ('heeftAlsVerantwoordelijke', 'verantwoordelijke', ZAKBTRVRAEntiteit),
-        # ('heeftAlsOverigBetrokkene', '', ZAKBTROVREntiteit),
-
-        OneToManyRelation('heeft', 'status_set', StatusEntiteit),
-        # 0..n
-        OneToManyRelation('heeftBetrekkingOp', 'zaakobject_set', ZaakObjectEntiteit),
-        # 0..n
-        OneToManyRelation('heeftAlsBetrokkene', 'heeft_als_betrokkene', ZAKBTRBTREntiteit),
-        # 0..n
-        OneToManyRelation('heeftAlsAdviseur', 'heeft_als_adviseur', ZAKBTRADVEntiteit),
-        # 0..n
-        OneToManyRelation('heeftAlsBelanghebbende', 'heeft_als_belanghebbende', ZAKBTRBLHEntiteit),
-        # 0..n
-        OneToManyRelation('heeftAlsBehandelaar', 'heeft_als_behandelaar', ZAKBTRBHLEntiteit),
-        # 0..n
-        OneToManyRelation('heeftAlsBeslisser', 'heeft_als_beslisser', ZAKBRTBSSEntiteit),
-        # 1
-        OneToManyRelation('heeftAlsInitiator', 'heeft_als_initiator', ZAKBTRINIEntiteit, min_occurs=1, max_occurs=1),
-        # 0..N
-        OneToManyRelation('heeftAlsKlantcontacter', 'heeft_als_klantcontacter', ZAKBTRKCREntiteit),
-        # TODO: [COMPAT] Rol not defined in ZKN 3.2, but is defined in RGBZ 2.0
-        # 0..N
-        # OneToManyRelation('heeftAlsGemachtigde', 'heeft_als_gemachtigde', ZAKBTRGMCEntiteit),
-
-        # TODO: [COMPAT] 'heeftAlsMedeInitiator'?
-        # 1
-        OneToManyRelation('heeftAlsZaakcoordinator', 'heeft_als_zaakcoordinator', ZAKBTRZKCEntiteit, min_occurs=1, max_occurs=1),
-
-        # TODO [KING] Taiga #259 The ZDS specification says nothing about 'leidtTot'
-        OneToManyRelation('leidtTot', 'leidt_tot', ZAKBSLEntiteit),
-
-        # Deviates from StUF-ZKN 3.1  # TODO: ontbreekt in ZDS
-        OneToManyRelation('heeftAlsDeelzaken', 'heeft_deelzaken', ZAKZAKDELEntiteit),
-    )
+    output_parameters = ParametersAntwoordSynchroon
     gegevensgroepen = (
-        # TODO [KING] Taiga #251 In ZKN 3.2 this has a max_occurs of 1, but in ZDS 1.2 this has a max_occurs of unbounded. I'm
-        # assuming this was a mistake.
         OneToManyRelation('kenmerk', 'groep_kenmerken', KenmerkGegevensgroep),
-        OneToManyRelation('anderZaakObject', 'groep_anderzaakobject', AnderZaakObjectGegevensgroep),
-        OneToManyRelation('opschorting', 'groep_zaakopschorting', OpschortingGegevensgroep, min_occurs=0, max_occurs=1),
+        ForeignKeyRelation('resultaat', 'self', ResultaatGegevensgroep),
         OneToManyRelation('verlenging', 'groep_zaakverlenging', VerlengingGegevensgroep, min_occurs=0, max_occurs=1),
+        OneToManyRelation('opschorting', 'groep_zaakopschorting', OpschortingGegevensgroep, min_occurs=0, max_occurs=1),
+        OneToManyRelation('anderZaakObject', 'groep_anderzaakobject', AnderZaakObjectGegevensgroep),
     )
+    related_fields = (
+        ForeignKeyRelation('isVan', 'zaaktype', ZAKZKTEntiteit),
+        OneToManyRelation('heeftBetrekkingOp', 'zaakobject_set', ZaakObjectEntiteit),
+        OneToManyRelation('heeftAlsBelanghebbende', 'heeft_als_belanghebbende', ZAKBTRBLHEntiteit),
+        OneToManyRelation('heeftAlsGemachtigde', 'heeft_als_gemachtigde', ZAKBTRGMCEntiteit),
+        OneToManyRelation('heeftAlsInitiator', 'heeft_als_initiator', ZAKBTRINIEntiteit, min_occurs=1, max_occurs=1),
+        OneToManyRelation('heeftAlsUitvoerende', 'heeft_als_uitvoerende', ZAKBTRUTVEntiteit),
+        OneToManyRelation('heeftAlsVerantwoordelijke', 'heeft_als_verantwoordelijke', ZAKBTRVRAEntiteit),
+        OneToManyRelation('heeftAlsOverigBetrokkene', 'heeft_als_overig_betrokkene', ZAKBTROVREntiteit),
+        OneToManyRelation('heeft', 'status_set', StatusEntiteit),
+    )
+
     fields = (
         'identificatie',
-        'bronorganisatie',
-        'archiefstatus',
-        'verantwoordelijkeOrganisatie',
         'omschrijving',
         'toelichting',
         'kenmerk',
         'anderZaakObject',
-        'resultaatomschrijving',
-        'resultaattoelichting',
+        'resultaat',
         'startdatum',
         'registratiedatum',
         'publicatiedatum',
         'einddatumGepland',
-        'uiterlijkeEinddatumAfdoening',
+        'uiterlijkeEinddatum',
         'einddatum',
         'opschorting',
         'verlenging',
         'betalingsIndicatie',
         'laatsteBetaaldatum',
         'archiefnominatie',
-        'zkt.omschrijving',
-        'zkt.identificatie',
-        # datumVernietigingDossier?
-        # zaakniveau?
-        # deelzaakindicatie?
-        # tijdvakgeldigheid
-        # tijdstipregistratie
+        'datumVernietigingDossier',
+        'zaakniveau',
+        'deelzakenIndicatie',
+        'tijdvakGeldigheid',
+        'tijdstipRegistratie',
         # extraElementen
+        'isVan',
         'heeftBetrekkingOp',
-        'heeftAlsBetrokkene',
-        'heeftAlsAdviseur',
         'heeftAlsBelanghebbende',
-        'heeftAlsBehandelaar',
-        'heeftAlsBeslisser',
+        'heeftAlsGemachtigde',
         'heeftAlsInitiator',
-        'heeftAlsKlantcontacter',
-        'heeftAlsZaakcoordinator',
-        'heeftAlsDeelzaken',
+        'heeftAlsUitvoerende',
+        'heeftAlsVerantwoordelijke',
+        'heeftAlsOverigBetrokkene',
         'heeft',
-        'leidtTot',
     )
-
-    matching_fields = [
-        # TODO: [COMPAT] in ZKN 3.2 this is called 'zaakidentificatie'.
+    matching_fields = (
         'identificatie',
-        'bronorganisatie',
         'omschrijving',
-        # TODO: [COMPAT] In ZDS 1.2 is 'isVan' hier ook opgegenomen. Maar in ZKN 3.2 bestaat
-        # dit niet meer, mogelijk moet zkt.identificatie en zkt.omschrijving hier ook opgenomen
-        # worden. (Maar in ZKN-3.2. staat dat niet).
-    ]
+        # TODO [TECH]: Matching fields by relation are not supported yet.
+        # 'isVan',
+    )
+    begin_geldigheid = 'begin_geldigheid'
+    eind_geldigheid = 'eind_geldigheid'
+    tijdstip_registratie = 'tijdstip_registratie'
 
 
 input_builder = Lv01Builder(ZaakEntiteit, 'GeefZaakdetails')

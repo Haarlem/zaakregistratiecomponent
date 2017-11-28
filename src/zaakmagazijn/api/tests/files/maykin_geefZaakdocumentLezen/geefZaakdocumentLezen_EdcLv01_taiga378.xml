@@ -21,6 +21,11 @@
         <stuf:tijdstipBericht>20170831115500</stuf:tijdstipBericht>
         <stuf:entiteittype>EDC</stuf:entiteittype>
     </ns:stuurgegevens>
+     <ns:parameters>
+        <stuf:sortering>0</stuf:sortering>
+        <stuf:indicatorVervolgvraag>false</stuf:indicatorVervolgvraag>
+        <stuf:indicatorAantal>false</stuf:indicatorAantal>
+     </ns:parameters>
     <ns:gelijk stuf:entiteittype="EDC">
         <ns:identificatie>03923185840f-7268-44a6-95ba-085c385b0544</ns:identificatie>
     </ns:gelijk>

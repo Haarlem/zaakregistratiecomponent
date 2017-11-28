@@ -10,7 +10,7 @@ from ...rgbz.tests.factory_models import StatusFactory
 from ..stuf.choices import (
     BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
 )
-from ..stuf.protocols import StUFFault
+from ..stuf.faults import StUFFault
 from .base import BaseSoapTests
 
 
@@ -51,7 +51,7 @@ class StUFFaultTests(BaseSoapTests):
     def setUp(self):
         super().setUp()
 
-        self.client = self._get_client('Beantwoordvraag', strict=False)
+        self.client = self._get_client('BeantwoordVraag', strict=False)
 
         self.status = StatusFactory.create()
         self.zaak = self.status.zaak
@@ -66,19 +66,20 @@ class StUFFaultTests(BaseSoapTests):
             stuf_factory, zkn_factory, zds_factory = self._get_type_factories(self.client)
 
             response = self.client.service.geefZaakstatus_ZakLv01(
-                stuurgegevens=stuf_factory.ZAK_StuurgegevensGeefZaakStatusLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
                     berichtcode='Lv01',
                     entiteittype=entiteittype),
-                parameters=stuf_factory.ZAK_parametersVraagSynchroon(
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
                     sortering=1,
                     indicatorVervolgvraag=False),
-                scope=zkn_factory.GeefZaakStatus_vraagScope(
-                    object=zkn_factory.GeefZaakStatus_ZAK_vraagScope(
+                scope={
+                    'object': zkn_factory['GeefZaakStatus-ZAK-vraagScope'](
                         entiteittype='ZAK',
-                        identificatie=Nil)),
-                gelijk=zkn_factory.GeefZaakStatus_ZAK_vraagSelectie(
+                        identificatie=Nil),
+                },
+                gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
                     identificatie=zaak_id,
-                    heeft=zkn_factory.GeefZaakStatus_ZAKSTT_vraagSelectie(
+                    heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
                         indicatieLaatsteStatus=False,
                     )
                 )
@@ -188,6 +189,7 @@ class StUFFaultTests(BaseSoapTests):
             ClientFoutChoices.values.get(ClientFoutChoices.stuf010)
         )
 
+    @skip("Since schema validation for the input is disabled, this error case can't happen anymore and this test fails.")
     def test_schema_validation_error(self):
         """
         Test `SchemaValidationError` because it is handled differently then other `Fault`s.
@@ -212,7 +214,7 @@ class StUFFaultTests(BaseSoapTests):
             </soapenv:Envelope>
 
         """
-        response = requests.post('{}/{}/'.format(self.live_server_url, 'Beantwoordvraag'), data=xml_request_str)
+        response = requests.post('{}/{}/'.format(self.live_server_url, 'BeantwoordVraag'), data=xml_request_str)
         xml_response = etree.fromstring(response.content)
 
         self._validate_stuf_fault_xml(

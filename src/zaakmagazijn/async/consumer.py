@@ -57,14 +57,19 @@ class Consumer(object):
 
         return response
 
-    def overdragenZaak(self, zaak, melding=None):
+    def overdragenZaak(self, zaak, accepted, cross_ref_nummer, melding=None):
         if melding is not None and not isinstance(melding, (list, tuple)):
             melding = [melding, ]
 
         referentienummer = create_unique_id()
-        berichtcode = BerichtcodeChoices.di01
+        berichtcode = BerichtcodeChoices.du01
         functie = 'overdragenZaak'
         operation_name = '{}_{}'.format(functie, berichtcode)
+
+        if accepted:
+            antwoord = 'Overdracht geaccepteerd'
+        else:
+            antwoord = 'Overdracht geweigerd'
 
         data = {
             'stuurgegevens': {
@@ -73,6 +78,7 @@ class Consumer(object):
                 'ontvanger': self.application.zender_as_dict(),
                 'referentienummer': referentienummer,
                 'tijdstipBericht': stuf_datetime.now(),
+                'crossRefnummer': cross_ref_nummer,
                 'functie': functie,
             },
             'object': {
@@ -81,20 +87,7 @@ class Consumer(object):
                 'functie': 'entiteit',
                 # Elements
                 'identificatie': zaak.zaakidentificatie,
-                'isVan': {
-                    # Attributes
-                    'entiteittype': 'ZAKZKT',
-                    # Elements
-                    'gerelateerde': {
-                        # Attributes
-                        'entiteittype': 'ZKT',
-                        # Elements
-                        'omschrijving': zaak.zaaktype.zaaktypeomschrijving,
-                        # TODO: [KING] Taiga #245 overdragenZaak_Di01.object.isVan.gerelateerde.code heeft een onbekende RGBZ mapping.
-                        'code': zaak.zaaktype.archiefclassificatiecode,
-                        # 'ingangsdatumObject': '',  # Optional and not specified in ZDS 1.2
-                    }
-                }
+                'antwoord': antwoord,
             }
         }
         if melding:

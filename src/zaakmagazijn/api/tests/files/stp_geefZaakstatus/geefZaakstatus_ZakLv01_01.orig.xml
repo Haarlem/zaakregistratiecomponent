@@ -1,0 +1,43 @@
+<ZDS:geefZaakstatus_ZakLv01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>Lv01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>ZAK</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:sortering>0</StUF:sortering>
+        <StUF:indicatorVervolgvraag>false</StUF:indicatorVervolgvraag>
+    </ZKN:parameters>
+    <ZKN:gelijk StUF:entiteittype="ZAK">
+        <ZKN:identificatie>${gemeentecode}${genereerzaakident_identificatie_2}</ZKN:identificatie>
+        <ZKN:heeft StUF:entiteittype="ZAKSTT">
+            <ZKN:indicatieLaatsteStatus>J</ZKN:indicatieLaatsteStatus>
+        </ZKN:heeft>
+    </ZKN:gelijk>
+    <ZKN:scope>
+        <ZKN:object StUF:entiteittype="ZAK">
+            <ZKN:identificatie xsi:nil="true" StUF:noValue="geenWaarde"/>
+            <ZKN:heeft  StUF:entiteittype="ZAKSTT" >
+                <ZKN:gerelateerde StUF:entiteittype="STT">
+                    <ZKN:zkt.omschrijving xsi:nil="true" StUF:noValue="geenWaarde"/>
+                    <ZKN:volgnummer xsi:nil="true" StUF:noValue="geenWaarde"/>
+                    <ZKN:omschrijving xsi:nil="true" StUF:noValue="geenWaarde"/>
+                </ZKN:gerelateerde>
+                <ZKN:toelichting xsi:nil="true" StUF:noValue="geenWaarde"/>
+                <ZKN:datumStatusGezet xsi:nil="true" StUF:noValue="geenWaarde"/>
+                <ZKN:indicatieLaatsteStatus xsi:nil="true" StUF:noValue="geenWaarde"/>
+            </ZKN:heeft>
+        </ZKN:object>
+    </ZKN:scope>
+</ZDS:geefZaakstatus_ZakLv01>

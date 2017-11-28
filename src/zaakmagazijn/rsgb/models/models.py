@@ -1,6 +1,8 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 
+from zaakmagazijn.utils import stuf_datetime
+
 from ...rgbz.choices import JaNee
 from ...utils.fields import StUFDateField
 from ..choices import (
@@ -44,7 +46,7 @@ class OpenbareRuimte(models.Model):
     label_naam_openbare_ruimte = models.ForeignKey('rsgb.TypeLabel')
     # openbare_ruimte_geometrie #gm_multisurface geonovum
     # wegsegment #gm_curve, geonovum
-    datum_begin_geldigheid_openbare_ruimte = StUFDateField()
+    datum_begin_geldigheid_openbare_ruimte = StUFDateField(default=stuf_datetime.today)
     datum_einde_geldigheid_openbare_ruimte = StUFDateField(null=True, blank=True)
 
     class Meta:
@@ -64,8 +66,8 @@ class WoonPlaats(models.Model):
     indicatie_geconstanteerde_woonplaats = models.CharField(max_length=1, choices=JaNee.choices)
     woonplaatsstatus = models.CharField(max_length=100, choices=StatusWoonplaats.choices)
     # woonplaatsgeometrie =
-    datum_begin_geldigheid_woonplaats = StUFDateField()  # niet nodig?
-    datum_einde_geldigheid_woonplaats = StUFDateField()  # niet nodig?
+    datum_begin_geldigheid_woonplaats = StUFDateField(default=stuf_datetime.today)  # niet nodig?
+    datum_einde_geldigheid_woonplaats = StUFDateField(null=True, blank=True)  # niet nodig?
 
     class Meta:
         mnemonic = 'WPL'
@@ -79,7 +81,7 @@ class AdresseerbaarObjectAanduiding(models.Model):
     huisnummer = models.CharField(max_length=5)
     huisnummertoevoeging = models.CharField(max_length=4)
     postcode = models.CharField(max_length=7, null=True, blank=True)
-    datum_begin_geldigheid_adresseerbaar_object_aanduiding = StUFDateField()
+    datum_begin_geldigheid_adresseerbaar_object_aanduiding = StUFDateField(default=stuf_datetime.today)
     datum_einde_geldigheid_adresseerbaar_object_aanduiging = StUFDateField(null=True, blank=True)
     woonplaats = models.ForeignKey('rsgb.WoonPlaats')
     openbareruimte = models.ForeignKey('rsgb.OpenbareRuimte')

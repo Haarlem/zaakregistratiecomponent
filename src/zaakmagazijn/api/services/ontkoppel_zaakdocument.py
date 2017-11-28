@@ -1,4 +1,4 @@
-from spyne import AnyXml, ComplexModel, ServiceBase, Unicode, rpc
+from spyne import ComplexModel, ServiceBase, Unicode, rpc
 
 from zaakmagazijn.cmis.client import default_client as dms_client
 
@@ -52,7 +52,7 @@ class OntkoppelZaakdocument_gerelateerde(ComplexModel):
     _type_info = [
         ('identificatie', Unicode.customize(type_name='zaakIdentificatie')),
         ('omschrijving', Unicode.customize(type_name='zaakIdentificatie')),
-        # TODO: [TECH] Taiga #216 Gaan we alle niet in ZDS 1.2 gedefinieerde
+        # TODO [TECH]: Taiga #216 Gaan we alle niet in ZDS 1.2 gedefinieerde
         # relaties/attributen toestaan middels dummy elementen (AnyXML)?
         # ('isVan', AnyXml.customize(type_name='ontkoppelZaakIsVan')),
         ('entiteittype', entiteittype),
@@ -127,8 +127,9 @@ class OntkoppelZaakdocumentInputBuilder(ComplexModelBuilder):
 
     def create_edclk02_model(self):
         type_info = (
-            # TODO: [KING/COMPAT] Taiga #217 Element parameters.mutatiesoort staat in ZDS 1.2,
-            # volgens ons, onterrecht onder object ipv onder edcLk02 voor ontkoppelZaakdocument_Di02
+            # TODO [KING]: Taiga #217 Element parameters.mutatiesoort staat in
+            # ZDS 1.2, volgens ons, onterrecht onder object ipv onder edcLk02
+            # voor ontkoppelZaakdocument_Di02
             ('parameters', self.create_edc_parameters_model()),
             ('object', OntkoppelZaakdocument_object.customize(max_occurs=2, min_occurs=2)),
             ('functie', functie),
@@ -207,7 +208,7 @@ class OntkoppelZaakdocument(ServiceBase):
             dms_client.ontkoppel_zaakdocument(document, zio.zaak)
             zio.delete()
 
-        # TODO: [TECH] Taiga #238
+        # TODO [TECH]: Taiga #238
         # # ontkoppeld van alle zaken
         # if not document.zaakinformatieobject_set.exists():
         #     dms_client.verwijder_document(document)

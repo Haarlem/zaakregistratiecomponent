@@ -1,0 +1,132 @@
+<ZDS:geefLijstZaakdocumenten_ZakLa01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>La01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:entiteittype>ZAK</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:indicatorVervolgvraag>true</StUF:indicatorVervolgvraag>
+    </ZKN:parameters>
+    <ZKN:antwoord>
+        <ZKN:object StUF:entiteittype="ZAK">
+            <ZKN:identificatie>${creerzaak_identificatie_9}</ZKN:identificatie>
+            <ZKN:heeftRelevant StUF:entiteittype="ZAKEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${voegzaakdocumenttoe_identificatie_5}</ZKN:identificatie>
+                    <ZKN:dct.omschrijving>omschrijving1</ZKN:dct.omschrijving>
+                    <ZKN:creatiedatum>${datumVandaag}</ZKN:creatiedatum>
+                    <ZKN:ontvangstdatum>${datumVandaag}</ZKN:ontvangstdatum>
+                    <ZKN:titel>titel1</ZKN:titel>
+                    <ZKN:beschrijving>beschrijving1</ZKN:beschrijving>
+                    <ZKN:formaat>formaat1</ZKN:formaat>
+                    <ZKN:taal>taal1</ZKN:taal>
+                    <ZKN:versie>vers1</ZKN:versie>
+                    <ZKN:status>status1</ZKN:status>
+                    <ZKN:verzenddatum>${datumVandaag}</ZKN:verzenddatum>
+                    <ZKN:vertrouwelijkAanduiding>ZEER GEHEIM</ZKN:vertrouwelijkAanduiding>
+                    <ZKN:auteur>auteur1</ZKN:auteur>
+                    <ZKN:link>link1</ZKN:link>
+                    <StUF:tijdvakGeldigheid>
+                        <StUF:beginGeldigheid>${datumGisteren}</StUF:beginGeldigheid>
+                        <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+                    </StUF:tijdvakGeldigheid>
+                    <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+                </ZKN:gerelateerde>
+                <ZKN:titel/>
+                <ZKN:registratiedatum xsi:nil="true"/>
+            </ZKN:heeftRelevant>
+            <ZKN:heeftRelevant StUF:entiteittype="ZAKEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${voegzaakdocumenttoe_identificatie_7}</ZKN:identificatie>
+                    <StUF:tijdvakGeldigheid>
+                        <StUF:beginGeldigheid>${datumVandaag}</StUF:beginGeldigheid>
+                        <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+                    </StUF:tijdvakGeldigheid>
+                    <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+                </ZKN:gerelateerde>
+                <ZKN:titel/>
+                <ZKN:registratiedatum xsi:nil="true"/>
+            </ZKN:heeftRelevant>
+            <ZKN:heeftRelevant StUF:entiteittype="ZAKEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${maakzaakdocument_identificatie_1}</ZKN:identificatie>
+                    <ZKN:dct.omschrijving>omschrijving</ZKN:dct.omschrijving>
+                    <ZKN:creatiedatum>${datumVandaag}</ZKN:creatiedatum>
+                    <ZKN:ontvangstdatum>${datumVandaag}</ZKN:ontvangstdatum>
+                    <ZKN:titel>titel</ZKN:titel>
+                    <ZKN:beschrijving>beschrijving</ZKN:beschrijving>
+                    <ZKN:formaat>formaat</ZKN:formaat>
+                    <ZKN:taal>taal</ZKN:taal>
+                    <ZKN:versie>versi</ZKN:versie>
+                    <ZKN:status>status</ZKN:status>
+                    <ZKN:verzenddatum>${datumVandaag}</ZKN:verzenddatum>
+                    <ZKN:vertrouwelijkAanduiding>CONFIDENTIEEL</ZKN:vertrouwelijkAanduiding>
+                    <ZKN:auteur>auteur</ZKN:auteur>
+                    <ZKN:link>link</ZKN:link>
+                    <StUF:tijdvakGeldigheid>
+                        <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                        <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+                    </StUF:tijdvakGeldigheid>
+                    <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+                </ZKN:gerelateerde>
+                <ZKN:titel/>
+                <ZKN:registratiedatum xsi:nil="true"/>
+            </ZKN:heeftRelevant>
+            <ZKN:heeftRelevant StUF:entiteittype="ZAKEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${maakzaakdocument_identificatie_3}</ZKN:identificatie>
+                    <ZKN:dct.omschrijving>omschrijving</ZKN:dct.omschrijving>
+                    <ZKN:creatiedatum>${datumVandaag}</ZKN:creatiedatum>
+                    <ZKN:titel>titel</ZKN:titel>
+                    <ZKN:formaat>formaat</ZKN:formaat>
+                    <ZKN:taal>taal</ZKN:taal>
+                    <ZKN:vertrouwelijkAanduiding>CONFIDENTIEEL</ZKN:vertrouwelijkAanduiding>
+                    <ZKN:auteur>auteur</ZKN:auteur>
+                    <StUF:tijdvakGeldigheid>
+                        <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                        <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+                    </StUF:tijdvakGeldigheid>
+                    <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+                </ZKN:gerelateerde>
+                <ZKN:titel/>
+                <ZKN:registratiedatum xsi:nil="true"/>
+            </ZKN:heeftRelevant>
+            <ZKN:heeftRelevant StUF:entiteittype="ZAKEDC">
+                <ZKN:gerelateerde StUF:entiteittype="EDC">
+                    <ZKN:identificatie>${maakzaakdocument_identificatie_5}</ZKN:identificatie>
+                    <ZKN:dct.omschrijving>${zds_zaaktype_omschrijving}</ZKN:dct.omschrijving>
+                    <ZKN:creatiedatum>${datumVandaag}</ZKN:creatiedatum>
+                    <ZKN:ontvangstdatum>${datumVandaag}</ZKN:ontvangstdatum>
+                    <ZKN:titel>titel</ZKN:titel>
+                    <ZKN:beschrijving>beschrijving</ZKN:beschrijving>
+                    <ZKN:formaat>formaat</ZKN:formaat>
+                    <ZKN:taal>taal</ZKN:taal>
+                    <ZKN:versie>versi</ZKN:versie>
+                    <ZKN:status>status</ZKN:status>
+                    <ZKN:verzenddatum>${datumVandaag}</ZKN:verzenddatum>
+                    <ZKN:vertrouwelijkAanduiding>CONFIDENTIEEL</ZKN:vertrouwelijkAanduiding>
+                    <ZKN:auteur>auteur</ZKN:auteur>
+                    <ZKN:link>link</ZKN:link>
+                    <StUF:tijdvakGeldigheid>
+                        <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                        <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+                    </StUF:tijdvakGeldigheid>
+                    <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+                </ZKN:gerelateerde>
+                <ZKN:titel/>
+                <ZKN:registratiedatum xsi:nil="true"/>
+            </ZKN:heeftRelevant>
+        </ZKN:object>
+    </ZKN:antwoord>
+</ZDS:geefLijstZaakdocumenten_ZakLa01>

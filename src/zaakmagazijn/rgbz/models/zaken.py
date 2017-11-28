@@ -1,20 +1,21 @@
-from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
+
+from zaakmagazijn.utils import stuf_datetime
 
 from ...cmis.models import CMISMixin
 from ...utils.fields import StUFDateField, StUFDateTimeField
 from ..choices import (
     AardRelatieZakenRelatie, ArchiefNominatie, ArchiefStatus,
-    IndicatieMachtiging, JaNee, Rolomschrijving, RolomschrijvingGeneriek,
-    Vertrouwelijkaanduiding
+    IndicatieMachtiging, JaNee, Rolomschrijving, Vertrouwelijkaanduiding
 )
 from ..validators import (
     alphanumeric_excluding_diacritic, validate_non_negative_string
 )
 from .basemodels import Object
+from .mixins import TijdstipRegistratieMixin, TijdvakGeldigheidMixin
 
 
 class ZaakType(CMISMixin, models.Model):
@@ -67,6 +68,7 @@ class ZaakType(CMISMixin, models.Model):
     publicatietekst = models.TextField(
         max_length=1000, null=True, blank=True, help_text='De generieke tekst van de publicatie van ZAAKen van dit ZAAKTYPE.')
     datum_begin_geldigheid_zaaktype = StUFDateField(
+        default=stuf_datetime.today,
         help_text='Datum begin geldigheid zaaktype')
     datum_einde_geldigheid_zaaktype = StUFDateField(
         help_text='De datum waarop het ZAAKTYPE is opgeheven', blank=True)
@@ -115,6 +117,7 @@ class StatusType(models.Model):
         max_length=80, null=True, blank=True, help_text='Algemeen gehanteerde omschrijving '
         'van de aard van STATUSsen van het STATUSTYPE')
     datum_begin_geldigheid_statustype = StUFDateField(
+        default=stuf_datetime.today,
         help_text='De datum waarop het STATUSTYPE is ontstaan.'
     )
     datum_einde_geldigheid_statustype = StUFDateField(
@@ -128,7 +131,7 @@ class StatusType(models.Model):
         mnemonic = 'STT'
 
 
-class Zaak(CMISMixin, models.Model):
+class Zaak(CMISMixin, TijdvakGeldigheidMixin, TijdstipRegistratieMixin, models.Model):
     """
     Een samenhangende hoeveelheid werk met een welgedefinieerde aanleiding
     en een welgedefinieerd eindresultaat, waarvan kwaliteit en doorlooptijd
@@ -141,7 +144,7 @@ class Zaak(CMISMixin, models.Model):
                   'verantwoordelijk is voor de behandeling van de ZAAK.',
         validators=[alphanumeric_excluding_diacritic, ]
     )
-    # TODO: [KING] Taiga #275: In de KING documentatie staat N9
+    # TODO [KING]: Taiga #275: In de KING documentatie staat N9
     bronorganisatie = models.CharField(max_length=9, validators=[validate_non_negative_string, ],
                                        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de '
                                        'organisatie die de zaak heeft gecreeerd.'
@@ -192,7 +195,7 @@ class Zaak(CMISMixin, models.Model):
     )
     # Tijdstip
     laatste_betaaldatum = StUFDateTimeField(
-        blank=True, help_text='De datum waarop de meest recente betaling is verwerkt van kosten'
+        blank=True, null=True, help_text='De datum waarop de meest recente betaling is verwerkt van kosten'
         ' die gemoeid zijn met behandeling van de zaak.')
 
     zaakgeometrie = models.TextField(null=True, blank=True)
@@ -209,6 +212,8 @@ class Zaak(CMISMixin, models.Model):
                   'die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er één is.',
         related_name='deelzaken'
     )
+    # TODO [KING]: https://discussie.kinggemeenten.nl/discussie/gemma/stuf-testplatform/deelzaakindicatie-creeerzaak-volgnr-1-staat-onterecht-op-j
+    _deelzaken_indicatie = models.CharField(max_length=1, choices=JaNee.choices, default=JaNee.nee)
 
     zaaktype = models.ForeignKey('rgbz.ZaakType', on_delete=models.CASCADE)
 
@@ -228,15 +233,15 @@ class Zaak(CMISMixin, models.Model):
         'zsdms:zaakidentificatie': 'zaakidentificatie',  # v
         'zsdms:startdatum': 'startdatum',  # v
         'zsdms:einddatum': 'einddatum',  # o
-        # TODO: [COMPAT] Missing in RGBZ?
+        # TODO [TECH]: Missing in RGBZ but present in our proxy.
         # 'zsdms:zaakniveau': 'zaakniveau',  # v
-        # TODO: [COMPAT] Missing in RGBZ? Or is this just "has one or more deelzaken?"
+        # TODO [TECH]: We have this field now because RGBZ mapping by KING failed.
         # 'zsdms:deelzakenindicatie': 'Deelzakenindicatie',  # v
         'zsdms:registratiedatum': 'registratiedatum',  # v
         'zsdms:archiefnominatie': 'archiefnominatie',  # v
-        # TODO: [DMS] unknown, resultaattypeomschrijving is in the XML though
+        # TODO [KING] unknown, resultaattypeomschrijving is in the XML though
         # 'zsdms:resultaatomschrijving': 'resultaatomschrijving',  # v
-        # TODO: [COMPAT] ZDS indicates it should map to datumVernietigingDossier
+        # TODO [KING]: ZDS indicates it should map to datumVernietigingDossier
         'zsdms:datumVernietigDossier': 'archiefactiedatum',  # o
     }
 
@@ -256,7 +261,10 @@ class Zaak(CMISMixin, models.Model):
         return props
 
     def get_current_status(self):
-        return self.status_set.get(indicatie_laatst_gezette_status=JaNee.ja)
+        try:
+            return self.status_set.get(indicatie_laatst_gezette_status=JaNee.ja)
+        except self.status_set.model.DoesNotExist:
+            return None
 
     def save(self, *args, **kwargs):
         self.clean_fields()
@@ -340,7 +348,7 @@ class Zaak(CMISMixin, models.Model):
     def heeft_als_klantcontacter(self):
         return self.rol_set, self.rol_set.model.get_rol_defaults(Rolomschrijving.klantcontacter)
 
-    # TODO: [TECH] Mede-initiator
+    # TODO [TECH]: Mede-initiator
 
     def heeft_als_zaakcoordinator(self):
         return self.rol_set, self.rol_set.model.get_rol_defaults(Rolomschrijving.zaakcoordinator)
@@ -355,7 +363,7 @@ class Zaak(CMISMixin, models.Model):
 class Eigenschap(models.Model):
     zaak = models.ForeignKey('rgbz.Zaak', on_delete=models.CASCADE, related_name='eigenschap')
     data = models.TextField()
-    # TODO: [KING] Dit aanpassen als er duidelijkheid is over wat er mee moet gebeuren
+    # TODO [KING]: Dit aanpassen als er duidelijkheid is over wat er mee moet gebeuren
 
     class Meta:
         verbose_name_plural = 'Eigenschappen'
@@ -397,7 +405,7 @@ class Status(Object):
         return self.rol.betrokkene
 
     def heeft_relevant(self):
-        # TODO: [KING] This filtering is an assumption, it isn't described anywhere as far as I know.
+        # TODO [KING]: This filtering is an assumption, it isn't described anywhere as far as I know.
         return self.zaak.informatieobjecten.filter(informatieobject_status=self), {}
 
     def is_van(self):
@@ -421,7 +429,7 @@ class ZaakInformatieObject(models.Model):
                               'inhoud van het INFORMATIEOBJECT.')
     registratiedatum = StUFDateField(
         'De datum waarop de zaakbehandelende organisatie het INFORMATIEOBJECT heeft geregistreerd bij de ZAAK.')
-    status = models.ForeignKey('rgbz.Status', on_delete=models.CASCADE)
+    status = models.ForeignKey('rgbz.Status', on_delete=models.CASCADE, null=True)
 
     def is_relevant_voor(self):
         return self.status
@@ -429,6 +437,12 @@ class ZaakInformatieObject(models.Model):
     def save(self, *args, **kwargs):
         if not self.id and self.zaak:
             self.status = self.zaak.get_current_status()
+
+        if not self.titel and self.informatieobject:
+            self.titel = self.informatieobject.titel
+        if not self.registratiedatum:
+            self.registratiedatum = stuf_datetime.today()
+
         super().save(*args, **kwargs)
 
     class Meta:

@@ -1,4 +1,3 @@
-from django.conf import settings
 
 from spyne import Unicode, XmlAttribute
 
@@ -7,6 +6,8 @@ from ..stuf import simple_types
 from ..stuf.base import ComplexModelBuilder, complex_model_factory
 from ..stuf.choices import BerichtcodeChoices
 from ..stuf.models import Systeem
+from ..stuf.protocols import IgnoreAttribute
+from ..stuf.utils import get_ontvanger, get_systeem_zender
 from ..utils import create_unique_id
 
 
@@ -57,21 +58,23 @@ class GenereerIdentificatieOutputBuilder(ComplexModelBuilder):
         return body_model
 
     def create_data(self, request_obj, identificatie):
-        # TODO: [TECH] Maybe we should move the whole stuurgegevens (or at least zender/ontvanger) to the application level?
-        # TODO: [TECH] Reference etc. should also be logged.
+        # TODO [TECH]: Maybe we should move the whole stuurgegevens (or at least zender/ontvanger) to the application level?
+        # TODO [TECH]: Reference etc. should also be logged.
         ontvanger = request_obj.stuurgegevens.zender
         cross_refnummer = request_obj.stuurgegevens.referentienummer
 
+        stuurgegevens = {
+            'berichtcode': self.berichtcode,
+            'zender': get_systeem_zender(),
+            'ontvanger': get_ontvanger(ontvanger),
+            'referentienummer': create_unique_id(),
+            'tijdstipBericht': stuf_datetime.now(),
+            'crossRefnummer': cross_refnummer or IgnoreAttribute(),
+            'functie': self.name,
+        }
+
         return {
-            'stuurgegevens': {
-                'berichtcode': self.berichtcode,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': ontvanger,
-                'referentienummer': create_unique_id(),
-                'tijdstipBericht': stuf_datetime.now(),
-                'crossRefnummer': cross_refnummer,
-                'functie': self.name,
-            },
+            'stuurgegevens': stuurgegevens,
             self.object_element_name: {
                 'identificatie': identificatie,
                 'functie': 'entiteit',

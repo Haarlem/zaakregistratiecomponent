@@ -1,17 +1,19 @@
 from spyne import ServiceBase, rpc
 
-from zaakmagazijn.rgbz.models import (
-    EnkelvoudigInformatieObject, Zaak, ZaakInformatieObject
+from zaakmagazijn.rgbz_mapping.models import (
+    EnkelvoudigDocumentProxy, ZaakDocumentProxy, ZaakProxy
 )
 
 from ..stuf import OneToManyRelation, StUFEntiteit
-from ..stuf.models import EDC_parametersVraagSynchroon
+from ..stuf.models import (
+    EDC_parametersVraagSynchroon, ParametersAntwoordSynchroon
+)
 from ..zds import La01Builder, Lv01Builder
 
 
 class ZaakEntiteit(StUFEntiteit):
     mnemonic = 'ZAK'
-    model = Zaak
+    model = ZaakProxy
     field_mapping = (
         ('identificatie', 'zaakidentificatie'),
     )
@@ -19,36 +21,37 @@ class ZaakEntiteit(StUFEntiteit):
 
 class ZaakInformatieObjectEntiteit(StUFEntiteit):
     mnemonic = 'EDCZAK'
-    model = ZaakInformatieObject
+    model = ZaakDocumentProxy
     gerelateerde = ('zaak', ZaakEntiteit)
     field_mapping = ()
 
 
 class EnkelvoudigInformatieObjectEntiteit(StUFEntiteit):
     mnemonic = 'EDC'
-    model = EnkelvoudigInformatieObject
+    model = EnkelvoudigDocumentProxy
     field_mapping = (
-        ('identificatie', 'informatieobjectidentificatie'),
-        ('dct.omschrijving', 'informatieobjecttype__informatieobjecttypeomschrijving'),
-        ('dct.omschrijvingGeneriek', 'informatieobjecttype__informatieobjecttypeomschrijving_generiek'),
-        ('dct.categorie', 'informatieobjecttype__informatieobjectcategorie'),
-        ('creatiedatum', 'creatiedatum'),
-        ('ontvangstdatum', 'ontvangstdatum'),
-        # TODO: [KING] Taiga #236 De velden titel, beschrijving, etc. staan ook op EDCZAK in geefZaakdocumentLezen maar worden niet gemapped.
-        ('titel', 'titel'),
-        ('beschrijving', 'beschrijving'),
-        ('formaat', 'formaat'),
-        ('taal', 'taal'),
-        ('versie', 'versie'),
-        ('status', 'informatieobject_status'),
-        ('verzenddatum', 'verzenddatum'),
+        ('identificatie', 'identificatie'),
+        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('dct.omschrijvingGeneriek', 'documenttype__documenttypeomschrijving_generiek'),
+        ('dct.categorie', 'documenttype__documentcategorie'),
+        ('creatiedatum', 'documentcreatiedatum'),
+        ('ontvangstdatum', 'documentontvangstdatum'),
+        # TODO [KING]: Taiga #236 De velden titel, beschrijving, etc. staan ook op EDCZAK in geefZaakdocumentLezen maar worden niet gemapped.
+        ('titel', 'documenttitel'),
+        ('beschrijving', 'documentbeschrijving'),
+        ('formaat', 'documentformaat'),
+        ('taal', 'documenttaal'),
+        ('versie', 'documentversie'),
+        ('status', 'documentstatus'),
+        ('verzenddatum', 'documentverzenddatum'),
         ('vertrouwelijkAanduiding', 'vertrouwlijkaanduiding'),
-        ('auteur', 'auteur'),
-        ('link', 'link'),
+        ('auteur', 'documentauteur'),
+        ('link', 'documentlink'),
         ('inhoud', '_inhoud'),
     )
     filter_fields = ('identificatie',)
     input_parameters = EDC_parametersVraagSynchroon
+    output_parameters = ParametersAntwoordSynchroon
     related_fields = (
         OneToManyRelation('isRelevantVoor', 'zaakinformatieobject_set', ZaakInformatieObjectEntiteit),
     )

@@ -103,9 +103,11 @@ StUF 3.01 - Tabel 5.7 (Invullen attribute StUF:verwerkingssoort in de topfundame
 """
 from django.db.models import Manager
 
+from zaakmagazijn.rgbz_mapping.manager import ProxyRelatedManager
+
 from ...stuf import ForeignKeyRelation, OneToManyRelation
 from ...stuf.protocols import Nil
-from .choices import EntiteitType, MutatiesoortChoices, VerwerkingssoortChoices
+from .choices import MutatiesoortChoices
 from .objects import KennisgevingObject
 
 
@@ -118,6 +120,7 @@ class VirtualRelatedManager:
             setattr(self.django_obj, key, value)
         self.django_obj.full_clean()
         self.django_obj.save()
+        return self.django_obj
 
     def get(self, **kwargs):
         return self.django_obj
@@ -159,7 +162,7 @@ class BaseOperation:
             self.obj2.add_obj_relation(relation, operation.obj2)
 
     def add_related(self, fk_name, operation):
-        # TODO: [TECH] Make sure self.related is sorted: operation with obj1 first, then
+        # TODO [TECH]: Make sure self.related is sorted: operation with obj1 first, then
         # operation with obj2.
         self.related.append((fk_name, operation), )
 
@@ -212,9 +215,8 @@ class BaseOperation:
             related_manager = VirtualRelatedManager(django_obj)
             default_kwargs = {}
         else:
-            from django.db.models.manager import Manager
             related_attribute = getattr(django_obj, related_name)
-            if isinstance(related_attribute, Manager):
+            if isinstance(related_attribute, Manager) or isinstance(related_attribute, ProxyRelatedManager):
                 related_manager, default_kwargs = related_attribute, {}
             elif callable(related_attribute):
                 related_manager, default_kwargs = related_attribute()
@@ -223,15 +225,33 @@ class BaseOperation:
                                      'manager nor a method which returns a related manager and default kwargs')
         return related_manager, default_kwargs
 
+    def process_fake_relations(self):
+        """
+        Process relatie-entiteiten which are ForeignKeys.
+        """
+        obj1_kwargs = {}
+        obj2_kwargs = {}
+        for relation, child_operation in self.relations:
+            if (child_operation.related and isinstance(relation, ForeignKeyRelation) and all([field_name == 'self' for field_name, operation in child_operation.related])):
+                obj1, obj2 = child_operation.process_gerelateerde()
+                obj1_kwargs[relation.fk_name] = obj1
+                obj2_kwargs[relation.fk_name] = obj2
+            if (isinstance(relation, OneToManyRelation) and relation.related_name == 'self'):
+                fk_name = child_operation.get_related_fk_name()
+                obj1, obj2 = child_operation.process_gerelateerde()
+                obj1_kwargs[fk_name] = obj1
+                obj2_kwargs[fk_name] = obj2
+        return obj1_kwargs, obj2_kwargs
+
     def process_relations(self, django_obj):
         """
         :param django_obj The current (huidige) django obj, after any operations (in the current operation) have been performed.
         """
-        assert django_obj is not None
 
         # Process relatie-entiteiten.
         for relation, child_operation in self.relations:
-            child_operation.process_relatie_entiteit(django_obj, relation)
+            if not (child_operation.related and isinstance(relation, ForeignKeyRelation) and all([field_name == 'self' for field_name, operation in child_operation.related])) or (isinstance(relation, OneToManyRelation) and relation.related_name == 'self'):
+                child_operation.process_relatie_entiteit(django_obj, relation)
 
     def process_virtual_fields(self, django_obj, obj):
         """
@@ -281,7 +301,7 @@ class IdentifyOperation(BaseOperation):
 
     @classmethod
     def can_process(cls, stuf_entiteit, entiteit_type, mutatiesoort, obj1, obj2, parent_operation):
-        # TODO: [TECH] This does not verify the 'verwerkingssoort' that can be set in the nil case.
+        # TODO [TECH]: This does not verify the 'verwerkingssoort' that can be set in the nil case.
 
         obj1_exists = not (obj1 is None or obj1.is_nil())
         obj2_exists = not (obj2 is None or obj2.is_nil())
@@ -315,10 +335,10 @@ class IdentifyOperation(BaseOperation):
 
             if self.obj1:
                 extra = {related_fk_name: gerelateerde_obj1}
-                self.obj1.get(extra=extra)
+                self.obj1.get(related_manager=related_manager, extra=extra)
             if self.obj2:
                 extra = {related_fk_name: gerelateerde_obj2}
-                self.obj2.get(extra=extra)
+                self.obj2.get(related_manager=related_manager, extra=extra)
             return None
         else:
             raise NotImplementedError
@@ -330,13 +350,14 @@ class IdentifyOperation(BaseOperation):
         """
         django_obj1, django_obj2 = None, None
 
-        # TODO: [TECH] If they're both specified, these should be the same.
+        # TODO [TECH]: If they're both specified, these should be the same.
         if self.obj1:
             django_obj1 = self.obj1.get()
 
         if self.obj2:
             django_obj2 = self.obj2.get()
 
+            assert django_obj2
             self.process_relations(django_obj2)
 
         return django_obj1, django_obj2
@@ -359,7 +380,7 @@ class CreateOperation(BaseOperation):
             if not obj1_exists and obj2_exists and obj2.obj_verwerkingssoort == 'T':
                 return True
         if mutatiesoort == MutatiesoortChoices.wijziging:
-            # TODO: [TECH] This does not verify the 'verwerkingssoort' that can be set in the nil case.
+            # TODO [TECH]: This does not verify the 'verwerkingssoort' that can be set in the nil case.
             if not obj1_exists and obj2_exists and obj2.obj_verwerkingssoort == 'T':
                 return True
 
@@ -374,8 +395,22 @@ class CreateOperation(BaseOperation):
 
         Also, see: StUF 03.01 - 5.2.7 Toevoegen/wijzigen gerelateerde entiteit
         """
-        django_obj, _ = self.obj2.get_or_create(extra_on_create=extra_on_create)
 
+        # First do a 'get', to see if the object exists.
+        django_model = self.stuf_entiteit.get_model()
+
+        try:
+            django_obj = self.obj2.get(raise_fault=False)
+        except django_model.DoesNotExist:
+            # If not, we need to process any required Foreign Keys first.
+            obj1_kwargs, obj2_kwargs = self.process_fake_relations()
+
+            # And then, create the object
+            extra_on_create = extra_on_create or {}
+            extra_on_create.update(obj2_kwargs)
+            django_obj = self.obj2.create(extra_on_create=extra_on_create)
+
+        assert django_obj
         self.process_relations(django_obj)
         self.process_virtual_fields(django_obj, self.obj2)
 
@@ -401,12 +436,15 @@ class CreateOperation(BaseOperation):
                 # On a relatie-entiteit, which is defined on a Foreign Key, instead of a Many to Many table,
                 # no relaties can be defined. i.e. we can't processes them, because they can't exist.
             else:
+                # TODO [TECH]: Shouldn't a 'I' happen here first? (Check with standard)
+
                 gerelateerde_obj1, gerelateerde_obj2 = self.process_gerelateerde()
                 obj_kwargs = self.obj2.get_obj_kwargs()
                 obj_kwargs[related_fk_name] = gerelateerde_obj2
                 obj_kwargs.update(default_kwargs)
                 new_obj = related_manager.create(**obj_kwargs)
 
+                assert new_obj
                 self.process_relations(new_obj)
         else:
             raise NotImplementedError
@@ -425,12 +463,12 @@ class DeleteOperation(BaseOperation):
         if mutatiesoort == MutatiesoortChoices.wijziging:
             obj2_nonexistent = obj2 is None or obj2.is_nil()
 
-            if obj2_nonexistent and obj1 and obj1.obj_verwerkingssoort == 'V':
+            if obj2_nonexistent and obj1 and obj1.obj_verwerkingssoort == cls.verwerkingssoort:
                 return True
 
             obj1_nonexistent = obj1 is None or obj1.is_nil()
 
-            if obj1_nonexistent and obj2 and obj2.obj_verwerkingssoort == 'V':
+            if obj1_nonexistent and obj2 and obj2.obj_verwerkingssoort == cls.verwerkingssoort:
                 return True
 
         return False
@@ -456,7 +494,7 @@ class DeleteOperation(BaseOperation):
         else:
             raise NotImplementedError
 
-    def process_fundamenteel(self):
+    def process_fundamenteel(self, extra_on_create=None):
         """
         This is not allowed See:
 
@@ -502,32 +540,22 @@ class ReplaceRelationOperation(BaseOperation):
             django_obj.full_clean()
             django_obj.save()
 
+            assert django_obj
             self.process_relations(django_obj)
         else:
             raise NotImplementedError
 
 
-class EndRelationOperation(BaseOperation):
+class EndRelationOperation(DeleteOperation):
     """
     Both obj1 and obj2 should be filled.
-    """
-    verwerkingssoort = 'E'
 
-    @classmethod
-    def can_process(cls, stuf_entiteit, entiteit_type, mutatiesoort, obj1, obj2, parent_operation):
-        # TODO: [TECH]
-        return False
-
-    def process_relatie_entiteit(self, parent_django_obj, relation):
-        """
+    Voor relatie-entiteiten:
         See StUF 03.01 - 5.2.6 Het vullen van relatie-entiteiten en gerelateerde entiteiten
             * 6. Mutatiesoort 'W' en verwerkingssoort 'E': Een relatie wordt beëindigd entiteit
                  wordt gewijzigd/gecorrigeerd
-        """
-        related_manager, default_kwargs = self.get_related_manager(parent_django_obj, relation)
-
-        # TODO: [TECH] Issue #265 Implementeer het verwerken van een relatie-entiteit met verwerkingsoort 'E'
-        raise NotImplementedError()
+    """
+    verwerkingssoort = 'E'
 
 
 class UpdateOperation(BaseOperation):
@@ -551,7 +579,7 @@ class UpdateOperation(BaseOperation):
 
     def process_relatie_entiteit(self, parent_django_obj, relation):
         related_manager, default_kwargs = self.get_related_manager(parent_django_obj, relation)
-        # TODO: [TECH] Taiga #264 Implementeer process_relatie_entiteit bij verwerkingssoort 'W
+        # TODO [TECH]: Taiga #264 Implementeer process_relatie_entiteit bij verwerkingssoort 'W
         # Also, do something like:
         # self.process_relations(django_obj)
 
@@ -565,6 +593,7 @@ class UpdateOperation(BaseOperation):
             django_obj.full_clean()
             django_obj.save()
 
+        assert django_obj
         self.process_relations(django_obj)
 
         return django_obj, django_obj
@@ -621,15 +650,24 @@ class GroupAttributeOperation(BaseOperation):
         if isinstance(relation, ForeignKeyRelation):
             assert len(self.obj1) <= 1 and len(self.obj2) <= 1, 'ForeignKey relations can never have more than one object.'
 
-            fk_obj = getattr(parent_django_obj, relation.fk_name)
-            if fk_obj is not None:
-                fk_obj.delete()
-            django_model = relation.stuf_entiteit.get_model()
+            if relation.fk_name == 'self':
+                fk_obj = parent_django_obj
+                if self.obj2:
+                    obj_kwargs = self.obj2[0].get_obj_kwargs()
 
-            new_obj = django_model.objects.create(**self.obj2[0].get_obj_kwargs()) if self.obj2 else None
-            setattr(parent_django_obj, relation.fk_name, new_obj)
-            parent_django_obj.full_clean()
-            parent_django_obj.save()
+                    for field_name, value in obj_kwargs.items():
+                        setattr(fk_obj, field_name, value)
+                    fk_obj.save()
+            else:
+                fk_obj = getattr(parent_django_obj, relation.fk_name)
+                if fk_obj is not None:
+                    fk_obj.delete()
+                    django_model = relation.stuf_entiteit.get_model()
+
+                    new_obj = django_model.objects.create(**self.obj2[0].get_obj_kwargs()) if self.obj2 else None
+                    setattr(parent_django_obj, relation.fk_name, new_obj)
+                    parent_django_obj.full_clean()
+                    parent_django_obj.save()
         elif isinstance(relation, OneToManyRelation):
             related_manager, default_kwargs = self.get_related_manager(parent_django_obj, relation)
 

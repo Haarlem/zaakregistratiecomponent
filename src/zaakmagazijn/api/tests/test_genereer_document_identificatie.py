@@ -16,7 +16,7 @@ class GenereerDocumentIdentificatie_Du02(BaseSoapTests):
 
         with client.options(raw_response=raw_response):
             return client.service.genereerDocumentIdentificatie_Di02(
-                stuurgegevens=stuf_factory.Di02_Stuurgegevens_gdi(
+                stuurgegevens=stuf_factory['Di02-Stuurgegevens-gdi'](
                     berichtcode='Di02',
                     referentienummer='123',
                     tijdstipBericht=stuf_datetime.now(),
@@ -35,7 +35,7 @@ class GenereerDocumentIdentificatie_Du02(BaseSoapTests):
         expected = [
             'zds:stuurgegevens',
             'zds:stuurgegevens/stuf:berichtcode[text()="Du02"]',
-            'zds:stuurgegevens/stuf:functie[text()="genereerDocumentIdentificatie"]',
+            'zds:stuurgegevens/stuf:functie[text()="genereerDocumentidentificatie"]',
             'zds:document',
             'zds:document[@stuf:entiteittype="EDC"]',
             'zds:document[@stuf:functie="entiteit"]',
@@ -58,7 +58,7 @@ class STPGenereerDocumentIdentificatie_Du02Tests(BaseTestPlatformTests):
         self.assertEqual(response_berichtcode, BerichtcodeChoices.du02, response.content)
 
         response_functie = response_root.xpath('//zds:stuurgegevens/stuf:functie', namespaces=self.nsmap)[0].text
-        self.assertEqual(response_functie, 'genereerDocumentIdentificatie', response.content)
+        self.assertEqual(response_functie, 'genereerDocumentidentificatie', response.content)
 
         response_identificatie = response_root.xpath('//zds:document/zkn:identificatie', namespaces=self.nsmap)[0].text
         self.assertTrue(len(response_identificatie) == 40)
@@ -69,3 +69,4 @@ class STPGenereerDocumentIdentificatie_Du02Tests(BaseTestPlatformTests):
         response = self._do_request(self.porttype, vraag, context)
 
         self._test_response(response)
+        self._validate_response(response)

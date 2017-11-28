@@ -31,9 +31,9 @@ class InformatieObject(Object):
     informatieobjectidentificatie = models.CharField(
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
         validators=[alphanumeric_excluding_diacritic, ])
-    # TODO: [KING] Taiga #275: In de KING documentatie staat N9
+    # TODO [KING]: Attribuut bronorganisatie in IOT bestaat niet in ZDS maar is verplicht
+    # TODO [KING]: Taiga #275: In de KING documentatie staat N9
     bronorganisatie = models.CharField(max_length=9, validators=[validate_non_negative_string, ],
-                                       # TODO: [COMPAT] Attribuut bronorganisatie in IOT bestaat niet in ZDS maar is verplicht
                                        blank=True, null=True,
                                        help_text='Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die het informatieobject '
                                        'heeft gecreëerd of heeft ontvangen en als eerste in een samenwerkingsketen heeft vastgelegd.')
@@ -64,9 +64,10 @@ class InformatieObject(Object):
 
     # Zie InformatieObjectStatus voor de keuze constraints
     # In RGBZ is dit 'status', en is veranderd vanwege een reverse name collision.
-    # TODO: [COMPAT] In RGBZ 1.0 there was no restriction of allowed values, while in RGBZ 2.0 there is. For now, comment out the comment choices.
-    # choices=InformatieObjectStatus.choices,
+    # TODO [KING]: In RGBZ 1.0 there was no restriction of allowed values, while in RGBZ 2.0 there is. For now,
+    # comment out the comment choices.
     informatieobject_status = models.CharField(max_length=20, null=True, blank=True,
+                                               # choices=InformatieObjectStatus.choices,
                                                help_text='Aanduiding van de stand van zaken van een INFORMATIEOBJECT')
     verzenddatum = StUFDateField(null=True, blank=True)
     geadresseerde = models.CharField(max_length=200, null=True, blank=True,
@@ -89,7 +90,7 @@ class InformatieObject(Object):
                                   'is voor het creëren van de inhoud van het INFORMATIEOBJECT.')
     # mag niet van een waarde zijn voorzien als de attribuutsoort ‘Status’ de waarde ‘in bewerking’ of
     # ‘ter vaststelling’ heeft.
-    # TODO: [KING] In het informatiemodel UML schema zijn de velden uit Ondertekening direct opgenomen in dit model.
+    # TODO [KING]: In het informatiemodel UML schema zijn de velden uit Ondertekening direct opgenomen in dit model.
     ondertekening = models.ForeignKey('rgbz.Ondertekening', null=True, blank=True,
                                       help_text='Aanduiding van de rechtskracht van een informatieobject.')
     verschijningsvorm = models.TextField(
@@ -229,7 +230,7 @@ class EnkelvoudigInformatieObject(CMISMixin, InformatieObject):
 
     objects = EnkelvoudigInformatieObjectManager()
 
-    # TODO: [DMS] The content mode deviates from the specification...
+    # TODO [DMS]: The content model deviates from the specification...
     CMIS_MAPPING = {
         'zsdms:documenttaal': 'taal',  # v
         'zsdms:documentLink': 'link',  # o
@@ -241,7 +242,7 @@ class EnkelvoudigInformatieObject(CMISMixin, InformatieObject):
         'zsdms:documentontvangstdatum': 'ontvangstdatum',  # o
         'zsdms:documentbeschrijving': 'beschrijving',  # o
         'zsdms:documentverzenddatum': 'verzenddatum',  # o
-        # TODO: [TECH] Change field to vertrouw*E*lijkaanduiding
+        # TODO [TECH]: Change field to vertrouw*E*lijkaanduiding
         'zsdms:vertrouwelijkaanduiding': 'vertrouwlijkaanduiding',  # v
         'zsdms:documentauteur': 'auteur',  # v (kan verschillen van cmis:createdBy)
         'zsdms:documentversie': 'versie',  # o
@@ -379,5 +380,5 @@ class InformatieObjectType(models.Model):
         help_text='Een verzameling van trefwoorden waarmee ZAAKen '
                   'van het ZAAKTYPE kunnen worden gekarakteriseerd.', null=True, blank=True
     )  # Multivalue field
-    datum_begin_geldigheid_informatieobjecttype = StUFDateField()
+    datum_begin_geldigheid_informatieobjecttype = StUFDateField(default=stuf_datetime.today)
     datum_einde_geldigheid_informatieobjecttype = StUFDateField(null=True, blank=True)

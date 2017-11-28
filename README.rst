@@ -2,7 +2,7 @@
 Zaakmagazijn
 ============
 
-:Version: 0.9.2
+:Version: 0.9.4
 :Source: https://github.com/maykinmedia/zaakregistratiecomponent
 :Keywords: zaaksysteem, zakenmagazijn, zds, zaakservices, documentservices, soap, zds
 
@@ -26,8 +26,8 @@ zaak- en daaraan gerelateerde statusgegevens ongeacht het zaaktype.
 Vanuit dit systeem kunnen zowel interne als externe stakeholders inzicht
 krijgen in de status, de bij de uitvoering betrokken partijen, de doorlooptijd
 van afhandeling van zaken en daarmee ook in de kwaliteit van uitvoer van het
-proces. Opslag van zaakgegevens gebeurt conform het RGBZ (2.0) en het ImZTC
-(2.1).
+proces. Opslag van zaakgegevens gebeurt conform het RGBZ (2.0), het RSGB (2.0)
+enhet ImZTC (2.1).
 
 Het Zaakmagazijn ondersteunt de volgende functionaliteiten:
 
@@ -47,8 +47,8 @@ Opmerking
 =========
 
 De ZDS 1.2 specificatie is gebaseerd op RGBZ 1.0. In deze implementatie is
-echter gebruik gemaakt van RGBZ 2.0. Nog niet alle attributen uit RGBZ 2.0
-vinden hun weg in de ontsloten services.
+echter gebruik gemaakt van RGBZ 2.0. Middels een tussenlaag wordt een RGBZ 1.0
+data model geëmuleerd.
 
 
 Documentatie

@@ -6,7 +6,7 @@ ZAKSortering = {
     3: ['zaaktype__zaaktypeomschrijving'],
     4: ['omschrijving'],
     5: ['-startdatum', 'omschrijving'],
-    # TODO: [TECH] Taiga #208
+    # TODO [TECH]: Taiga #208
     6: ['ander_zaakobject__zaak__zaakidentificatie'],  # XSD: heeftBetrekkingOp/gerelateerde/identificatie
     7: ['rol__betrokkene__identificatie'],  # XSD: ['heeftAlsBelanghebbende/gerelateerde/identificatie'],
     8: ['rol__betrokkene__identificatie'],  # FIXME XSD:['heeftAlsGemachtigde/gerelateerde/identificatie'],
@@ -39,19 +39,19 @@ BSTSortering = {  # Not currently in use
 
 EDCSortering = {
     0: [],
-    1: ['informatieobjectidentificatie'],
+    1: ['identificatie'],
     2: [
-        'informatieobjecttype__informatieobjectcategorie',
-        # TODO: [TECH] Taiga #208 just on name?
-        'informatieobjecttype__informatieobjecttypeomschrijving_generiek__informatieobjecttypeomschrijving_generiek'
+        'documenttype__documentcategorie',
+        # TODO [TECH]: Taiga #208 just on name?
+        'documenttype__documenttypeomschrijving_generiek'
     ],
-    3: ['informatieobjecttype__informatieobjecttypeomschrijving'],
+    3: ['documenttype__documenttypeomschrijving'],
     4: ['titel', 'versie'],
     5: ['auteur', 'versie'],
-    6: ['-creatiedatum', 'informatieobjecttype__informatieobjecttypeomschrijving'],
-    7: ['-ontvangstdatum', 'informatieobjecttype__informatieobjecttypeomschrijving'],
+    6: ['-creatiedatum', 'documenttype__documenttypeomschrijving'],
+    7: ['-ontvangstdatum', 'documenttype__documenttypeomschrijving'],
     8: ['zaakinformatieobject_set__zaak__identificatie'],
-    # TODO: [TECH] Taiga #208
+    # TODO [TECH]: Taiga #208
     # FIXME: XSD ['kanVastleggingZijnVan/gerelateerde/identificatie']
     9: [],
 }

@@ -1,21 +1,30 @@
+import difflib
 import logging
 import os.path
 import random
+import re
 import string
+import subprocess
+from collections import OrderedDict
 from datetime import datetime, timedelta
+from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.template import Context, Template
-from django.test import LiveServerTestCase
+from django.test import LiveServerTestCase as _LiveServerTestCase
+from django.test.utils import override_settings
 
 import requests
 from lxml import etree
 from lxml.etree import _Element
-from zeep import Client
+from requests import Session
+from zeep import Client, Transport
 from zeep.xsd import CompoundValue
 
 from ...cmis.tests.mocks import MockDMSMixin
 from ...utils import stuf_datetime
 from ..stuf.constants import STUF_XML_NS, ZDS_XML_NS, ZKN_XML_NS
+from .utils import sort_xml_attributes
 
 logger = logging.getLogger(__name__)
 
@@ -23,15 +32,15 @@ logger = logging.getLogger(__name__)
 class StUFMixin:
     maxDiff = None
 
-    nsmap = {
-        'zkn': 'http://www.egem.nl/StUF/sector/zkn/0310',
-        'bg': 'http://www.egem.nl/StUF/sector/bg/0310',
-        'stuf': 'http://www.egem.nl/StUF/StUF0301',
-        'zds': 'http://www.stufstandaarden.nl/koppelvlak/zds0120',
-        'soap11env': 'http://schemas.xmlsoap.org/soap/envelope/',
-        'gml': 'http://www.opengis.net/gml',
-        'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
-    }
+    nsmap = OrderedDict((
+        ('zkn', 'http://www.egem.nl/StUF/sector/zkn/0310'),
+        ('bg', 'http://www.egem.nl/StUF/sector/bg/0310'),
+        ('stuf', 'http://www.egem.nl/StUF/StUF0301'),
+        ('zds', 'http://www.stufstandaarden.nl/koppelvlak/zds0120'),
+        ('soap11env', 'http://schemas.xmlsoap.org/soap/envelope/'),
+        ('gml', 'http://www.opengis.net/gml'),
+        ('xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
+    ))
 
 
 class XmlHelperMixin:
@@ -68,6 +77,106 @@ class XmlHelperMixin:
             msg="{} was found {} times {} times was expected".format(xpath, len(elements), results)
         )
 
+    # This was another attempt at implementing this, using lxml to iterate trough both trees.
+    # It didn't work very well. That's why I used difflib instead.
+
+    # def compare(file, example, response):
+    #     errors = []
+    #     for example_node, response_node in zip(example, response):
+    #         if example_node.tag == '{http://www.egem.nl/StUF/sector/zkn/0310}identificatie' and response_node.tag == '{http://www.egem.nl/StUF/sector/zkn/0310}identificatie':
+    #             continue
+
+    #         root_tree = example_node.getroottree()
+
+    #         example_children = example_node.getchildren()
+    #         response_children = response_node.getchildren()
+    #         if example_node.tag != response_node.tag:
+    #             errors.append('{}\n{} != {}\n{}\n'.format(
+    #                 file,
+    #                 example_node.tag, response_node.tag,
+    #                 root_tree.getpath(example_node),
+    #             ))
+
+    #         if example_children:
+    #             errors += compare(file, response_children, example_children)
+    #         else:
+    #             if example_node.text != response_node.text:
+    #                 errors.append('{}\n{} != {}\n{}\n'.format(
+    #                     file,
+    #                     example_node.text, response_node.text,
+    #                     root_tree.getpath(example_node)
+    #                 ))
+    #     return errors
+
+    def xml_get_element(self, element, path):
+        elements = element.xpath(path, namespaces=self.nsmap)
+        self.assertEquals(len(elements), 1, "Expected to find one element {}".format(path))
+        return elements[0]
+
+    def xml_remove_element(self, element, path):
+        """
+        Remove the matched elements from a xpath query.
+
+        :param element Element that should be searched for, for elements to be removed.
+        :param path xpath query, each matched element will be removed.
+        """
+        results = element.xpath(path, namespaces=self.nsmap)
+        for result in results:
+            result.getparent().remove(result)
+
+    def assert_xml_equal(self, element1, element2, message=None, show_diff=True):
+        """
+        Assert that the string output of two lxml elements are equal. If not, print
+        the diff of the mismatching lines. A couple of cleanups steps are performed before
+        doing the comparison:
+
+        1. Element attributes are sorted.
+        2. Namespace definitions (xmlns:* attributes) are removed.
+        3. Whitepace is removed.
+
+        :param element1 lxml Element to be compared
+        :param element2 lxml Element to be compared
+        """
+        sort_xml_attributes(element1)
+        sort_xml_attributes(element2)
+
+        etree.cleanup_namespaces(element1, top_nsmap=self.nsmap)
+        etree.cleanup_namespaces(element2, top_nsmap=self.nsmap)
+
+        element1_str = etree.tostring(element1, encoding=str)
+        element2_str = etree.tostring(element2, encoding=str)
+
+        # Remove namespaces
+        element1_str = re.sub('xmlns\:\w+=\"[^\"]+\" ', '', element1_str)
+        element2_str = re.sub('xmlns\:\w+=\"[^\"]+\" ', '', element2_str)
+
+        # Strip out whitespace
+        element1_list = [l.strip() for l in element1_str.split('\n')]
+        element2_list = [l.strip() for l in element2_str.split('\n')]
+
+        errors = list(difflib.unified_diff(element1_list, element2_list))
+
+        if show_diff:
+            message = '{}{}'.format(
+                '{}\n'.format(message) if message else '',
+                '\n'.join(errors)
+            )
+
+        self.assertEqual(len(errors), 0, message)
+
+
+class LiveServerTestCase(_LiveServerTestCase):
+    def setUp(self):
+        super().setUp()
+
+        # Override the setting ZAAKMAGAZIJN_URL with the live server URL.
+        self.override = override_settings(
+            ZAAKMAGAZIJN_URL=self.live_server_url)
+        self.override.enable()
+
+    def tearDown(self):
+        self.override.disable()
+
 
 class BaseSoapTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerTestCase):
     def _get_client(self, soap_port, **kwargs):
@@ -76,7 +185,7 @@ class BaseSoapTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerTestCase)
         from zaakmagazijn.api import views
         from spyne.interface import AllYourInterfaceDocuments
 
-        # TODO: [TECH] Find a proper way to get all the WSDLs
+        # TODO [TECH]: Find a proper way to get all the WSDLs
         for view in [views.verwerksynchroonvrijbericht_view, views.beantwoordvraag_view, views.ontvangasynchroon_view]:
             view.__wrapped__._wsdl = None
             view.__wrapped__.doc = AllYourInterfaceDocuments(view.__wrapped__.app.interface)
@@ -101,6 +210,28 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
     # if not specified, template_name is expected in /files, otherwise in /files/test_files_subfolder
     test_files_subfolder = None
 
+    def _validate_response(self, response, msg=None):
+        """
+        Validate what is stored in the SOAP11 body element against the ZDS xsd.
+        """
+        return self._validate_xml(response.content, msg)
+
+    def _validate_xml(self, xml, msg=None):
+        soap_body = etree.fromstring(xml).xpath('/soap11env:Envelope/soap11env:Body', namespaces=self.nsmap)[0]
+        assert len(soap_body) == 1, 'Expected one element in the SOAP body.'
+
+        # TODO [TECH]: For some reason xmllint nor xmlstarlet validates
+        # against the gml XSD properly. I can't find an xml validator which
+        # does support this (my guess, they're all based on libxml2).
+        for el in soap_body.xpath('//gml:OrientableSurface', namespaces=self.nsmap):
+            el.getparent().remove(el)
+
+        xsd_path = os.path.join(settings.BASE_DIR, 'zds', 'ZDS 1.2 2017 Q1 Resolved', 'zds0120_msg_zs-dms_resolved2017.xsd')
+        xmlschema = etree.XMLSchema(file=xsd_path)
+        returncode = 0 if xmlschema.validate(soap_body[0]) else 1
+
+        self.assertEqual(returncode, 0, msg=msg)
+
     def _create_soap_envelope(self):
 
         envelope = etree.Element('{http://schemas.xmlsoap.org/soap/envelope/}Envelope', nsmap=self.nsmap)
@@ -108,14 +239,19 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         body = etree.SubElement(envelope, '{http://schemas.xmlsoap.org/soap/envelope/}Body', nsmap=self.nsmap)
         return envelope, header, body
 
-    def _build_template(self, template_name, context):
+    def _build_template(self, template_name, context, stp_syntax=False):
         files_path = os.path.join(os.path.dirname(__file__), 'files')
 
         if self.test_files_subfolder:
             template_name = os.path.join(self.test_files_subfolder, template_name)
 
         template_file = open(os.path.join(files_path, template_name), 'rb')
-        template = Template(template_file.read())
+        template_contents = template_file.read()
+
+        if stp_syntax:
+            template_contents = template_contents.replace(b'${', b'{{ ').replace(b'#{', b'{{ ').replace(b'}', b' }}')
+
+        template = Template(template_contents)
         context = context if isinstance(context, Context) else Context(context)
         rendered_template = template.render(context)
         content = etree.fromstring(rendered_template.encode('utf-8'))
@@ -182,7 +318,7 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         default_context.update(kwargs)
         return default_context
 
-    def _do_request(self, soap_port, template_name, extra_context=None):
+    def _do_request(self, soap_port, template_name, extra_context=None, stp_syntax=False):
         """
         Calls the Zaakmagazijn SOAP endpoint with the given request.
 
@@ -190,7 +326,7 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         template_name: the template's filename in the tests/files/ directory, used to build the request
         extra_context: any additional context for processing the template
         """
-        
+
         if extra_context is None:
             extra_context = {}
 
@@ -239,7 +375,7 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         from zaakmagazijn.api import views
         from spyne.interface import AllYourInterfaceDocuments
 
-        # TODO: [TECH] Find a proper way to get all the WSDLs
+        # TODO [TECH]: Find a proper way to get all the WSDLs
         for view in [views.verwerksynchroonvrijbericht_view, views.beantwoordvraag_view]:
             view.__wrapped__._wsdl = None
             view.__wrapped__.doc = AllYourInterfaceDocuments(view.__wrapped__.app.interface)
@@ -253,8 +389,9 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         }
 
         context = self.get_context_data(**extra_context)
-        rendered_envelope = self._build_template(template_name, context)
+        rendered_envelope = self._build_template(template_name, context, stp_syntax=stp_syntax)
         logger.debug(rendered_envelope.decode(encoding='utf-8'))
+        self._validate_xml(rendered_envelope)
         response = requests.post('{}/{}'.format(self.live_server_url, soap_port), rendered_envelope, headers=headers)
         logger.debug(etree.tostring(etree.fromstring(response.content), xml_declaration=True, encoding="UTF-8", pretty_print=True).decode(encoding='utf-8'))
         return response

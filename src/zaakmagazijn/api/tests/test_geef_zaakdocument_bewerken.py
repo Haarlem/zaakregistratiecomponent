@@ -2,6 +2,8 @@ from io import BytesIO
 
 from lxml import etree
 
+from zaakmagazijn.rgbz_mapping.utils import to_proxy_obj
+
 from ...rgbz.choices import JaNee
 from ...rgbz.tests.factory_models import (
     EnkelvoudigInformatieObjectFactory, ZaakFactory,
@@ -96,7 +98,7 @@ class STPgeefZaakdocumentbewerken_Di02Tests(DMSMockMixin, BaseTestPlatformTests,
         response = self._do_request(self.porttype, vraag, context)
 
         self._test_response(response)
-        self._service_dms_client.checkout.assert_called_once_with(self.edc1)
+        self._service_dms_client.checkout.assert_called_once_with(to_proxy_obj(self.edc1))
 
     def test_geefZaakdocumentbewerken_Di02_03(self):
         vraag = 'geefZaakdocumentBewerken_Di02_03.xml'
@@ -109,7 +111,7 @@ class STPgeefZaakdocumentbewerken_Di02Tests(DMSMockMixin, BaseTestPlatformTests,
         response = self._do_request(self.porttype, vraag, context)
 
         self._test_response(response)
-        self._service_dms_client.checkout.assert_called_once_with(self.edc1)
+        self._service_dms_client.checkout.assert_called_once_with(to_proxy_obj(self.edc1))
 
     def test_geefZaakdocumentbewerken_Di02_05(self):
         vraag = 'geefZaakdocumentBewerken_Di02_05.xml'
@@ -121,7 +123,7 @@ class STPgeefZaakdocumentbewerken_Di02Tests(DMSMockMixin, BaseTestPlatformTests,
         response = self._do_request(self.porttype, vraag, context)
 
         self._test_response(response)
-        self._service_dms_client.checkout.assert_called_once_with(self.edc1)
+        self._service_dms_client.checkout.assert_called_once_with(to_proxy_obj(self.edc1))
 
     def test_geefZaakdocumentbewerken_Di02_07(self):
         vraag = 'geefZaakdocumentBewerken_Di02_07.xml'
@@ -133,4 +135,4 @@ class STPgeefZaakdocumentbewerken_Di02Tests(DMSMockMixin, BaseTestPlatformTests,
         response = self._do_request(self.porttype, vraag, context)
 
         self._test_response(response)
-        self._service_dms_client.checkout.assert_called_once_with(self.edc1)
+        self._service_dms_client.checkout.assert_called_once_with(to_proxy_obj(self.edc1))

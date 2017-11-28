@@ -33,8 +33,6 @@
                     <BG:type>{{ waterdeel_type }}</BG:type>
                     <BG:identificatie>{{ waterdeel_identificatie }}</BG:identificatie>
                     <BG:naam>{{ waterdeel_naam }}</BG:naam>
-                    <BG:ingangsdatumObject>{{ waterdeel_ingangsdatum }}</BG:ingangsdatumObject>
-                    <BG:einddatumObject>{{ waterdeel_einddatum }}</BG:einddatumObject>
                 </ZKN:waterdeel>
             </ZKN:gerelateerde>
             <ZKN:omschrijving>omschrijving</ZKN:omschrijving>

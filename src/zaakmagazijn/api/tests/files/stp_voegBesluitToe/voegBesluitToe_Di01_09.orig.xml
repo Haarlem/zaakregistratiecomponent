@@ -1,0 +1,34 @@
+<ZDS:voegBesluitToe_Di01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../zds0120_msg_zs-dms.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>Di01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>${zenderOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${zenderApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>${ontvangerOrganisatie}</StUF:organisatie>
+            <StUF:applicatie>${ontvangerApplicatie}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>#{referentienummer}</StUF:referentienummer>
+        <StUF:tijdstipBericht>${tijdstipBericht}</StUF:tijdstipBericht>
+        <StUF:functie>voegBesluitToe</StUF:functie>
+    </ZKN:stuurgegevens>
+    <ZKN:object>
+        <ZKN:besluit StUF:verwerkingssoort="T" StUF:entiteittype="BSL">
+            <ZKN:identificatie>${voegbesluittoe_identificatie_9}</ZKN:identificatie>
+            <ZKN:datumBeslissing>${datumVandaag}</ZKN:datumBeslissing>
+            <ZKN:toelichting>toelichting</ZKN:toelichting>
+            <ZKN:ingangsdatumWerking>${datumVandaag}</ZKN:ingangsdatumWerking>
+            <StUF:tijdvakGeldigheid>
+                <StUF:beginGeldigheid>${datumEergisteren}</StUF:beginGeldigheid>
+                <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+            </StUF:tijdvakGeldigheid>
+            <StUF:tijdstipRegistratie>${tijdstipRegistratie}</StUF:tijdstipRegistratie>
+        </ZKN:besluit>
+        <ZKN:zaak StUF:verwerkingssoort="T" StUF:entiteittype="ZAK">
+            <ZKN:identificatie>${gemeentecode}${creerzaak_identificatie_7}</ZKN:identificatie>
+        </ZKN:zaak>
+    </ZKN:object>
+</ZDS:voegBesluitToe_Di01>

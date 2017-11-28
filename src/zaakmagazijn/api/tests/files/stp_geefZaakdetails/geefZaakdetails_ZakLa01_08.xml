@@ -78,7 +78,7 @@
                 </StUF:tijdvakRelatie>
                 <StUF:tijdstipRegistratie>{{ tijdstipRegistratie }}</StUF:tijdstipRegistratie>
             </ZKN:heeftBetrekkingOpAndere>
-            <!-- TODO [KING] Issue #259 The ZDS specification says nothing about 'leidtTot' -->
+            <!-- TODO [KING]: Issue #259 The ZDS specification says nothing about 'leidtTot' -->
             <ZKN:leidtTot StUF:entiteittype="ZAKBSL">
                 <ZKN:gerelateerde StUF:entiteittype="BSL">
                     <ZKN:identificatie>0123456789</ZKN:identificatie>

@@ -52,7 +52,7 @@ def check_cmis(app_configs, **kwargs):
             Error('The DMS does not support Multifiling, or it\'s disabled.')
         )
 
-    # TODO [KING] cmislib requires unfiling to be enabled to be able to call folder.removeObject
+    # TODO [KING]: cmislib requires unfiling to be enabled to be able to call folder.removeObject
     # (removeObjectFromFolder CMIS operation), but this is not explicitly mentioned in the spec
     unfiling = capabilities.get(CMISCapabilities.unfiling, None)
     if not unfiling:

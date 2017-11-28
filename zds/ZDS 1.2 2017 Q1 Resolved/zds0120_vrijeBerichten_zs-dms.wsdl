@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2016 rel. 2 sp1 (http://www.altova.com) by Michiel Verhoef (Kwaliteitsinstituut Nederlandse Gemeenten) -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/schemas/conformanceClaim/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ZDS="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:ns="http://www.egem.nl/StUF/sector/bg/0310" xmlns:ns1="http://www.opengis.net/gml" xmlns:ns2="http://www.w3.org/1999/xlink" xmlns:ns3="http://www.w3.org/2001/SMIL20/" xmlns:ns4="http://www.w3.org/2001/SMIL20/Language" xmlns:ns5="http://www.w3.org/2005/05/xmlmime" name="StUF-BG0310" targetNamespace="http://www.stufstandaarden.nl/koppelvlak/zds0120">
+	<import namespace="http://www.egem.nl/StUF/StUF0301" location="stuf0301_types.wsdl"/>
+	<documentation>
+		<xs:documentation>
+			   Dit document definieert de webservices voor het portType VrijeBerichten voor het ZS-DMS koppelvlak.
+		
+			   Versie 031000
+			
+			   Versie 031001, wijzigingen t.b.v. patch 21 (1-4-2015) vergeleken met versie 031000 zijn de volgende wijzigingen doorgevoerd:			
+			   - ERR0353: Het documentation element is voorzien van een standaard 'appinfo' structuur met daarin informatie over het schema.
+			
+		</xs:documentation>
+		<appinfo>
+			<StUF:onderdeel>http://www.stufstandaarden.nl/koppelvlak/zds0120</StUF:onderdeel>
+			<StUF:patch>zds120_20170401</StUF:patch>
+			<StUF:patchdatum>20170401</StUF:patchdatum>
+			<StUF:schemaversie>1</StUF:schemaversie>
+		</appinfo>
+	</documentation>
+	<types>
+		<xs:schema>
+			<xs:import namespace="http://www.stufstandaarden.nl/koppelvlak/zds0120" schemaLocation="zds0120_msg_zs-dms_resolved2017.xsd"/>
+		</xs:schema>
+	</types>
+	<message name="genereerDocumentIdentificatie_Di02">
+		<part name="body" element="ZDS:genereerDocumentIdentificatie_Di02"/>
+	</message>
+	<message name="genereerDocumentIdentificatie_Du02">
+		<part name="body" element="ZDS:genereerDocumentIdentificatie_Du02"/>
+	</message>
+	<message name="genereerZaakIdentificatie_Di02">
+		<part name="body" element="ZDS:genereerZaakIdentificatie_Di02"/>
+	</message>
+	<message name="genereerZaakIdentificatie_Du02">
+		<part name="body" element="ZDS:genereerZaakIdentificatie_Du02"/>
+	</message>
+	<message name="geefZaakdocumentbewerken_Di02">
+		<part name="body" element="ZDS:geefZaakdocumentBewerken_Di02"/>
+	</message>
+	<message name="geefZaakdocumentbewerken_Du02">
+		<part name="body" element="ZDS:geefZaakdocumentBewerken_Du02"/>
+	</message>
+	<message name="updateZaakdocument_Di02">
+		<part name="body" element="ZDS:updateZaakdocument_Di02"/>
+	</message>
+	<message name="cancelCheckout_Di02">
+		<part name="body" element="ZDS:cancelCheckout_Di02"/>
+	</message>
+	<message name="genereerBesluitIdentificatie_Di02">
+		<part name="body" element="ZDS:genereerBesluitIdentificatie_Di02"/>
+	</message>
+	<message name="genereerBesluitIdentificatie_Du02">
+		<part name="body" element="ZDS:genereerBesluitIdentificatie_Du02"/>
+	</message>
+	<portType name="VerwerkSynchroonVrijBericht">
+		<documentation>
+		Dit portType ondersteunt als operaties alle synchrone vrije berichten gedefinieerd binnen het sectormodel.
+	</documentation>
+		<operation name="genereerDocumentIdentificatie_Di02">
+			<input message="ZDS:genereerDocumentIdentificatie_Di02"/>
+			<output message="ZDS:genereerDocumentIdentificatie_Du02"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="genereerZaakIdentificatie_Di02">
+			<input message="ZDS:genereerZaakIdentificatie_Di02"/>
+			<output message="ZDS:genereerZaakIdentificatie_Du02"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="geefZaakdocumentbewerken_Di02">
+			<input message="ZDS:geefZaakdocumentbewerken_Di02"/>
+			<output message="ZDS:geefZaakdocumentbewerken_Du02"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="updateZaakdocument_Di02">
+			<input message="ZDS:updateZaakdocument_Di02"/>
+			<output message="StUF:Bv02"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="cancelCheckout_Di02">
+			<input message="ZDS:cancelCheckout_Di02"/>
+			<output message="StUF:Bv02"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+		<operation name="genereerBesluitIdentificatie_Di02">
+			<input message="ZDS:genereerBesluitIdentificatie_Di02"/>
+			<output message="ZDS:genereerBesluitIdentificatie_Du02"/>
+			<fault name="fout" message="StUF:Fo02"/>
+		</operation>
+	</portType>
+	<binding name="SOAPVerwerkSynchroonVrijBericht" type="ZDS:VerwerkSynchroonVrijBericht">
+		<documentation>
+			Omdat de uit te wisselen berichten volledig gedefinieerd zijn in het sectormodel cq de StUF-standaard, kunnen we ze zonder verdere encoding (“literal”) opnemen in de body.
+Niet ondersteunde berichten kunnen uit de binding en portType worden verwijderd.
+		</documentation>
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="genereerDocumentIdentificatie_Di02">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/genereerDocumentIdentificatie_Di02"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal"/>
+			</fault>
+		</operation>
+		<operation name="genereerZaakIdentificatie_Di02">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/genereerZaakIdentificatie_Di02"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal"/>
+			</fault>
+		</operation>
+		<operation name="geefZaakdocumentbewerken_Di02">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/geefZaakdocumentbewerken_Di02"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal"/>
+			</fault>
+		</operation>
+		<operation name="updateZaakdocument_Di02">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/updateZaakdocument_Di02"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal"/>
+			</fault>
+		</operation>
+		<operation name="cancelCheckout_Di02">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/cancelCheckout_Di02"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal"/>
+			</fault>
+		</operation>
+		<operation name="genereerBesluitIdentificatie_Di02">
+			<soap:operation soapAction="http://www.stufstandaarden.nl/koppelvlak/zds0120/genereerBesluitIdentificatie_Di02"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+			<fault name="fout">
+				<soap:fault name="fout" use="literal"/>
+			</fault>
+		</operation>
+	</binding>
+	<service name="VerwerkSynchroonVrijBericht">
+		<documentation>
+	Hieronder wordt de concreet aan te roepen service voor het ontvangen van synchrone ZKN0310-vrijeBerichten gedefinieerd. 
+		</documentation>
+		<port name="VerwerkSynchroonVrijBericht" binding="ZDS:SOAPVerwerkSynchroonVrijBericht">
+			<documentation>
+				<wsi:Claim conformsTo="http://ws-i.org/profiles/basic/1.1"/>
+			</documentation>
+			<soap:address location="http://example.com/VerwerkSynchroonVrijBericht"/>
+		</port>
+	</service>
+</definitions>
