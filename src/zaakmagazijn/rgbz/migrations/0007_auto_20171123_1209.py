@@ -16,18 +16,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='naam',
-            name='voorvoegsel_geslachtsnaam',
-        ),
-        migrations.RemoveField(
-            model_name='natuurlijkpersoon',
-            name='naam',
-        ),
-        migrations.RemoveField(
-            model_name='natuurlijkpersoon',
-            name='naam_aanschrijving',
-        ),
         migrations.AddField(
             model_name='natuurlijkpersoon',
             name='naam_aanschrijving_aanhef_aanschrijving',
