@@ -121,6 +121,12 @@ uit de basis configuratie.
     Boomstructuur als volgt: ``Sites`` > ``archief`` > ``documentLibrary`` >
     ``<Zaak type>`` > ``<year>`` > ``<month>`` > ``<day>`` > ``<Zaak ID>``
 
+* ``CMIS_SENDER_PROPERTY`` (standaard: ``None``)
+
+  Zet de "stuurgegevens/zender" informatie in dit DMS veld. Laat ``None``
+  indien er geen veld hiervoor in het DMS aanwezig is. Het DMS veld wordt
+  gevuld met het meest specifieke zender veld in het verzoek aan het ZM.
+
 
 Commando's
 ==========
