@@ -33,7 +33,7 @@ def _cmis_stuf_datetime(value):
     )
 
 
-@skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+@skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
 class CMISClientTests(TransactionTestCase):
 
     def setUp(self):

@@ -51,19 +51,24 @@ class MaakZaakdocument(ServiceBase):
         #   CMIS-objectproperties.
 
         with transaction.atomic():
-            if data.object.inhoud is None:  # trigger ZS-DMS interaction
-                data.object.inhoud = BinaireInhoud()
-
-            # geen binaire inhoud toegelaten -> maak leeg indien wel meegestuurd
-            data.object.inhoud.data = None
-
             process_create(EnkelvoudigDocumentEntiteit, data)
 
-            # relateer document aan juiste zaak folder
+            # determineer de afzender
+            zender = data.stuurgegevens.zender
+            created_by = zender.gebruiker or zender.administratie or zender.applicatie or zender.organisatie or None
+
+            # maak leeg document aan
             document = EnkelvoudigInformatieObject.objects.get(informatieobjectidentificatie=data.object.identificatie)
-            if data.object.inhoud and data.object.inhoud.bestandsnaam:
-                document.volledige_bestandsnaam = data.object.inhoud.bestandsnaam
-                document.save()
+
+            inhoud = data.object.inhoud
+
+            dms_client.maak_zaakdocument(
+                document,
+                filename=inhoud.bestandsnaam if inhoud else None,
+                sender=created_by,
+            )
+
+            # relateer document aan juiste zaak folder
             zaak = Zaak.objects.get(zaakidentificatie=data.object.isRelevantVoor[0].gerelateerde.identificatie)
             dms_client.relateer_aan_zaak(document, zaak)
 

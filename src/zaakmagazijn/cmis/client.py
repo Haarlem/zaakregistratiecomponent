@@ -67,7 +67,11 @@ class DMSClient:
     def creeer_zaakfolder(self, zaak: Zaak):
         raise NotImplementedError  # noqa
 
-    def maak_zaakdocument(self, document, zaak: Zaak=None, filename: str=None) -> AtomPubDocument:
+    def maak_zaakdocument(self, document, zaak: Zaak=None, filename: str=None, sender: str=None) -> AtomPubDocument:
+        raise NotImplementedError  # noqa
+
+    def maak_zaakdocument_met_inhoud(self, document, zaak: Zaak=None, filename: str=None, sender: str=None,
+                                     stream: BytesIO=None, content_type=None) -> AtomPubDocument:
         raise NotImplementedError  # noqa
 
     def geef_inhoud(self, document) -> tuple:
@@ -255,7 +259,7 @@ class CMISDMSClient(DMSClient):
         zaak_folder = parent
         return zaak_folder
 
-    def maak_zaakdocument(self, document, zaak: Zaak=None, filename: str=None) -> AtomPubDocument:
+    def maak_zaakdocument(self, document, zaak: Zaak=None, filename: str=None, sender: str=None) -> AtomPubDocument:
         """
         4.3.5.3: Maak een EDC object aan zonder binaire inhoud.
 
@@ -271,9 +275,35 @@ class CMISDMSClient(DMSClient):
         :param zaak: Zaak instantie waarvoor een document wordt aangemaakt
         :param document: EnkelvoudigInformatieObject instantie die de
           meta-informatie van het document bevat
+        :param filename: Bestandsnaam van het aan te maken document.
+        :param sender: De afzender.
+
         :return: AtomPubDocument instance die aangemaakt werd.
         :raises: DocumentExistsError wanneer er al een document met dezelfde
-          identificatie bestaat, binnen de zaakfolder.
+            identificatie bestaat, binnen de zaakfolder.
+        """
+        return self.maak_zaakdocument_met_inhoud(document, zaak, filename, sender)
+
+    def maak_zaakdocument_met_inhoud(self, document, zaak: Zaak=None, filename: str=None, sender: str=None,
+                                     stream: BytesIO=None, content_type=None) -> AtomPubDocument:
+        """
+        In afwijking van de KING specificatie waarbij het document aanmaken
+        en het document van inhoud voorzien aparte stappen zijn, wordt in deze
+        functie in 1 stap het document aangemaakt met inhoud. Dit voorkomt dat
+        er in het DMS direct een versie 1.1 ontstaat, waarbij versie 1.0 een
+        leeg document betreft, en versie 1.1 het eigenlijke document pas is.
+
+        :param zaak: Zaak instantie waarvoor een document wordt aangemaakt
+        :param document: EnkelvoudigInformatieObject instantie die de
+          meta-informatie van het document bevat
+        :param filename: Bestandsnaam van het aan te maken document.
+        :param sender: De afzender.
+        :param stream: Inhoud van het document.
+        :param content_type: Aanduiding van het document type.
+
+        :return: AtomPubDocument instance die aangemaakt werd.
+        :raises: DocumentExistsError wanneer er al een document met dezelfde
+            identificatie bestaat, binnen de zaakfolder.
         """
         # short-circuit if the identification is not unique
         try:
@@ -285,6 +315,9 @@ class CMISDMSClient(DMSClient):
             raise DocumentExistsError(
                 "Document identificatie {} is niet uniek".format(document.informatieobjectidentificatie)
             )
+
+        if stream is None:
+            stream = BytesIO()
 
         # the document can be created in two ways: an explicit call to create
         # a document, for which the :param:`zaak` is known upfront, or via
@@ -303,12 +336,17 @@ class CMISDMSClient(DMSClient):
         # build up the properties
         properties = self._build_cmis_doc_properties(document, filename=filename)
 
-        # [TECH] Passing empty content is a dirty hack to ensure a contentStreamId exists.
+        # set the sender property if provided
+        if settings.ZAAKMAGAZIJN_ZENDER_PROPERTY:
+            properties[settings.ZAAKMAGAZIJN_ZENDER_PROPERTY] = sender
+
+        # Passing empty content is a dirty hack to ensure a contentStreamId exists.
         # See `self.geef_inhoud`. However, this appears to be the recommended way in Alfresco
         # at least...
         _doc = self._repo.createDocument(
             name=document.titel, properties=properties,
-            contentFile=BytesIO(), parentFolder=zaakfolder
+            contentFile=stream, contentType=content_type,
+            parentFolder=zaakfolder
         )
         # the objectId contains the version, which we strip off to always get the latest version back
         document._object_id = _doc.getObjectId().rsplit(';')[0]
@@ -339,6 +377,15 @@ class CMISDMSClient(DMSClient):
         return (filename, doc.getContentStream())
 
     def zet_inhoud(self, document, stream: BytesIO, content_type=None, checkout_id: str=None) -> None:
+        """
+        Calls setContentStream to fill the contents of an existing document. This will update the
+        version of the document in the DMS.
+
+        :param document: EnkelvoudigInformatieObject instance
+        :param stream: Inhoud van het document.
+        :param content_type: Aanduiding van het document type.
+        :param checkout_id:
+        """
         cmis_doc = self._get_cmis_doc(document, checkout_id=checkout_id)
         cmis_doc = cmis_doc if not checkout_id else cmis_doc.getPrivateWorkingCopy()
         cmis_doc.setContentStream(stream, content_type)
@@ -605,7 +652,11 @@ class DummyDMSClient(DMSClient):
     def creeer_zaakfolder(self, zaak: Zaak) -> None:
         return None
 
-    def maak_zaakdocument(self, document, zaak: Zaak=None, filename: str=None) -> dict:
+    def maak_zaakdocument(self, document, zaak: Zaak=None, filename: str=None, sender: str=None) -> dict:
+        return self.maak_zaakdocument_met_inhoud(document, zaak, filename, sender)
+
+    def maak_zaakdocument_met_inhoud(self, document, zaak: Zaak=None, filename: str=None, sender: str=None,
+                                     stream: BytesIO=None, content_type=None) -> dict:
         return {
             'title': 'some document'
         }

@@ -133,8 +133,25 @@ class VoegZaakdocumentToe(ServiceBase):
         with transaction.atomic():
             process_create(EnkelvoudigDocumentEntiteit, data)
 
-            # relateer document aan juiste zaak folder
+            # determineer de afzender
+            zender = data.stuurgegevens.zender
+            created_by = zender.gebruiker or zender.administratie or zender.applicatie or zender.organisatie or None
+
+            # vul de document met de inhoud
             document = EnkelvoudigInformatieObject.objects.get(informatieobjectidentificatie=data.object.identificatie)
+
+            inhoud = data.object.inhoud
+            content = inhoud.to_cmis()
+
+            dms_client.maak_zaakdocument_met_inhoud(
+                document,
+                filename=inhoud.bestandsnaam,
+                sender=created_by,
+                stream=content,
+                content_type=inhoud.contentType if content is not None else None,
+            )
+
+            # relateer document aan juiste zaak folder
             zaak = Zaak.objects.get(zaakidentificatie=data.object.isRelevantVoor[0].gerelateerde.identificatie)
             dms_client.relateer_aan_zaak(document, zaak)
 

@@ -61,7 +61,7 @@ class DMSMixin:
                 self.assertEqual(obj.properties[prop], expected_value)
 
 
-@skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+@skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
 class CMISClientTests(DMSMixin, TestCase):
     def test_boomstructuur(self):
         """
@@ -646,7 +646,7 @@ class CMISClientTests(DMSMixin, TestCase):
         self.assertEqual(len(zaak_folder.getChildren()), 0)
 
 
-@skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+@skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
 class EndToEndTests(DMSMixin, TestCase):
     """
     Intended for tests that verify responses from one client method can be
