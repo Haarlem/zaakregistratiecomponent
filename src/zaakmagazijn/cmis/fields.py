@@ -16,14 +16,10 @@ class DMSFieldDescriptor:
         }
 
     def __set__(self, instance, inhoud: BinaireInhoud):
-        if inhoud is None:
-            return
-
-        dms_client.maak_zaakdocument(instance, filename=inhoud.bestandsnaam)
-        content = inhoud.to_cmis()
-        # TODO [TECH]: set bestandsnaam/contentType even if no data is present?
-        if content is not None:
-            dms_client.zet_inhoud(instance, content, inhoud.contentType)
+        # We no longer send the contents of a document to the DMS when the
+        # content is set on the ZM object. Instead, this is done in the
+        # service so various meta data from the request can be set as well.
+        pass
 
 
 class DMSField:

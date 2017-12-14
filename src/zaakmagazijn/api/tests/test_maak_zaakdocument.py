@@ -219,10 +219,8 @@ class maakZaakdocument_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
         document = EnkelvoudigInformatieObject.objects.get()
 
         # the document should have been registered in the DMS
-        self._dms_client.maak_zaakdocument.assert_called_once_with(document, filename='to_be_everywhere.flac')
-
-        # the content should not have been set
-        self._dms_client.zet_inhoud.assert_not_called()
+        self._service_dms_client.maak_zaakdocument.assert_called_once_with(
+            document, filename='to_be_everywhere.flac', sender='john.doe@example.com')
 
         # the document should have been moved to the correct folder
         self._service_dms_client.relateer_aan_zaak.assert_called_once_with(document, zaak)
@@ -314,10 +312,8 @@ class maakZaakdocument_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
         document = EnkelvoudigInformatieObject.objects.get()
 
         # the document should have been registered in the DMS
-        self._dms_client.maak_zaakdocument.assert_called_once_with(document, filename=None)
-
-        # the content should not have been set
-        self._dms_client.zet_inhoud.assert_not_called()
+        self._service_dms_client.maak_zaakdocument.assert_called_once_with(
+            document, filename=None, sender='john.doe@example.com')
 
         # the document should have been moved to the correct folder
         self._service_dms_client.relateer_aan_zaak.assert_called_once_with(document, zaak)
@@ -374,7 +370,8 @@ class STPmaakZaakDocument_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
         )
 
         # the content should not have been set
-        self._dms_client.zet_inhoud.assert_not_called()
+        self._service_dms_client.zet_inhoud.assert_not_called()
+        self._service_dms_client.maak_zaakdocument_met_inhoud.assert_not_called()
 
     def test_maakZaakDocument_EdcLk01_01(self):
         self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
@@ -391,9 +388,8 @@ class STPmaakZaakDocument_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
 
         # assert that a document was created
         zio = ZaakInformatieObject.objects.get()
-        self._dms_client.maak_zaakdocument.assert_called_once_with(
-            zio.informatieobject.enkelvoudiginformatieobject, filename='bestandsnaam'
-        )
+        self._service_dms_client.maak_zaakdocument.assert_called_once_with(
+            zio.informatieobject.enkelvoudiginformatieobject, filename='bestandsnaam', sender='STP')
 
     def test_maakZaakDocument_EdcLk01_03(self):
         self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
@@ -409,10 +405,8 @@ class STPmaakZaakDocument_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
 
         # assert that a document was created, even though <inhoud> is not present
         zio = ZaakInformatieObject.objects.get()
-        self._dms_client.maak_zaakdocument.assert_called_once_with(
-            zio.informatieobject.enkelvoudiginformatieobject, filename=None
-        )
-        self._dms_client.zet_inhoud.assert_not_called()
+        self._service_dms_client.maak_zaakdocument.assert_called_once_with(
+            zio.informatieobject.enkelvoudiginformatieobject, filename=None, sender='STP')
 
     def test_maakZaakDocument_EdcLk01_05(self):
         self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
@@ -429,7 +423,5 @@ class STPmaakZaakDocument_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
 
         # assert that a document was created, even though <inhoud> is not present
         zio = ZaakInformatieObject.objects.get()
-        self._dms_client.maak_zaakdocument.assert_called_once_with(
-            zio.informatieobject.enkelvoudiginformatieobject, filename=None
-        )
-        self._dms_client.zet_inhoud.assert_not_called()
+        self._service_dms_client.maak_zaakdocument.assert_called_once_with(
+            zio.informatieobject.enkelvoudiginformatieobject, filename=None, sender='STP')

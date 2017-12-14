@@ -48,23 +48,27 @@ class geefZaakstatus_ZakLv01Tests(BaseSoapTests):
                     entiteittype='ZAK',
                     identificatie=Nil,
                     heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagScope'](
+                        entiteittype='ZAKSTT',
                         indicatieLaatsteStatus=Nil,
                         datumStatusGezet=Nil,
                         gerelateerde=zkn_factory['GeefZaakStatus-STT-vraag'](
+                            entiteittype='STT',
                             volgnummer=Nil,
                         )
                     )
                 ),
             },
             gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                entiteittype='ZAK',
                 identificatie=zaak.zaakidentificatie,
                 heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
-                    indicatieLaatsteStatus=JaNee.nee,
+                    entiteittype='ZAKSTT',
+                    indicatieLaatsteStatus=JaNee.ja,
                 )
             )
         )
         self.assertEquals(len(response.antwoord.object), 1)
-        self.assertEquals(len(response.antwoord.object[0].heeft), 2)
+        self.assertEquals(len(response.antwoord.object[0].heeft), 1)
 
     @skip('TODO [KING]: \'toelichting\' is optional in the scope, but required in '
           'the response. To me, this seems like a bug in the XSD.')
@@ -88,18 +92,22 @@ class geefZaakstatus_ZakLv01Tests(BaseSoapTests):
                         entiteittype='ZAK',
                         identificatie=Nil,
                         heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagScope'](
+                            entiteittype='ZAKSTT',
                             indicatieLaatsteStatus=Nil,
                             datumStatusGezet=Nil,
                             gerelateerde=zkn_factory['GeefZaakStatus-STT-vraag'](
+                                entiteittype='STT',
                                 volgnummer=Nil,
                             )
                         )
                     )
                 },
                 gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=zaak.zaakidentificatie,
                     heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
-                        indicatieLaatsteStatus=JaNee.nee,
+                        entiteittype='ZAKSTT',
+                        indicatieLaatsteStatus=JaNee.ja,
                     )
                 )
             )
@@ -147,9 +155,11 @@ class geefZaakstatus_ZakLv01Tests(BaseSoapTests):
                         identificatie=Nil),
                 },
                 gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=zaak1.zaakidentificatie,
                     heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
-                        indicatieLaatsteStatus=JaNee.nee,
+                        entiteittype='ZAKSTT',
+                        indicatieLaatsteStatus=JaNee.ja,
                     )
                 )
             )
@@ -229,7 +239,7 @@ class geefZaakstatus_ZakLa01Tests(BaseSoapTests):
 
     def setUp(self):
         super().setUp()
-        self.status = StatusFactory.create()
+        self.status = StatusFactory.create(indicatie_laatst_gezette_status=JaNee.ja)
         self.zaak = self.status.zaak
 
     def _do_simple_request(self, raw_response=False):
@@ -252,18 +262,22 @@ class geefZaakstatus_ZakLa01Tests(BaseSoapTests):
                         entiteittype='ZAK',
                         identificatie=Nil,
                         heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagScope'](
+                            entiteittype='ZAKSTT',
                             indicatieLaatsteStatus=Nil,
                             datumStatusGezet=Nil,
                             gerelateerde=zkn_factory['GeefZaakStatus-STT-vraag'](
+                                entiteittype='STT',
                                 volgnummer=Nil,
                             )
                         )
                     ),
                 },
                 gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=self.zaak.zaakidentificatie,
                     heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
-                        indicatieLaatsteStatus=JaNee.nee,
+                        entiteittype='ZAKSTT',
+                        indicatieLaatsteStatus=JaNee.ja,
                     )
                 )
             )
@@ -333,7 +347,7 @@ class geefZaakstatus_Fo02BerichtTests(BaseSoapTests):
     def test_validation_error_message(self):
         client = self._get_client('BeantwoordVraag', strict=False)
 
-        self.status = StatusFactory.create()
+        self.status = StatusFactory.create(indicatie_laatst_gezette_status=JaNee.ja)
         self.zaak = self.status.zaak
 
         #
@@ -378,18 +392,22 @@ class geefZaakstatus_Fo02BerichtTests(BaseSoapTests):
                         entiteittype='ZAK',
                         identificatie=Nil,
                         heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagScope'](
+                            entiteittype='ZAKSTT',
                             indicatieLaatsteStatus=Nil,
                             datumStatusGezet=Nil,
                             gerelateerde=zkn_factory['GeefZaakStatus-STT-vraag'](
+                                entiteittype='STT',
                                 volgnummer=Nil,
                             )
                         )
                     ),
                 },
                 gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=self.zaak.zaakidentificatie,
                     heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
-                        indicatieLaatsteStatus=JaNee.nee,
+                        entiteittype='ZAKSTT',
+                        indicatieLaatsteStatus=JaNee.ja,
                     )
                 )
             )
@@ -398,13 +416,14 @@ class geefZaakstatus_Fo02BerichtTests(BaseSoapTests):
         # These should be part of spyne's testsuite.
         #
         self._assert_xpath_results(root, '/soap11env:Envelope/soap11env:Body/soap11env:Fault/detail', 1, namespaces=self.nsmap)
+        self.pretty_print(root)
 
         expected_once = [
             'stuf:stuurgegevens',
             'stuf:stuurgegevens/stuf:berichtcode[text()="Fo02"]',
             'stuf:body',
-            'stuf:body/stuf:code[text()="StUF133"]',
-            'stuf:body/stuf:plek[text()="server"]',
+            'stuf:body/stuf:code[text()="StUF055"]',
+            'stuf:body/stuf:plek[text()="client"]',
         ]
         for expectation in expected_once:
             self._assert_xpath_results(self._get_body_root(root), expectation, 1, namespaces=self.nsmap)

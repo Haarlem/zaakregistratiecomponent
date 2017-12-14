@@ -38,11 +38,12 @@ class geefLijstZaakdocumenten_ZakLv01Tests(BaseSoapTests):
                     identificatie=Nil,
                     # http://www.egem.nl/StUF/sector/zkn/0310:ZAKEDC-basis
                     heeftRelevant=zkn_factory['ZAKEDC-basis'](**{
-                        'entiteittype': 'EDC',
+                        'entiteittype': 'ZAKEDC',
                         'titel': Nil,
                         'beschrijving': Nil,
                         # http://www.egem.nl/StUF/sector/zkn/0310:EDC-basis
                         'gerelateerde': zkn_factory['EDC-basis'](**{
+                            'entiteittype' :'EDC',
                             'identificatie': Nil,
                             'creatiedatum': Nil,
                             'titel': Nil,
@@ -53,6 +54,7 @@ class geefLijstZaakdocumenten_ZakLv01Tests(BaseSoapTests):
             },
             # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstZaakDocumenten-ZAK-vraagSelectie
             gelijk=zkn_factory['GeefLijstZaakDocumenten-ZAK-vraagSelectie'](
+                entiteittype='ZAK',
                 identificatie=zio.zaak.zaakidentificatie,
             )
         )
@@ -97,6 +99,7 @@ class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
                             'titel': Nil,
                             'beschrijving': Nil,
                             'gerelateerde': zkn_factory['EDC-basis'](**{
+                                'entiteittype': 'EDC',
                                 'identificatie': Nil,
                                 'creatiedatum': Nil,
                                 'titel': Nil,
@@ -107,6 +110,7 @@ class geefLijstZaakdocumenten_ZakLa01Tests(BaseSoapTests):
                     )
                 },
                 gelijk=zkn_factory['GeefLijstZaakDocumenten-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=self.zio.zaak.zaakidentificatie,
                 )
             )

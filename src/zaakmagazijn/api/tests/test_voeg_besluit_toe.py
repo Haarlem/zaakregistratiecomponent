@@ -51,6 +51,8 @@ class voegBesluitToe_Di01Tests(BaseSoapTests):
             ),
             object=zkn_factory['VoegBesluitToe_object'](
                 besluit=zkn_factory['VoegBesluitToe-BSL-kennisgeving'](**{
+                    'entiteittype': 'BSL',
+                    'verwerkingssoort': 'T',
                     'identificatie': '12345ABC',
                     'bst.omschrijving': bst.besluittypeomschrijving,
                     'datumBeslissing': today,
@@ -59,12 +61,18 @@ class voegBesluitToe_Di01Tests(BaseSoapTests):
                         beginGeldigheid=today,
                     ),
                     'isVastgelegdIn': zkn_factory['VoegBesluitToe-BSLEDC-kennisgeving'](
+                        entiteittype='BSLEDC',
+                        verwerkingssoort='T',
                         gerelateerde=zkn_factory['VoegBesluitToe-EDC-kerngegevensKennisgeving'](
+                            entiteittype='EDC',
+                            verwerkingssoort='I',
                             identificatie=edc.informatieobjectidentificatie
                         )
                     )
                 }),
                 zaak=zkn_factory['VoegBesluitToe_ZAK-kerngegevensKennisgeving'](
+                    entiteittype='ZAK',
+                    verwerkingssoort='I',
                     identificatie=zaak.zaakidentificatie,
                 )
             )

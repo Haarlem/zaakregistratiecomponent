@@ -397,3 +397,6 @@ CMIS_CLIENT_CLASS = 'zaakmagazijn.cmis.client.CMISDMSClient'
 CMIS_CLIENT_URL = 'http://localhost:8080/alfresco/cmisatom'
 CMIS_CLIENT_USER = 'Admin'
 CMIS_CLIENT_USER_PASSWORD = 'admin'
+
+# Use a property to store the sender information
+CMIS_SENDER_PROPERTY = None

@@ -1,12 +1,20 @@
+import copy
+import logging
+import os
+
 from django.conf import settings
 
-from lxml import html
+from lxml import etree, html
 from lxml.builder import E
 from spyne.const.xml import XSI
 from spyne.protocol.soap import Soap11
 from spyne.protocol.xml import SchemaValidationError
+from spyne.util.six import text_type
 
 from .choices import ClientFoutChoices
+from .constants import GML_XML_NS
+
+logger = logging.getLogger(__name__)
 
 
 class IgnoreAttribute:
@@ -92,6 +100,34 @@ class StUFSynchronous(StUF):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.serialization_handlers[SchemaValidationError] = self.schema_validation_error_to_parent
+
+    def validate_document(self, payload):
+        """
+        Validate the document against the KING reference WSDL.
+        """
+        # TODO [TECH]: For some reason xmllint nor xmlstarlet validates
+        # against the gml XSD properly. I can't find an xml validator which
+        # does support this (my guess, they're all based on libxml2).
+
+        if payload.xpath('//gml:*', namespaces={'gml': GML_XML_NS}):
+            # Make a copy to prevent removing data.
+            payload_copy = copy.deepcopy(payload)
+
+            for el in payload_copy.xpath('//gml:*', namespaces={'gml': GML_XML_NS}):
+                el.getparent().remove(el)
+        else:
+            # No need to make a copy. We're not removing anything.
+            payload_copy = payload
+
+        xsd_path = os.path.join(settings.ZAAKMAGAZIJN_ZDS_PATH, 'zds0120_msg_zs-dms_resolved2017.xsd')
+        xmlschema = etree.XMLSchema(file=xsd_path)
+        ret = xmlschema.validate(payload_copy)
+
+        logger.debug("Validated ? %r" % ret)
+        if not ret:
+            error_text = text_type(xmlschema.error_log.last_error)
+            raise SchemaValidationError(error_text.encode('ascii',
+                                                           'xmlcharrefreplace'))
 
     def schema_validation_error_to_parent(self, ctx, cls, inst, parent, ns, **_):
         fault_cls = ctx.app.FAULT_CLASS

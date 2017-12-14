@@ -646,6 +646,9 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
 
         self.assertEquals(response.status_code, 200, response.content)
 
+        self.assertEqual(Zaak.objects.all().count(), 1)
+        self.assertEqual(Zaak.objects.filter(zaakidentificatie='039288072b1c-54f4-485c-8e83-095621e6jkl6').count(), 1)
+
     def test_naam_matching_query_does_not_exist(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/281
@@ -663,3 +666,37 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
         response = self._do_request(self.porttype, vraag)
 
         self.assertEquals(response.status_code, 200, response.content)
+
+        self.assertEqual(Zaak.objects.all().count(), 1)
+        self.assertEqual(Zaak.objects.filter(zaakidentificatie='039288072b1c-54f4-485c-8e83-095621e6jk24').count(), 1)
+
+    def test_zaaktype_does_not_exist(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/397
+        """
+        org_eenheid = OrganisatorischeEenheidFactory.create(
+            organisatieeenheididentificatie='DVV/KCC')
+
+        zaak_type = ZaakTypeFactory.create(
+            zaaktypeomschrijving='MOR',
+            zaaktypeidentificatie='1',
+            domein='DVV',
+            zaaktypeomschrijving_generiek='Melding Openbare Ruimte',
+            rsin=1,
+            trefwoord=['MOR'],
+            doorlooptijd_behandeling=14,
+            vertrouwelijk_aanduiding='OPENBAAR',
+            publicatie_indicatie='N',
+            zaakcategorie=['Onderhouden','Repareren'],
+            datum_begin_geldigheid_zaaktype='20170901',
+            datum_einde_geldigheid_zaaktype='21000101',
+            organisatorische_eenheid=org_eenheid,
+        )
+
+        vraag = 'creeerZaak_ZakLk01_taiga397.xml'
+        response = self._do_request(self.porttype, vraag)
+
+        self.assertEquals(response.status_code, 200, response.content)
+
+        self.assertEqual(Zaak.objects.all().count(), 1)
+        self.assertEqual(Zaak.objects.filter(zaakidentificatie='2017-0000561').count(), 1)

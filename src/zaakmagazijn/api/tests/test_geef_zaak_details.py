@@ -42,9 +42,13 @@ class GeefZaakdetails_ZakLv01ZAKOBJTests(BaseSoapTests):
                     sortering=1,
                     indicatorVervolgvraag=False),
                 scope={
-                    'object': zkn_factory['ZAK-vraagScope'](scope='alles'),
+                    'object': zkn_factory['ZAK-vraagScope'](
+                        entiteittype='ZAK',  # v
+                        scope='alles'
+                    ),
                 },
                 gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -310,9 +314,13 @@ class geefZaakdetails_ZakLv01Tests(BaseSoapTests):
                 sortering=1,
                 indicatorVervolgvraag=False),
             scope={
-                'object': zkn_factory['ZAK-vraagScope'](scope='alles',),
+                'object': zkn_factory['ZAK-vraagScope'](
+                    entiteittype='ZAK',  # v
+                    scope='alles',
+                ),
             },
             gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                entiteittype='ZAK',  # v
                 identificatie=self.zaak.zaakidentificatie,
             )
         )
@@ -341,11 +349,15 @@ class geefZaakdetails_ZakLv01Tests(BaseSoapTests):
                     entiteittype='ZAK',
                     identificatie=Nil,
                     heeft=zkn_factory['ZAKSTT-vraagScope'](
+                        entiteittype='ZAKSTT',
                         indicatieLaatsteStatus=Nil,
-                        gerelateerde=zkn_factory['STT-vraag']()
+                        gerelateerde=zkn_factory['STT-vraag'](
+                            entiteittype='STT',
+                        )
                     ),),
             },
             gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                entiteittype='ZAK',
                 identificatie=self.zaak.zaakidentificatie,
             )
         )
@@ -371,12 +383,16 @@ class geefZaakdetails_ZakLv01Tests(BaseSoapTests):
                         entiteittype='ZAK',
                         identificatie=Nil,
                         heeft=zkn_factory['ZAKSTT-vraagScope'](
+                            entiteittype='ZAKSTT',
                             indicatieLaatsteStatus=Nil,
-                            gerelateerde=zkn_factory['STT-vraag'](),
+                            gerelateerde=zkn_factory['STT-vraag'](
+                                entiteittype='STT',
+                            ),
                         ),
                     ),
                 },
                 gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -515,6 +531,7 @@ class geefZaakdetails_ZakLa01Tests(BaseSoapTests):
                     }),
                 },
                 gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -543,9 +560,11 @@ class geefZaakdetails_ZakLa01Tests(BaseSoapTests):
                         'entiteittype': 'ZAK',
                         'identificatie': Nil,
                         'heeftBetrekkingOp': zkn_factory['ZAKOBJ-vraagScope'](
+                            entiteittype='ZAKOBJ',  # v
                             gerelateerde=zkn_factory['OBJ-gerelateerdeVraagScope'](
                                 _value_1={
                                     'vestiging': bg_factory['VES-zkn-OBJ-vraag'](
+                                        entiteittype='VES',  # v
                                         vestigingsNummer=Nil,
                                     ),
                                 }
@@ -554,6 +573,7 @@ class geefZaakdetails_ZakLa01Tests(BaseSoapTests):
                     }),
                 },
                 gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -609,9 +629,13 @@ class geefZaakdetails_ZakLa01Tests(BaseSoapTests):
                     sortering=1,
                     indicatorVervolgvraag=False),
                 scope={
-                    'object': zkn_factory['ZAK-vraagScope'](scope='alles'),
+                    'object': zkn_factory['ZAK-vraagScope'](
+                        entiteittype='ZAK',  # v
+                        scope='alles'
+                    ),
                 },
                 gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -794,6 +818,7 @@ class geefZaakdetails_Fo02BerichtTests(BaseSoapTests):
                         identificatie=Nil),
                 },
                 gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -807,8 +832,8 @@ class geefZaakdetails_Fo02BerichtTests(BaseSoapTests):
             'stuf:stuurgegevens',
             'stuf:stuurgegevens/stuf:berichtcode[text()="Fo02"]',
             'stuf:body',
-            'stuf:body/stuf:code[text()="StUF133"]',
-            'stuf:body/stuf:plek[text()="server"]',
+            'stuf:body/stuf:code[text()="StUF055"]',
+            'stuf:body/stuf:plek[text()="client"]',
         ]
         for expectation in expected_once:
             self._assert_xpath_results(self._get_body_root(root), expectation, 1, namespaces=self.nsmap)

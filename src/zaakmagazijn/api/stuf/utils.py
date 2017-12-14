@@ -97,9 +97,12 @@ def django_field_to_spyne_model(django_field, default=None, nullable=None, min_o
     spyne_model = DEFAULT_FIELD_MAP[field_type]
 
     kwargs = {}
-    if default is None and django_field.has_default():
-        kwargs['default'] = django_field.get_default()
-    elif default is not None:
+    # NOTE: Taiga 397 reported issues with defaults. The default is
+    # interpreted as "provided" by the request, which is not true.
+    #
+    # if default is None and django_field.has_default():
+    #     kwargs['default'] = django_field.get_default()
+    if default is not None:
         kwargs['default'] = default
 
     if nullable is None and django_field.null:

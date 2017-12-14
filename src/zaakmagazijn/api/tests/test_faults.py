@@ -6,6 +6,7 @@ from mock import patch
 from spyne import Fault, InternalError
 from zeep.xsd.const import Nil
 
+from ...rgbz.choices import JaNee
 from ...rgbz.tests.factory_models import StatusFactory
 from ..stuf.choices import (
     BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
@@ -75,12 +76,24 @@ class StUFFaultTests(BaseSoapTests):
                 scope={
                     'object': zkn_factory['GeefZaakStatus-ZAK-vraagScope'](
                         entiteittype='ZAK',
-                        identificatie=Nil),
+                        identificatie=Nil,
+                        heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagScope'](
+                            entiteittype='ZAKSTT',
+                            indicatieLaatsteStatus=Nil,
+                            datumStatusGezet=Nil,
+                            gerelateerde=zkn_factory['GeefZaakStatus-STT-vraag'](
+                                entiteittype='STT',
+                                volgnummer=Nil,
+                            )
+                        )
+                    ),
                 },
                 gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=zaak_id,
                     heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
-                        indicatieLaatsteStatus=False,
+                        entiteittype='ZAKSTT',
+                        indicatieLaatsteStatus=JaNee.ja,
                     )
                 )
             )

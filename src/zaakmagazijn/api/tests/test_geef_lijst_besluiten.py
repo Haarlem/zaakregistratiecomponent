@@ -50,6 +50,7 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
             },
             # http://www.egem.nl/StUF/sector/zkn/0310:GeefLijstBesluiten-ZAK-vraagSelectie
             gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
+                entiteittype='ZAK',  # v
                 identificatie=zaak.zaakidentificatie,
             )
         )
@@ -93,6 +94,7 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
                     )
                 },
                 gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=zaak.zaakidentificatie,
                 )
             )
@@ -145,9 +147,23 @@ class geefLijstBesluiten_ZakLv01Tests(BaseSoapTests):
                     indicatorVervolgvraag=False
                 ),
                 scope={
-                    'object': zkn_factory['GeefLijstBesluiten-ZAK-vraagScope'](scope='alles')
+                    'object': zkn_factory['GeefLijstBesluiten-ZAK-vraagScope'](
+                        entiteittype='ZAK',  # v
+                        scope='alles',
+                        leidtTot=zkn_factory['GeefLijstBesluiten-ZAKBSL-vraag'](
+                            entiteittype='ZAKBSL',
+                            gerelateerde=zkn_factory['GeefLijstBesluiten-BSL-gerelateerdeVraag'](
+                                entiteittype='BSL',
+                                # Mandatory elements:
+                                identificatie=Nil,
+                                datumBeslissing=Nil,
+                                ingangsdatumWerking=Nil,
+                            )
+                        )
+                    )
                 },
                 gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=zaak.zaakidentificatie,
                 )
             )
@@ -204,6 +220,7 @@ class geefLijstBesluiten_ZakLa01Tests(BaseSoapTests):
                     )
                 },
                 gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -336,6 +353,7 @@ class geefLijstBesluiten_Fo02BerichtTests(BaseSoapTests):
                     )
                 },
                 gelijk=zkn_factory['GeefLijstBesluiten-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',  # v
                     identificatie=self.zaak.zaakidentificatie,
                 )
             )
@@ -350,8 +368,8 @@ class geefLijstBesluiten_Fo02BerichtTests(BaseSoapTests):
             'stuf:stuurgegevens',
             'stuf:stuurgegevens/stuf:berichtcode[text()="Fo02"]',
             'stuf:body',
-            'stuf:body/stuf:code[text()="StUF133"]',
-            'stuf:body/stuf:plek[text()="server"]',
+            'stuf:body/stuf:code[text()="StUF055"]',
+            'stuf:body/stuf:plek[text()="client"]',
         ]
         for expectation in expected_once:
             self._assert_xpath_results(self._get_body_root(root), expectation, 1, namespaces=self.nsmap)

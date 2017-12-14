@@ -1,10 +1,12 @@
 import base64
+import time
 from datetime import date
 from io import BytesIO
 from unittest import skipIf
 
 from django.test import override_settings
 
+from cmislib.exceptions import ObjectNotFoundException
 from lxml import etree
 
 from zaakmagazijn.cmis.client import CMISDMSClient
@@ -231,25 +233,21 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
 
         self.assertIsNotNone(response)
         # assert that the correct DMS client calls were made
-        document = EnkelvoudigInformatieObject.objects.get()
 
         # the document should have been registered in the DMS
-        self._dms_client.maak_zaakdocument.assert_called_once_with(document, filename='to_be_everywhere.flac')
+        self.assertEqual(self._service_dms_client.maak_zaakdocument_met_inhoud.call_count, 1)
 
-        # the content should have been set
-        self.assertEqual(self._dms_client.zet_inhoud.call_count, 1)
-        self.assertEqual(
-            self._dms_client.zet_inhoud.call_args[0][0],
-            document
-        )
+        document = self._service_dms_client.maak_zaakdocument_met_inhoud.call_args[0][0]
 
-        stream = self._dms_client.zet_inhoud.call_args[0][1]
-        stream.seek(0)
-        self.assertEqual(stream.read(), b'helloworld')
-        self.assertEqual(
-            self._dms_client.zet_inhoud.call_args[0][2],
-            'audio/flac'
-        )
+        kwargs = self._service_dms_client.maak_zaakdocument_met_inhoud.call_args[1]
+        content_type = kwargs['content_type']
+        filename = kwargs['filename']
+        bytes = kwargs['stream'].getvalue()
+
+        self.assertEqual(document, EnkelvoudigInformatieObject.objects.get())
+        self.assertEqual(filename, 'to_be_everywhere.flac')
+        self.assertEqual(content_type, 'audio/flac')
+        self.assertEqual(bytes, b'helloworld')
 
         # the document should have been moved to the correct folder
         self._service_dms_client.relateer_aan_zaak.assert_called_once_with(document, zaak)
@@ -295,13 +293,20 @@ class STPvoegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
 
         # assert that a document was created
         zio = ZaakInformatieObject.objects.get()
-        self._dms_client.maak_zaakdocument.assert_called_once_with(
-            zio.informatieobject.enkelvoudiginformatieobject, filename='bestandsnaam'
-        )
+        self.assertEqual(self._service_dms_client.maak_zaakdocument_met_inhoud.call_count, 1)
 
-        # assert that inhoud was set
-        self.assertEqual(self._dms_client.zet_inhoud.call_count, 1)
-        bytes = self._dms_client.zet_inhoud.call_args[0][1].getvalue()
+        document = self._service_dms_client.maak_zaakdocument_met_inhoud.call_args[0][0]
+
+        kwargs = self._service_dms_client.maak_zaakdocument_met_inhoud.call_args[1]
+        sender = kwargs['sender']
+        content_type = kwargs['content_type']
+        filename = kwargs['filename']
+        bytes = kwargs['stream'].getvalue()
+
+        self.assertEqual(document, zio.informatieobject.enkelvoudiginformatieobject)
+        self.assertEqual(sender, 'STP')
+        self.assertIsNone(content_type)
+        self.assertEqual(filename, 'bestandsnaam')
 
         # it's double encoded
         expected_string = 'UjBsR09EbGhjZ0dTQUxNQUFBUUNBRU1tQ1p0dU1GUXhEUzhi'
@@ -393,7 +398,7 @@ class voegZaakdocumentToe_EdcLk01RegressionTests(DMSMixin, BaseTestPlatformTests
     porttype = 'OntvangAsynchroon'
     disable_mocks = True
 
-    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
     @override_settings(CMIS_UPLOAD_TO='zaakmagazijn.cmis.utils.upload_to_date_based')
     def test_index_error_list_index_out_of_range(self):
         """
@@ -419,6 +424,8 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
     disable_mocks = True
 
     def setUp(self):
+        super().setUp()
+
         self.client = CMISDMSClient()
         self.addCleanup(self._removeTree)
         # Create zaak
@@ -441,7 +448,7 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
             return
         root_folder.deleteTree()
 
-    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
     def test_upload_small_file(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/387
@@ -465,7 +472,7 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
         today = date.today().strftime('%Y%m%d')
 
-        stuurgegevens = stuf_factory.EDC_StuurgegevensVoegZaakdocumentToeLk01(
+        stuurgegevens = stuf_factory['EDC-StuurgegevensLk01'](
             berichtcode='Lk01',
             entiteittype='EDC',
             zender=self.zender,
@@ -483,12 +490,12 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
             contentType='audio/flac',
         )
         response = client.service.voegZaakdocumentToe_EdcLk01(
-            parameters=stuf_factory.EDC_ParametersVoegZaakdocumentToeLk01(
+            parameters=stuf_factory['ParametersLk01'](
                 indicatorOvername='V',
                 mutatiesoort='T',
             ),
             stuurgegevens=stuurgegevens,
-            object=zkn_factory.EDC_VoegZaakdocumentToe(**{
+            object=zkn_factory['VoegZaakdocumentToe-EDC-kennisgeving'](**{
                 'entiteittype': 'EDC',
                 'verwerkingssoort': 'T',
                 'identificatie': '12345ABC{}'.format(int(time.time())),
@@ -511,10 +518,10 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
                 # ),
                 # 'tijdstipRegistratie': '',
                 # 'extraElementend': None,
-                'isRelevantVoor': [zkn_factory.EDCZAK_VoegZaakdocumentToe(
+                'isRelevantVoor': [zkn_factory['VoegZaakdocumentToe-EDCZAK-kennisgeving'](
                     entiteittype='EDCZAK',
                     verwerkingssoort='T',
-                    gerelateerde=zkn_factory.ZAK_VoegZaakdocumentToe(
+                    gerelateerde=zkn_factory['VoegZaakdocumentToe-ZAK-kerngegevensKennisgeving'](
                         entiteittype='ZAK',
                         verwerkingssoort='I',
                         identificatie=self.zaak.zaakidentificatie,
@@ -535,7 +542,7 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
             })
         )
 
-    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's not Alfresco running on Jenkins")
+    @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
     def test_upload_large_file(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/387
@@ -559,7 +566,7 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
         today = date.today().strftime('%Y%m%d')
 
-        stuurgegevens = stuf_factory.EDC_StuurgegevensVoegZaakdocumentToeLk01(
+        stuurgegevens = stuf_factory['EDC-StuurgegevensLk01'](
             berichtcode='Lk01',
             entiteittype='EDC',
             zender=self.zender,
@@ -579,12 +586,12 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
             contentType='audio/flac',
         )
         response = client.service.voegZaakdocumentToe_EdcLk01(
-            parameters=stuf_factory.EDC_ParametersVoegZaakdocumentToeLk01(
+            parameters=stuf_factory['ParametersLk01'](
                 indicatorOvername='V',
                 mutatiesoort='T',
             ),
             stuurgegevens=stuurgegevens,
-            object=zkn_factory.EDC_VoegZaakdocumentToe(**{
+            object=zkn_factory['VoegZaakdocumentToe-EDC-kennisgeving'](**{
                 'entiteittype': 'EDC',
                 'verwerkingssoort': 'T',
                 'identificatie': '12345ABC{}'.format(int(time.time())),
@@ -607,10 +614,10 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
                 # ),
                 # 'tijdstipRegistratie': '',
                 # 'extraElementend': None,
-                'isRelevantVoor': [zkn_factory.EDCZAK_VoegZaakdocumentToe(
+                'isRelevantVoor': [zkn_factory['VoegZaakdocumentToe-EDCZAK-kennisgeving'](
                     entiteittype='EDCZAK',
                     verwerkingssoort='T',
-                    gerelateerde=zkn_factory.ZAK_VoegZaakdocumentToe(
+                    gerelateerde=zkn_factory['VoegZaakdocumentToe-ZAK-kerngegevensKennisgeving'](
                         entiteittype='ZAK',
                         verwerkingssoort='I',
                         identificatie=self.zaak.zaakidentificatie,

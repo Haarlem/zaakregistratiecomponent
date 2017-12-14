@@ -2,6 +2,26 @@
 Change history
 ==============
 
+0.9.5
+=====
+
+*December 14, 2017*
+
+* Fixed issue where the default value for XSD elements were seen as "provided"
+  by the request. This lead to incorrect lookups.
+* Restored validation of the incoming requests again. This was accidentally
+  removed to work with the StUF testplatform in 0.9.4. Note that with the
+  introduction of the KING reference WSDL, this validation is much more
+  strict.
+* Altered the ``voegZaakdocumentToe`` service to create a document in a single
+  action instead of 2 (create document, add content to document). This
+  deviates from the specification but prevents documents starting at version
+  1.1. Documents in the DMS now start at version 1.0.
+* Added the "stuurgegevens/zender" information to a custom DMS property. This
+  property can be configured with ``CMIS_SENDER_PROPERTY`` and should be a
+  ``string``, or ``None`` if no sender property is present.
+
+
 0.9.4
 =====
 

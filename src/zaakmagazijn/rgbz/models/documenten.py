@@ -4,9 +4,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from zaakmagazijn.cmis.fields import DMSField
-
 from ...api.stuf.utils import set_model_value
+from ...cmis.fields import DMSField
 from ...cmis.models import CMISMixin
 from ...utils import stuf_datetime
 from ...utils.fields import StUFDateField

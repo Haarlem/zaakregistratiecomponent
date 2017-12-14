@@ -1,0 +1,74 @@
+<zds:creeerZaak_ZakLk01 xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:ns="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:stuf="http://www.egem.nl/StUF/StUF0301" xmlns:ns1="http://www.egem.nl/StUF/sector/bg/0310">
+    <ns:stuurgegevens>
+        <stuf:berichtcode>Lk01</stuf:berichtcode>
+        <stuf:zender>
+            <stuf:organisatie>1</stuf:organisatie>
+            <stuf:applicatie>SoapUI</stuf:applicatie>
+            <stuf:administratie>test</stuf:administratie>
+            <stuf:gebruiker>David</stuf:gebruiker>
+        </stuf:zender>
+        <stuf:ontvanger>
+            <stuf:organisatie>0392</stuf:organisatie>
+            <stuf:applicatie>SoapUI</stuf:applicatie>
+            <stuf:administratie>test</stuf:administratie>
+            <stuf:gebruiker>David</stuf:gebruiker>
+        </stuf:ontvanger>
+        <stuf:referentienummer>1</stuf:referentienummer>
+        <stuf:tijdstipBericht>201711291505500</stuf:tijdstipBericht>
+        <stuf:entiteittype>ZAK</stuf:entiteittype>
+    </ns:stuurgegevens>
+    <ns:parameters>
+        <stuf:mutatiesoort>T</stuf:mutatiesoort>
+        <stuf:indicatorOvername>V</stuf:indicatorOvername>
+    </ns:parameters>
+    <ns:object stuf:entiteittype="ZAK" stuf:verwerkingssoort="T">
+        <ns:identificatie>2017-0000561</ns:identificatie>
+        <ns:omschrijving>Testmelding</ns:omschrijving>
+        <ns:toelichting>Dit is de inhoud van de melding.</ns:toelichting>
+
+        <ns:anderZaakObject>
+            <!--Optional:-->
+            <ns:omschrijving>contactpersoon</ns:omschrijving>
+            <!--Optional:-->
+            <ns:aanduiding>contactpersoon</ns:aanduiding>
+            <!--Optional:-->
+            <ns:registratie>idvanpersoon</ns:registratie>
+        </ns:anderZaakObject>
+
+        <ns:startdatum  stuf:exact="true" stuf:indOnvolledigeDatum="V">20171129</ns:startdatum>
+        <ns:registratiedatum  stuf:exact="true" stuf:indOnvolledigeDatum="V">20171129</ns:registratiedatum>
+        <ns:einddatumGepland>171215</ns:einddatumGepland>
+        <ns:archiefnominatie>J</ns:archiefnominatie>
+        <ns:zaakniveau>1</ns:zaakniveau>
+        <ns:deelzakenIndicatie>N</ns:deelzakenIndicatie>
+        <ns:isVan stuf:entiteittype="ZAKZKT" stuf:verwerkingssoort="T" >
+            <ns:gerelateerde stuf:entiteittype="ZKT" stuf:verwerkingssoort="I" >
+                <ns:code>1</ns:code>
+                <!-- If defaults are used for Spyne fields, adding this
+                     (overriding the default) works:
+
+                <ns:ingangsdatumObject>20170901</ns:ingangsdatumObject>
+                -->
+            </ns:gerelateerde>
+        </ns:isVan>
+
+        <ns:heeftAlsInitiator stuf:entiteittype="ZAKBTRINI" stuf:verwerkingssoort="T">
+            <ns:gerelateerde>
+                <ns:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+                    <ns:identificatie>DVV/KCC</ns:identificatie>
+                </ns:organisatorischeEenheid>
+
+            </ns:gerelateerde>
+        </ns:heeftAlsInitiator>
+
+        <ns:heeftAlsVerantwoordelijke stuf:entiteittype="ZAKBTRVRA" stuf:verwerkingssoort="T" >
+            <ns:gerelateerde>
+                <ns:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+                    <ns:identificatie>DVV/KCC</ns:identificatie>
+                </ns:organisatorischeEenheid>
+            </ns:gerelateerde>
+        </ns:heeftAlsVerantwoordelijke>
+
+
+    </ns:object>
+</zds:creeerZaak_ZakLk01>

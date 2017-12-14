@@ -20,7 +20,7 @@ class GenereerDocumentIdentificatie_Du02(BaseSoapTests):
                     berichtcode='Di02',
                     referentienummer='123',
                     tijdstipBericht=stuf_datetime.now(),
-                    functie='genereerDocumentIdentificatie'
+                    functie='genereerDocumentidentificatie'
                 )
             )
 

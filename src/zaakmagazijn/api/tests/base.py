@@ -44,37 +44,59 @@ class StUFMixin:
 
 
 class XmlHelperMixin:
-    def _print_from_string(self, str):
-        print(etree.tostring(etree.fromstring(str), pretty_print=True).decode('utf-8'))
+    def _from_string(self, val):
+        return str(etree.tostring(etree.fromstring(val), pretty_print=True).decode('utf-8'))
 
-    def _print_from_element(self, el):
-        print(etree.tostring(el, pretty_print=True).decode('utf-8'))
+    def _from_element(self, val):
+        return str(etree.tostring(val, pretty_print=True).decode('utf-8'))
 
-    def _print_from_zeep_object(self, obj):
-        print(obj)
+    def _from_zeep_object(self, val):
+        return str(val)
 
     def pretty_print(self, val):
         """
-        Helper function to print an XML response in a readable format. This
-        function should only be used for debugging and should not be part of a
-        test.
+        This function should only be used for debugging and should not be part
+        of a test.
 
         :param val: A `zeep`, `lxml` or `str` value.
         """
+        print(self.pretty_str(val))
+
+    def pretty_str(self, val):
+        """
+        Helper function to return an XML response in a readable format.
+
+        :param val: A `zeep`, `lxml` or `str` value.
+        :return: pretty formatted XML string.
+        """
+        if val is None:
+            return ''
+
+        if isinstance(val, list) and len(val) > 0:
+            val = val[0]
+
         if isinstance(val, CompoundValue):
-            self._print_from_zeep_object(val)
+            ret = self._from_zeep_object(val)
         elif isinstance(val, _Element):
-            self._print_from_element(val)
+            ret = self._from_element(val)
         else:
-            self._print_from_string(val)
+            ret = self._from_string(val)
+
+        return ret
 
     def _assert_xpath_results(self, root, xpath, results, namespaces=None):
         namespaces = namespaces or root.nsmap
         elements = root.xpath(xpath, namespaces=namespaces)
+
+        msg = ''
+        if len(elements) != results:
+            # Only pretty print if there will be an error
+            msg = ': {}'.format(self.pretty_str(root))
+
         self.assertEqual(
             len(elements),
             results,
-            msg="{} was found {} times {} times was expected".format(xpath, len(elements), results)
+            msg="{} was found {} times {} times was expected{}".format(xpath, len(elements), results, msg)
         )
 
     # This was another attempt at implementing this, using lxml to iterate trough both trees.
@@ -199,7 +221,11 @@ class BaseSoapTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerTestCase)
         return stuf_factory, zkn_factory, zds_factory
 
     def _get_body_root(self, root):
-        return root.xpath(self.antwoord_xpath, namespaces=self.nsmap)[0]
+        ret = root.xpath(self.antwoord_xpath, namespaces=self.nsmap)
+        # Only parse ret if the response failed.
+        if len(ret) == 0:
+            self.assertTrue(False, self.pretty_str(root))
+        return ret[0]
 
 
 class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerTestCase):
@@ -223,12 +249,15 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         # TODO [TECH]: For some reason xmllint nor xmlstarlet validates
         # against the gml XSD properly. I can't find an xml validator which
         # does support this (my guess, they're all based on libxml2).
-        for el in soap_body.xpath('//gml:OrientableSurface', namespaces=self.nsmap):
+        for el in soap_body.xpath('//gml:*', namespaces=self.nsmap):
             el.getparent().remove(el)
 
-        xsd_path = os.path.join(settings.BASE_DIR, 'zds', 'ZDS 1.2 2017 Q1 Resolved', 'zds0120_msg_zs-dms_resolved2017.xsd')
+        xsd_path = os.path.join(settings.ZAAKMAGAZIJN_ZDS_PATH, 'zds0120_msg_zs-dms_resolved2017.xsd')
         xmlschema = etree.XMLSchema(file=xsd_path)
         returncode = 0 if xmlschema.validate(soap_body[0]) else 1
+
+        if returncode != 0 and not msg:
+            msg = '; '.join(map(str, xmlschema.error_log.filter_from_errors()))
 
         self.assertEqual(returncode, 0, msg=msg)
 

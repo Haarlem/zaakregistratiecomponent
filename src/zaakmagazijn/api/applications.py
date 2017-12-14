@@ -181,6 +181,8 @@ class AsyncApplication(Application):
     FAULT_CLASS = SpyneAsyncStUFFault
 
 
+# Validator `None` means to validate against the KING reference WSDL.
+# See: zaakmagazijn.api.stuf.protocols.StUFSynchronous.validate_document
 beantwoordvraag_app = Application(
     [GeefBesluitDetails, GeefZaakstatus, GeefLijstBesluiten, GeefZaakdetails,
      GeefLijstZaakdocumenten, GeefZaakdocumentLezen],

@@ -62,12 +62,15 @@ class geefZaakdocumentLezen_EdcLv01Tests(DMSMockMixin, BaseSoapTests):
             scope={
                 # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-EDC-vraagScope
                 'object': zkn_factory['GeefZaakdocumentLezen-EDC-vraagScope'](**{
+                    'entiteittype': 'EDC',
                     'identificatie': Nil,  # v
                     # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-EDCZAK-vraagScope
                     'isRelevantVoor': zkn_factory['GeefZaakdocumentLezen-EDCZAK-vraagScope'](
+                        entiteittype='EDCZAK',
                         # NOTE: the example WSDL specifies gerelateerdeVraagScope
                         # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-ZAK-gerelateerdeVraagScope
                         gerelateerde=zkn_factory['GeefZaakdocumentLezen-ZAK-gerelateerdeVraagScope'](
+                            entiteittype='ZAK',
                             identificatie=Nil  # v
                         )
                     ),
@@ -90,6 +93,7 @@ class geefZaakdocumentLezen_EdcLv01Tests(DMSMockMixin, BaseSoapTests):
             },
             # http://www.egem.nl/StUF/sector/zkn/0310:GeefZaakdocumentLezen-EDC-vraagSelectie
             gelijk=zkn_factory['GeefZaakdocumentLezen-EDC-vraagSelectie'](
+                entiteittype='EDC',
                 identificatie=edc1.informatieobjectidentificatie,
             )
         )
@@ -130,10 +134,13 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
                 ),
                 scope={
                     'object': zkn_factory['GeefZaakdocumentLezen-EDC-vraagScope'](**{
+                        'entiteittype': 'EDC',
                         'identificatie': Nil,  # v
                         'isRelevantVoor': zkn_factory['GeefZaakdocumentLezen-EDCZAK-vraagScope'](
+                            entiteittype='EDCZAK',
                             # NOTE: the example WSDL specifies gerelateerdeVraagScope
                             gerelateerde=zkn_factory['GeefZaakdocumentLezen-ZAK-gerelateerdeVraagScope'](
+                                entiteittype='ZAK',
                                 identificatie=Nil  # v
                             )
                         ),
@@ -155,6 +162,7 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
                     })
                 },
                 gelijk=zkn_factory['GeefZaakdocumentLezen-EDC-vraagSelectie'](
+                    entiteittype='EDC',
                     identificatie=self.document.informatieobjectidentificatie,
                 )
             )
