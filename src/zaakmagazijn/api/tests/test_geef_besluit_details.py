@@ -10,6 +10,8 @@ from ...rgbz.tests.factory_models import EnkelvoudigInformatieObjectFactory
 
 
 class geefBesluitDetails_BslLv01Tests(BaseSoapTests):
+    antwoord_xpath = '/soap11env:Envelope/soap11env:Body/zds:geefBesluitdetails_BslLa01/zkn:antwoord/zkn:object'
+
     def test_gelijk(self):
         besluit = BesluitFactory.create()
         # Should not show up, because the 'identificatie' field doesn't match.
@@ -37,6 +39,7 @@ class geefBesluitDetails_BslLv01Tests(BaseSoapTests):
                 }),
             },
             gelijk=zkn_factory['geefBesluitDetails-BSL-vraagSelectie'](
+                entiteittype='BSL',  # v
                 identificatie=besluit.identificatie,  # v
             )
         )
@@ -72,13 +75,16 @@ class geefBesluitDetails_BslLv01Tests(BaseSoapTests):
                         'ingangsdatumWerking': Nil,  # v
                         'bst.reactietermijn': Nil,
                         'isUitkomstVan': {
+                            'entiteittype': 'BSLZAK',  # v
                             'gerelateerde': zkn_factory['geefBesluitDetails-ZAK-gerelateerdeVraagScope'](**{
+                                'entiteittype': 'ZAK',  # v
                                 'identificatie': Nil,
                             }),
                         },
                     })
                 },
                 gelijk=zkn_factory['geefBesluitDetails-BSL-vraagSelectie'](
+                    entiteittype='BSL',  # v
                     identificatie=besluit.identificatie,  # v
                 )
             )
@@ -86,10 +92,7 @@ class geefBesluitDetails_BslLv01Tests(BaseSoapTests):
         root = etree.fromstring(response.content)
 
         # The expectation is that only the selected fields are returned.
-        antwoord_obj = root.xpath(
-            '/soap11env:Envelope/soap11env:Body/zds:geefBesluitdetails_BslLa01/zkn:antwoord/zkn:object',
-            namespaces=self.nsmap
-        )[0]
+        antwoord_obj = self._get_body_root(root)
         self._assert_xpath_results(antwoord_obj, 'zkn:identificatie', 1, namespaces=self.nsmap)  # v
         self._assert_xpath_results(antwoord_obj, 'zkn:bst.omschrijving', 0, namespaces=self.nsmap)  # o
         self._assert_xpath_results(antwoord_obj, 'zkn:bst.omschrijvingGeneriek', 0, namespaces=self.nsmap)  # o
@@ -156,6 +159,7 @@ class geefBesluitDetails_BslLa01Tests(BaseSoapTests):
                     })
                 },
                 gelijk=zkn_factory['geefBesluitDetails-BSL-vraagSelectie'](
+                    entiteittype='BSL',  # v
                     identificatie=self.besluit.identificatie,  # v
                 )
             )

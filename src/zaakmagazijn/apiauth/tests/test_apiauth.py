@@ -7,6 +7,7 @@ from lxml import etree
 from zeep.xsd.const import Nil
 
 from ...api.tests.base import BaseSoapTests
+from ...rgbz.choices import JaNee
 from ...rgbz.tests.factory_models import StatusFactory
 from ..models import ServiceOperation
 from ..signals import update_service_operations
@@ -25,7 +26,7 @@ class AuthorizationTests(BaseSoapTests):
 
         self.client = self._get_client('BeantwoordVraag', strict=False)
 
-        self.status = StatusFactory.create()
+        self.status = StatusFactory.create(indicatie_laatst_gezette_status=JaNee.ja)
         self.zaak = self.status.zaak
 
     def _simple_request(self, zaak_id=None, zender=None, ontvanger=None):
@@ -61,12 +62,24 @@ class AuthorizationTests(BaseSoapTests):
                 scope={
                     'object': zkn_factory['GeefZaakStatus-ZAK-vraagScope'](
                         entiteittype='ZAK',
-                        identificatie=Nil),
+                        identificatie=Nil,
+                        heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagScope'](
+                            entiteittype='ZAKSTT',
+                            indicatieLaatsteStatus=Nil,
+                            datumStatusGezet=Nil,
+                            gerelateerde=zkn_factory['GeefZaakStatus-STT-vraag'](
+                                entiteittype='STT',
+                                volgnummer=Nil,
+                            )
+                        )
+                    ),
                 },
                 gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
                     identificatie=zaak_id,
                     heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
-                        indicatieLaatsteStatus=False,
+                        entiteittype='ZAKSTT',
+                        indicatieLaatsteStatus=JaNee.ja,
                     )
                 )
             )
