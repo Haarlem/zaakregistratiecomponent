@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 
 from zaakmagazijn.cmis.models import CMISMixin
@@ -391,11 +391,13 @@ class VestigingVanZaakBehandelendeOrganisatie(models.Model):
 
     Unieke aanduiding SUBJECT.Subjecttypering gevolgd door het Vestigingsnummer
     """
+    is_specialisatie_van = models.ForeignKey(Vestiging, on_delete=models.CASCADE)
 
     class Meta:
         mnemonic = 'VZO'
 
-    is_specialisatie_van = models.ForeignKey(Vestiging, on_delete=models.CASCADE)
+    def __str__(self):
+        return '{}'.format(self.is_specialisatie_van)
 
 
 class OrganisatorischeEenheid(CMISMixin, OrganisatorischeEenheidBaseClass, BereikenMixin, Betrokkene):
@@ -501,6 +503,9 @@ class Klantcontact(models.Model):
         verbose_name_plural = 'Klantcontacten'
         mnemonic = 'KCT'
         # unique_together = ('identificatie', 'zaak')
+
+    def __str__(self):
+        return '{}_{}'.format(self.zaak, self.identificatie)
 
     def heeft_betrekking_op(self):
         return self.zaak

@@ -1,5 +1,7 @@
 from unittest import skip
 
+from django.test import override_settings
+
 from lxml import etree
 from zeep.xsd.const import Nil
 
@@ -189,6 +191,7 @@ class MaykingeefLijstZaakdocumenten_ZakLv01Tests(BaseTestPlatformTests):
     maxDiff = None
     test_files_subfolder = 'maykin_geefLijstZaakdocumenten'
 
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'SoapUI', 'administratie': 'test', 'gebruiker': 'David'})
     def test_taiga_issue_282(self):
         """
         Regression test from Taiga issue #282

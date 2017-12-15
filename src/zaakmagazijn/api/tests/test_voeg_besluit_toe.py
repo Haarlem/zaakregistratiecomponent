@@ -1,5 +1,7 @@
 import time
 
+from django.conf import settings
+
 from lxml import etree
 
 from zaakmagazijn.utils import stuf_datetime
@@ -33,18 +35,12 @@ class voegBesluitToe_Di01Tests(BaseSoapTests):
             'administratie': 'Support',
             'gebruiker': 'john.doe@example.com',
         }
-        ontvanger = {
-            'organisatie': 'Maykin Media',
-            'applicatie': 'TTA',
-            'administratie': 'Support',
-            'gebruiker': 'john.doe@example.com',
-        }
 
         response = client.service.voegBesluitToe_Di01(
             stuurgegevens=stuf_factory['Di01-Stuurgegevens-vbt'](
                 berichtcode='Di01',
                 zender=zender,
-                ontvanger=ontvanger,
+                ontvanger=settings.ZAAKMAGAZIJN_SYSTEEM,
                 referentienummer='1234',
                 tijdstipBericht=stuf_datetime.now(),
                 functie='voegBesluitToe',

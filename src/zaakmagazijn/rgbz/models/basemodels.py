@@ -89,6 +89,9 @@ class Object(TypeMixin, models.Model):
         abstract = False
         mnemonic = ''
 
+    def __str__(self):
+        return '{}'.format(self.identificatie)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

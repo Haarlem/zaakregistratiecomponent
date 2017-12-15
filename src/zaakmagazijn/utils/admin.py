@@ -1,7 +1,11 @@
 from django.contrib import admin
 
+from zaakmagazijn.auditlog_extension.mixins import HistoryModelAdminMixin
 
-class ReadOnlyModelAdmin(admin.ModelAdmin):
+
+class ReadOnlyModelAdminMixin:
+    change_form_template = 'admin/readonly_change_form.html'
+
     def has_add_permission(self, request):
         return False
 
@@ -14,3 +18,11 @@ class ReadOnlyModelAdmin(admin.ModelAdmin):
         """
         field_names = [f.name for f in self.model._meta.get_fields() if not f.auto_created or hasattr(f, 'through')]
         return field_names
+
+
+class ReadOnlyModelAdmin(ReadOnlyModelAdminMixin, admin.ModelAdmin):
+    pass
+
+
+class ReadOnlyHistoryModelAdmin(ReadOnlyModelAdminMixin, HistoryModelAdminMixin, admin.ModelAdmin):
+    pass

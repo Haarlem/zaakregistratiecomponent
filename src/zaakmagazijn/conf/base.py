@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'hijack',
     'compat',  # Part of hijack
     'hijack_admin',
+    'auditlog',
 
     # Project applications.
     'zaakmagazijn.accounts',
+    'zaakmagazijn.auditlog_extension',
     'zaakmagazijn.utils',
     'zaakmagazijn.apiauth',
     'zaakmagazijn.api',
@@ -64,6 +66,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'auditlog.middleware.AuditlogMiddleware',
 ]
 
 ROOT_URLCONF = 'zaakmagazijn.urls'
