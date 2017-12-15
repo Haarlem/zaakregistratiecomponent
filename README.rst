@@ -2,7 +2,7 @@
 Zaakmagazijn
 ============
 
-:Version: 0.9.5
+:Version: 0.9.6
 :Source: https://github.com/maykinmedia/zaakregistratiecomponent
 :Keywords: zaaksysteem, zakenmagazijn, zds, zaakservices, documentservices, soap, zds
 
