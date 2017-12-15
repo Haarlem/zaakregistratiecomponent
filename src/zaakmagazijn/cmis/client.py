@@ -337,8 +337,8 @@ class CMISDMSClient(DMSClient):
         properties = self._build_cmis_doc_properties(document, filename=filename)
 
         # set the sender property if provided
-        if settings.ZAAKMAGAZIJN_ZENDER_PROPERTY:
-            properties[settings.ZAAKMAGAZIJN_ZENDER_PROPERTY] = sender
+        if settings.CMIS_SENDER_PROPERTY:
+            properties[settings.CMIS_SENDER_PROPERTY] = sender
 
         # Passing empty content is a dirty hack to ensure a contentStreamId exists.
         # See `self.geef_inhoud`. However, this appears to be the recommended way in Alfresco
