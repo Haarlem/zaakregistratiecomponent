@@ -1,6 +1,7 @@
 import io
 from contextlib import redirect_stdout
 
+from django.conf import settings
 from django.test import TestCase, override_settings
 
 from lxml import etree
@@ -40,12 +41,7 @@ class AuthorizationTests(BaseSoapTests):
                 'gebruiker': 'john.doe@example.com',
             }
         if ontvanger is None:
-            ontvanger = {
-                'organisatie': 'Maykin Media',
-                'applicatie': 'TTA',
-                'administratie': 'Support',
-                'gebruiker': 'john.doe@example.com',
-            }
+            ontvanger = settings.ZAAKMAGAZIJN_SYSTEEM
 
         with self.client.options(raw_response=True):
             stuf_factory, zkn_factory, zds_factory = self._get_type_factories(self.client)
