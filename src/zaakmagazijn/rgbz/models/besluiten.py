@@ -51,6 +51,9 @@ class BesluitType(models.Model):
     class Meta:
         mnemonic = 'BST'
 
+    def __str__(self):
+        return '{}_{}-{}'.format(self.domein, self.rsin, self.besluittypeomschrijving)
+
 
 # TODO [TECH]: This can be replaced by using the 'self' relation name in StUFEntiteiten.
 class BesluitInformatieObject(models.Model):
@@ -95,6 +98,9 @@ class Besluit(TijdstipRegistratieMixin, Object):
     zaak = models.ForeignKey(
         'rgbz.Zaak', help_text='Aanduiding van de ZAAK waarbinnen het BESLUIT genomen is.')
     informatieobject = models.ManyToManyField('rgbz.InformatieObject', blank=True, through='rgbz.BesluitInformatieObject')
+
+    def __str__(self):
+        return '{}'.format(self.besluitidentificatie)
 
     @property
     def besluitidentificatie(self):

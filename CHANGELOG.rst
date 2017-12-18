@@ -2,6 +2,17 @@
 Change history
 ==============
 
+0.9.6
+=====
+
+*18 december, 2017*
+
+* Added audit log to the admin interface.
+* The intended receiver ("ontvanger") is now checked even when
+  ``ZAAKMAGAZIJN_OPEN_ACCESS`` is ``True``.
+* Fixed ``CMIS_SENDER_PROPERTY`` which was not used at all.
+
+
 0.9.5
 =====
 

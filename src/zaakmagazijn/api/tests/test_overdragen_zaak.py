@@ -27,7 +27,7 @@ class STPoverdragenZaak_Du01Tests(BaseTestPlatformTests):
             view.__wrapped__._wsdl = None
             view.__wrapped__.doc = AllYourInterfaceDocuments(view.__wrapped__.app.interface)
 
-        self.ontvanger = ApplicationFactory(name='STP', organisation__name='KING')
+        self.ontvanger = ApplicationFactory(name='TTA', organisation__name='ORG')
 
         # Basically, we communicate with ourselves... (we implemented DI01 just for testing).
         self.ontvanger.endpoint_set.create(

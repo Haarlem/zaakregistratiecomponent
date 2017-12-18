@@ -9,6 +9,7 @@ Django
 django-hijack
 django-hijack-admin
 django-axes
+django-auditlog
 django-choices
 django-rosetta
 django-sniplates
@@ -20,4 +21,4 @@ unidecode
 # forks
 -e git+https://github.com/maykinmedia/spyne.git@maykin#egg=spyne
 -e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev2#egg=cmislib
--e git+https://github.com/maykinmedia/python-zeep.git@xsi-nil-on-complex-type-with-simple-content#egg=cmislib
+-e git+https://github.com/maykinmedia/python-zeep.git@xsi-nil-on-complex-type-with-simple-content#egg=zeep

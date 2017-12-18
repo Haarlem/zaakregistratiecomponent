@@ -85,6 +85,9 @@ class ZaakType(CMISMixin, models.Model):
         verbose_name_plural = 'Zaak types'
         mnemonic = 'ZKT'
 
+    def __str__(self):
+        return '{}_{}-{}'.format(self.domein, self.rsin, self.zaaktypeidentificatie)
+
     def verantwoordelijke(self):
         return self.organisatorische_eenheid or self.medewerker
 
@@ -129,6 +132,9 @@ class StatusType(models.Model):
     class Meta:
         verbose_name_plural = 'Status types'
         mnemonic = 'STT'
+
+    def __str__(self):
+        return '{}_{}'.format(self.zaaktype, self.statustypevolgnummer)
 
 
 class Zaak(CMISMixin, TijdvakGeldigheidMixin, TijdstipRegistratieMixin, models.Model):
@@ -249,6 +255,9 @@ class Zaak(CMISMixin, TijdvakGeldigheidMixin, TijdstipRegistratieMixin, models.M
         unique_together = ('zaakidentificatie', 'bronorganisatie')
         verbose_name_plural = 'Zaken'
         mnemonic = 'ZAK'
+
+    def __str__(self):
+        return '{}-{}'.format(self.bronorganisatie, self.zaakidentificatie)
 
     def get_cmis_properties(self):
         props = super().get_cmis_properties()
@@ -399,6 +408,9 @@ class Status(Object):
         unique_together = ('zaak', 'datum_status_gezet')
         verbose_name_plural = 'Statussen'
         mnemonic = 'STA'
+
+    def __str__(self):
+        return '{}_{}'.format(self.zaak, self.datum_status_gezet)
 
     def is_gezet_door(self):
         assert self.rol.zaak == self.zaak

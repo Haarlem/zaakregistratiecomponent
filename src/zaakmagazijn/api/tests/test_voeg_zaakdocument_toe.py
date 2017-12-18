@@ -4,6 +4,7 @@ from datetime import date
 from io import BytesIO
 from unittest import skipIf
 
+from django.conf import settings
 from django.test import override_settings
 
 from cmislib.exceptions import ObjectNotFoundException
@@ -49,12 +50,7 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
             'administratie': 'Support',
             'gebruiker': 'john.doe@example.com',
         }
-        self.ontvanger = {
-            'organisatie': 'Maykin Media',
-            'applicatie': 'TTA',
-            'administratie': 'Support',
-            'gebruiker': 'john.doe@example.com',
-        }
+        self.ontvanger = settings.ZAAKMAGAZIJN_SYSTEEM
 
     def test_create(self):
         self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())

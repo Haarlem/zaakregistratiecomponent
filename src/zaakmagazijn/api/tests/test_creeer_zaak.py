@@ -1,5 +1,7 @@
 from unittest import skip
 
+from django.test import override_settings
+
 from lxml import etree
 
 from zaakmagazijn.api.stuf.choices import BerichtcodeChoices
@@ -630,6 +632,7 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
     porttype = 'OntvangAsynchroon'
 
     @skip('Pending resolve')
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'SoapUI', 'administratie': 'test', 'gebruiker': 'David'})
     def test_required_fields_in_datamodel(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/277
@@ -649,6 +652,7 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
         self.assertEqual(Zaak.objects.all().count(), 1)
         self.assertEqual(Zaak.objects.filter(zaakidentificatie='039288072b1c-54f4-485c-8e83-095621e6jkl6').count(), 1)
 
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'SoapUI', 'administratie': 'test', 'gebruiker': 'David'})
     def test_naam_matching_query_does_not_exist(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/281
@@ -670,6 +674,7 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
         self.assertEqual(Zaak.objects.all().count(), 1)
         self.assertEqual(Zaak.objects.filter(zaakidentificatie='039288072b1c-54f4-485c-8e83-095621e6jk24').count(), 1)
 
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'SoapUI', 'administratie': 'test', 'gebruiker': 'David'})
     def test_zaaktype_does_not_exist(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/397

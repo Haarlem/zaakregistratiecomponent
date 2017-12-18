@@ -1,6 +1,8 @@
 import base64
 from io import BytesIO
 
+from django.test import override_settings
+
 from lxml import etree
 from zeep.xsd.const import Nil
 
@@ -418,6 +420,7 @@ class geefZaakdocumentLezen_EdcLv01RegressionTests(DMSMockMixin, BaseTestPlatfor
 
         self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
 
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'SoapUI', 'administratie': 'test', 'gebruiker': 'David'})
     def test_empty_result_error(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/378

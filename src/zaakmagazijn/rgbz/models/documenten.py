@@ -110,13 +110,12 @@ class InformatieObject(Object):
     _inhoud = DMSField()
 
     class Meta:
-        # bronorganisatie is an integer field with null=True...
         unique_together = ('informatieobjectidentificatie', 'bronorganisatie')
         verbose_name_plural = 'Informatie objecten'
         mnemonic = 'DOC'
 
     def __str__(self):
-        return self.informatieobjectidentificatie
+        return '{}-{}'.format(self.bronorganisatie, self.informatieobjectidentificatie)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -381,3 +380,9 @@ class InformatieObjectType(models.Model):
     )  # Multivalue field
     datum_begin_geldigheid_informatieobjecttype = StUFDateField(default=stuf_datetime.today)
     datum_einde_geldigheid_informatieobjecttype = StUFDateField(null=True, blank=True)
+
+    def __str__(self):
+        return '{}_{}-{}'.format(self.domein, self.rsin, self.informatieobjecttypeomschrijving)
+
+    class Meta:
+        mnemonic = 'DCT'

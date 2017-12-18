@@ -12,11 +12,13 @@ cached-property==1.3.0
 click==6.7                # via pip-tools
 contextlib2==0.5.5        # via raven
 defusedxml==0.5.0
+django-auditlog==0.4.4
 django-axes==2.3.2
 django-choices==1.5.0
 django-compat==1.0.14     # via django-hijack, django-hijack-admin
 django-hijack-admin==2.1.4
 django-hijack==2.1.4
+django-jsonfield==1.0.1   # via django-auditlog
 django-redis==4.8.0
 django-rosetta==0.7.13
 django-sniplates==0.5.0
@@ -32,10 +34,11 @@ pillow==4.1.1
 pip-tools==1.9.0
 polib==1.0.8              # via django-rosetta
 psycopg2==2.7.1
+python-dateutil==2.6.0    # via django-auditlog
 pytz==2017.2
 raven==6.0.0
 redis==2.10.5             # via django-redis
 requests-toolbelt==0.8.0
 requests==2.14.2          # via django-rosetta, microsofttranslator, requests-toolbelt
-six==1.10.0               # via django-compat, django-rosetta, microsofttranslator, pip-tools
+six==1.10.0               # via django-compat, django-rosetta, microsofttranslator, pip-tools, python-dateutil
 unidecode==0.4.20

@@ -35,6 +35,7 @@ class DMSField:
     validators = ()
     primary_key = False
     auto_created = False
+    many_to_many = False
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

@@ -1,6 +1,8 @@
 from datetime import date
 from io import BytesIO
 
+from django.conf import settings
+
 from lxml import etree
 
 from zaakmagazijn.api.stuf.choices import BerichtcodeChoices
@@ -42,12 +44,7 @@ class maakZaakdocument_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
             'administratie': 'Support',
             'gebruiker': 'john.doe@example.com',
         }
-        self.ontvanger = {
-            'organisatie': 'Maykin Media',
-            'applicatie': 'TTA',
-            'administratie': 'Support',
-            'gebruiker': 'john.doe@example.com',
-        }
+        self.ontvanger = settings.ZAAKMAGAZIJN_SYSTEEM
 
     def test_create(self):
         self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
