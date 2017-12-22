@@ -15,7 +15,9 @@ from ..validators import (
     alphanumeric_excluding_diacritic, validate_non_negative_string
 )
 from .basemodels import Object
-from .mixins import TijdstipRegistratieMixin, TijdvakGeldigheidMixin
+from .mixins import (
+    TijdstipRegistratieMixin, TijdvakGeldigheidMixin, TijdvakRelatieMixin
+)
 
 
 class ZaakType(CMISMixin, models.Model):
@@ -429,7 +431,7 @@ class Status(Object):
         return '{}{}'.format(self.zaak.zaakidentificatie, self.datum_status_gezet)
 
 
-class ZaakInformatieObject(models.Model):
+class ZaakInformatieObject(TijdvakGeldigheidMixin, TijdvakRelatieMixin, TijdstipRegistratieMixin, models.Model):
     zaak = models.ForeignKey('rgbz.Zaak', on_delete=models.CASCADE)
     informatieobject = models.ForeignKey('rgbz.InformatieObject', on_delete=models.CASCADE)
 

@@ -20,7 +20,9 @@ from .stuf.attributes import (
 )
 from .stuf.constants import XMIME_XML_NS
 from .stuf.faults import SpyneAsyncStUFFault, SpyneStUFFault
-from .stuf.models import ExtraElementen, Tijdstip_e, TijdvakGeldigheid
+from .stuf.models import (
+    ExtraElementen, Tijdstip_e, TijdvakGeldigheid, TijdvakRelatie
+)
 from .stuf.protocols import StUFSynchronous
 from .stuf.simple_types import Entiteittype, Exact, FunctieVrijBerichtElement
 
@@ -81,6 +83,7 @@ class Application(_Application):
             'extraElementen': ExtraElementen,
             'tijdstipRegistratie': Tijdstip_e.customize(nillable=True),
             'tijdvakGeldigheid': TijdvakGeldigheid,
+            'tijdvakRelatie': TijdvakRelatie,
         }
 
         # Global attribute groups
@@ -142,7 +145,11 @@ class Application(_Application):
             document.add_element(simple_type, attribute)
 
         for name, cls in global_elements.items():
-            document.add(cls, set())
+            element = etree.Element(XSD('element'))
+            element.set('name', name)
+            element.set('type', cls.get_type_name_ns(document.interface))
+
+            document.add_element(cls, element)
 
         # the contentType namespace doesn't get imported properly, so this HACKKKK solves it
         # nasty, but if it works...

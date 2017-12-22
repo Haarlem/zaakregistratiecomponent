@@ -1,4 +1,4 @@
-from zaakmagazijn.api.stuf.models import Authentiek
+from zaakmagazijn.api.stuf.models import Authentiek, ExtraElementen
 from zaakmagazijn.api.zds.entiteiten.besluiten import BesluitEntiteit
 from zaakmagazijn.api.zds.entiteiten.betrokkene import (
     MedewerkerEntiteit, VestigingEntiteit
@@ -109,6 +109,7 @@ class AdresObjectEntiteit(StUFEntiteit):
     )
     custom_fields = (
         ('authentiek', Authentiek, {'data': 'N'}),
+        ('extraElementen', ExtraElementen, {},)
     )
     fields = (
         'identificatie',
@@ -119,6 +120,7 @@ class AdresObjectEntiteit(StUFEntiteit):
         'huisletter',
         'huisnummertoevoeging',
         'postcode',
+        'extraElementen',
     )
 
 

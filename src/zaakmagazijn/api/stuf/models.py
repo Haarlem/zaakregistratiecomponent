@@ -232,7 +232,7 @@ class TijdstipMetIndicator(ComplexModel):
 
 class TijdvakGeldigheid(ComplexModel):
     __namespace__ = STUF_XML_NS
-    __type_name__ = 'tijdvakGeldigheid'
+    __type_name__ = 'TijdvakGeldigheid'
     _type_info = [
         ('beginGeldigheid', DatumMetIndicator.customize(nillable=True)),
         ('eindGeldigheid', DatumMetIndicator.customize(nillable=True, min_occurs=1)),
@@ -363,7 +363,7 @@ class BinaireInhoud(ComplexModel):
 
 class ExtraElement(ComplexModel):
     __namespace__ = STUF_XML_NS
-    __type_name__ = 'extraElement'
+    __type_name__ = 'ExtraElement'
     _type_info = [
         ('data', XmlData(Unicode)),
         ('noValue', noValue),
@@ -375,7 +375,7 @@ class ExtraElement(ComplexModel):
 
 class ExtraElementen(ComplexModel):
     __namespace__ = STUF_XML_NS
-    __type_name__ = 'extraElementen'
+    __type_name__ = 'ExtraElementen'
     _type_info = [
         ('extraElement', ExtraElement.customize(min_occurs=1, max_occurs=decimal.Decimal('inf'))),
     ]
@@ -386,5 +386,5 @@ class Authentiek(ComplexModel):
     __type_name__ = 'authentiek'
     _type_info = [
         ('data', XmlData(Unicode)),
-        ('metagegeven', XmlAttribute(Boolean.customize(__namespace__=STUF_XML_NS, min_occurs=1, default=True), ns=STUF_XML_NS)),
+        ('metagegeven', XmlAttribute(Boolean.customize(__namespace__=STUF_XML_NS, min_occurs=1), ns=STUF_XML_NS)),
     ]
