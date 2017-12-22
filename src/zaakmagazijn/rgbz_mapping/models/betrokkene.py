@@ -18,7 +18,9 @@ from ..registry import proxy_registry
 
 class BetrokkeneProxy(ModelProxy):
     model = Betrokkene
-    fields = ()
+    fields = (
+        ProxyField('identificatie', 'identificatie'),
+    )
     objects = ProxyManager()
 
     def is_type(self):

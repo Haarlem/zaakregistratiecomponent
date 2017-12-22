@@ -12,6 +12,7 @@ from ...rgbz.tests.factory_models import (
     ZaakInformatieObjectFactory
 )
 from ..stuf.choices import BerichtcodeChoices
+from ..stuf.ordering import EDCSortering
 from .base import BaseSoapTests, BaseTestPlatformTests
 
 
@@ -103,6 +104,56 @@ class geefZaakdocumentLezen_EdcLv01Tests(DMSMockMixin, BaseSoapTests):
         self.assertEqual(len(response.antwoord.object.isRelevantVoor), 1)
         self.assertEqual(response.antwoord.object.identificatie._value_1, edc1.informatieobjectidentificatie)
         self.assertEqual(response.antwoord.object.titel._value_1, 'doc 1')
+
+    def test_sortering(self):
+        """
+        Test all sortering options to give back a response. The order itself
+        is not checked.
+        """
+        document = EnkelvoudigInformatieObjectFactory.create(
+            titel='doc 1',
+            informatieobjectidentificatie='12345',
+            bronorganisatie='6789',
+        )
+
+        client = self._get_client('BeantwoordVraag')
+        stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
+
+        for i in EDCSortering.keys():
+            with client.options(raw_response=True):
+                response = client.service.geefZaakdocumentLezen_EdcLv01(
+                    stuurgegevens=stuf_factory['EDC-StuurgegevensLv01'](
+                        berichtcode='Lv01',
+                        entiteittype='EDC',
+                    ),
+                    parameters=stuf_factory['EDC-parametersVraagSynchroon'](
+                        sortering=i,
+                        indicatorVervolgvraag=False
+                    ),
+                    scope={
+                        'object': zkn_factory['GeefZaakdocumentLezen-EDC-vraagScope'](**{
+                            'entiteittype': 'EDC',
+                            'identificatie': Nil,  # v
+                        })
+                    },
+                    gelijk=zkn_factory['GeefZaakdocumentLezen-EDC-vraagSelectie'](
+                        entiteittype='EDC',
+                        identificatie=document.informatieobjectidentificatie,
+                    )
+
+                )
+
+            response_root = etree.fromstring(response.content)
+            response_berichtcode = response_root.xpath(
+                '//zkn:stuurgegevens/stuf:berichtcode',
+                namespaces=self.nsmap
+            )[0].text
+            self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+            response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+            response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
+
+            self.assertEqual(response_edc_identificatie, document.informatieobjectidentificatie)
 
 
 class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
@@ -447,3 +498,31 @@ class geefZaakdocumentLezen_EdcLv01RegressionTests(DMSMockMixin, BaseTestPlatfor
         response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
 
         self.assertEqual(response_edc_identificatie, document.informatieobjectidentificatie)
+
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'ZSH', 'administratie': '', 'gebruiker': ''})
+    def test_sortering_error(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/399
+        """
+        document = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjectidentificatie='03928623fcfc-86dc-473a-859f-3a6cec2795f3'
+        )
+        zaak = ZaakFactory.create(status_set__indicatie_laatst_gezette_status=JaNee.ja)
+        ZaakInformatieObjectFactory.create(zaak=zaak, informatieobject=document)
+
+        vraag = 'geefZaakdocumentLezen_EdcLv01_taiga399.xml'
+        response = self._do_request(self.porttype, vraag)
+
+        self.assertEquals(response.status_code, 200, response.content)
+
+        response_root = etree.fromstring(response.content)
+        response_berichtcode = response_root.xpath(
+            '//zkn:stuurgegevens/stuf:berichtcode',
+            namespaces=self.nsmap
+        )[0].text
+        self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+        response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+        response_zak_identificatie = response_object_element.xpath('zkn:isRelevantVoor/zkn:gerelateerde/zkn:identificatie', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(response_zak_identificatie, zaak.zaakidentificatie)

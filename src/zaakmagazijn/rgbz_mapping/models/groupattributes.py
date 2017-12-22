@@ -123,6 +123,9 @@ class AnderZaakObjectProxy(ModelProxy):
         ProxyField('ander_zaakobject_aanduiding', 'ander_zaakobject_aanduiding'),
         ProxyField('ander_zaakobject_lokatie', 'ander_zaakobject_lokatie'),
         ProxyField('ander_zaakobject_registratie', 'ander_zaakobject_registratie'),
+
+        ProxyForeignKey('zaak', 'zaak', 'zaakmagazijn.rgbz_mapping.models.ZaakProxy'),
+
     )
     objects = ProxyManager()
 

@@ -40,7 +40,7 @@ class EnkelvoudigDocumentEntiteit(StUFEntiteit):
     model = EnkelvoudigDocumentProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
-        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('dct.omschrijving', 'documenttype__documenttypeomschrijving'),
         ('creatiedatum', 'documentcreatiedatum'),
         ('ontvangstdatum', 'documentontvangstdatum'),
         ('titel', 'documenttitel'),
