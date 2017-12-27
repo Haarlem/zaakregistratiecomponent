@@ -6,8 +6,6 @@ from unittest import skip
 from lxml import etree
 from zeep.xsd.const import Nil
 
-from zaakmagazijn.utils.stuf_datetime import stuf_date
-
 from ...rgbz.choices import JaNee, Rolomschrijving
 from ...rgbz.tests.factory_models import (
     AnderZaakObjectFactory, BesluitFactory, BuurtObjectFactory,
@@ -18,8 +16,10 @@ from ...rgbz.tests.factory_models import (
     ZaakObjectFactory
 )
 from ...rsgb.tests.factory_models import PostAdresFactory
+from ...utils.stuf_datetime import stuf_date
 from ..stuf.choices import BerichtcodeChoices
 from ..stuf.constants import BG_XML_NS
+from ..stuf.ordering import ZAKSortering
 from .base import BaseSoapTests, BaseTestPlatformTests
 
 
@@ -68,8 +68,6 @@ class GeefZaakdetails_ZakLv01ZAKOBJTests(BaseSoapTests):
         response = self._do_simple_request(raw_response=True)
         root = etree.fromstring(response.content)
 
-        print(etree.tostring(root, pretty_print=True).decode('utf-8'))
-
         antwoord_obj = root.xpath(
             '/soap11env:Envelope/soap11env:Body/zds:geefZaakdetails_ZakLa01/zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
         self._assert_xpath_results(antwoord_obj, 'zkn:heeftBetrekkingOp/zkn:gerelateerde/zkn:adres/bg:identificatie[text()="123"]', 1, namespaces=self.nsmap)
@@ -93,8 +91,6 @@ class GeefZaakdetails_ZakLv01ZAKOBJTests(BaseSoapTests):
         ZaakObjectFactory.create(zaak=self.zaak, object=brt_obj)
         response = self._do_simple_request(raw_response=True)
         root = etree.fromstring(response.content)
-
-        print(etree.tostring(root, pretty_print=True).decode('utf-8'))
 
         antwoord_obj = root.xpath(
             '/soap11env:Envelope/soap11env:Body/zds:geefZaakdetails_ZakLa01/zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
@@ -121,8 +117,6 @@ class GeefZaakdetails_ZakLv01ZAKOBJTests(BaseSoapTests):
 
         eio_obj.refresh_from_db()
 
-        print(etree.tostring(root, pretty_print=True).decode('utf-8'))
-
         antwoord_obj = root.xpath(
             '/soap11env:Envelope/soap11env:Body/zds:geefZaakdetails_ZakLa01/zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
         self._assert_xpath_results(antwoord_obj, 'zkn:heeftBetrekkingOp/zkn:gerelateerde/zkn:enkelvoudigDocument/zkn:identificatie[text()="123"]', 1, namespaces=self.nsmap)
@@ -141,8 +135,6 @@ class GeefZaakdetails_ZakLv01ZAKOBJTests(BaseSoapTests):
         ZaakObjectFactory.create(zaak=self.zaak, object=gem_obj)
         response = self._do_simple_request(raw_response=True)
         root = etree.fromstring(response.content)
-
-        print(etree.tostring(root, pretty_print=True).decode('utf-8'))
 
         antwoord_obj = root.xpath(
             '/soap11env:Envelope/soap11env:Body/zds:geefZaakdetails_ZakLa01/zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
@@ -196,7 +188,7 @@ class GeefZaakdetails_ZakLv01ZAKOBJTests(BaseSoapTests):
         ZaakObjectFactory.create(zaak=self.zaak, object=mdw_obj)
         response = self._do_simple_request(raw_response=True)
         root = etree.fromstring(response.content)
-        print(etree.tostring(root, pretty_print=True).decode('utf-8'))
+
         zak_obj = root.xpath(
             '/soap11env:Envelope/soap11env:Body/zds:geefZaakdetails_ZakLa01/zkn:antwoord/zkn:object/zkn:heeftBetrekkingOp/zkn:gerelateerde', namespaces=self.nsmap)[0]
         expected = [
@@ -493,6 +485,47 @@ class geefZaakdetails_ZakLv01Tests(BaseSoapTests):
 
         gerelateerde = is_gezet_door['gerelateerde']
         self.assertEquals(gerelateerde['organisatorischeEenheid']['identificatie']['_value_1'], organisatorische_eenheid.identificatie)
+
+    def test_sortering(self):
+        """
+        Test all sortering options to give back a response. The order itself
+        is not checked.
+        """
+        client = self._get_client('BeantwoordVraag')
+        stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
+
+        for i in ZAKSortering.keys():
+            with client.options(raw_response=True):
+                response = client.service.geefZaakdetails_ZakLv01(
+                    stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
+                        berichtcode='Lv01',
+                        entiteittype='ZAK'),
+                    parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
+                        sortering=i,
+                        indicatorVervolgvraag=False),
+                    scope={
+                        'object': zkn_factory['ZAK-vraagScope'](
+                            entiteittype='ZAK',  # v
+                            scope='alles',
+                        ),
+                    },
+                    gelijk=zkn_factory['GeefZaakDetails-ZAK-vraagSelectie'](
+                        entiteittype='ZAK',  # v
+                        identificatie=self.zaak.zaakidentificatie,
+                    )
+                )
+
+            response_root = etree.fromstring(response.content)
+            response_berichtcode = response_root.xpath(
+                '//zkn:stuurgegevens/stuf:berichtcode',
+                namespaces=self.nsmap
+            )[0].text
+            self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+            response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+            response_zak_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
+
+            self.assertEqual(response_zak_identificatie, self.zaak.zaakidentificatie)
 
 
 class geefZaakdetails_ZakLa01Tests(BaseSoapTests):

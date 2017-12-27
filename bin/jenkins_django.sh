@@ -14,8 +14,8 @@ echo "Starting tests"
     --verbosity 2 \
     --noinput \
     --enable-coverage \
-    --pep8-rcfile=.pep8.rc \
-    --pylint-rcfile=.pylint.rc \
+    --pep8-rcfile=.pep8 \
+    --pylint-rcfile=.pylintrc \
     --coverage-rcfile=.coveragerc
 )
 TESTS_FAIL=$?

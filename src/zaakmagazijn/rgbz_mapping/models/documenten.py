@@ -12,7 +12,7 @@ class DocumentTypeProxy(ModelProxy):
     mnemonic = 'DCT'
 
     fields = (
-        ProxyField('omschrijving', 'informatieobjecttypeomschrijving'),
+        ProxyField('documenttypeomschrijving', 'informatieobjecttypeomschrijving'),
         ProxyField('documentcategorie', 'informatieobjectcategorie'),
         ProxyField('documenttypeomschrijving_generiek', 'informatieobjecttypeomschrijving_generiek'),
     )

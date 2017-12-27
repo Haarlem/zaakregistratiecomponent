@@ -31,10 +31,10 @@ class BesluitEntiteit(StUFEntiteit):
         ('datumPublicatie', 'publicatiedatum'),  # o
         ('datumVerzending', 'verzenddatum'),  # o
         ('datumUiterlijkeReactie', 'uiterlijke_reactiedatum'),  # o
-        # TODO [KING]: Taiga #230
-        ('tijdstipRegistratie', 'tijdstip_registratie'),  # o
     )
     # filter_fields = ('identificatie', )
+    # TODO [KING]: Taiga #230
+    tijdstip_registratie = 'tijdstip_registratie'
     begin_geldigheid = 'besluittype__datum_begin_geldigheid_besluittype'
     eind_geldigheid = 'besluittype__datum_einde_geldigheid_besluittype'
 

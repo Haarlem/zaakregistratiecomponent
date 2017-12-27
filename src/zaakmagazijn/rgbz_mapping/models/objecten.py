@@ -19,7 +19,9 @@ from ..registry import proxy_registry
 
 class ObjectProxy(ModelProxy):
     model = Object
-    fields = ()
+    fields = (
+        ProxyField('identificatie', 'identificatie'),
+    )
 
     def is_type(self):
         django_obj = self.to_django_obj()

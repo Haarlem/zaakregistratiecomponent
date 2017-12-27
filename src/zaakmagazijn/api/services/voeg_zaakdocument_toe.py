@@ -34,13 +34,19 @@ class ZaakInformatieObjectEntiteit(StUFEntiteit):
     gerelateerde = ('zaak', ZaakEntiteit)
     field_mapping = ()  # Intentionally left blank
 
+    begin_geldigheid = 'begin_geldigheid'
+    eind_geldigheid = 'eind_geldigheid'
+    begin_relatie = 'begin_relatie'
+    eind_relatie = 'begin_relatie'
+    tijdstip_registratie = 'tijdstip_registratie'
+
 
 class EnkelvoudigDocumentEntiteit(StUFEntiteit):
     mnemonic = 'EDC'
     model = EnkelvoudigDocumentProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
-        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('dct.omschrijving', 'documenttype__documenttypeomschrijving'),
         ('creatiedatum', 'documentcreatiedatum'),
         ('ontvangstdatum', 'documentontvangstdatum'),
         ('titel', 'documenttitel'),

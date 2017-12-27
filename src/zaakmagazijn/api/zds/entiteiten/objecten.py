@@ -1,4 +1,4 @@
-from zaakmagazijn.api.stuf.models import Authentiek
+from zaakmagazijn.api.stuf.models import Authentiek, ExtraElementen
 from zaakmagazijn.api.zds.entiteiten.besluiten import BesluitEntiteit
 from zaakmagazijn.api.zds.entiteiten.betrokkene import (
     MedewerkerEntiteit, VestigingEntiteit
@@ -109,6 +109,7 @@ class AdresObjectEntiteit(StUFEntiteit):
     )
     custom_fields = (
         ('authentiek', Authentiek, {'data': 'N'}),
+        ('extraElementen', ExtraElementen, {},)
     )
     fields = (
         'identificatie',
@@ -119,6 +120,7 @@ class AdresObjectEntiteit(StUFEntiteit):
         'huisletter',
         'huisnummertoevoeging',
         'postcode',
+        'extraElementen',
     )
 
 
@@ -155,7 +157,7 @@ class EnkelvoudigDocumentEntiteit(StUFEntiteit):
     model = EnkelvoudigDocumentProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
-        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('dct.omschrijving', 'documenttype__documenttypeomschrijving'),
         ('creatiedatum', 'documentcreatiedatum'),
         ('ontvangstdatum', 'documentontvangstdatum'),
         ('titel', 'documenttitel'),
@@ -390,7 +392,7 @@ class SamengesteldInformatieoObjectEntiteit(StUFEntiteit):
     model = SamengesteldInformatieObjectProxy
     field_mapping = (
         ('identificatie', 'identificatie'),
-        ('dct.omschrijving', 'documenttype__omschrijving'),
+        ('dct.omschrijving', 'documenttype__documenttypeomschrijving'),
         # TODO [TECH]: Not supported yet
         # ('dct.omschrijvingGeneriek', 'informatieobjecttype__informatieobjecttypeomschrijving_generiek__informatieobjecttypeomschrijving_generiek'),
         ('creatiedatum', 'documentcreatiedatum'),

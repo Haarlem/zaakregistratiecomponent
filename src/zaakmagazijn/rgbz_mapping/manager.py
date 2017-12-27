@@ -36,13 +36,40 @@ class ProxyQuerySet:
         return self.__class__(proxy_model=self.proxy_model, queryset=queryset)
 
     def order_by(self, *field_names):
-
-        new_field_names = []
+        new_order_by = []
         for field_name in field_names:
-            new_field_names.append(self.proxy_model.get_field(field_name).rgbz2_name)
+            new_order_by.append(self.translate_nested_order_by(field_name))
 
-        new_queryset = self.queryset.order_by(*new_field_names)
+        new_queryset = self.queryset.order_by(*new_order_by)
         return self.__class__(proxy_model=self.proxy_model, queryset=new_queryset)
+
+    def translate_nested_order_by(self, field):
+        reverse = field.startswith('-')
+        if reverse:
+            field = field[1:]
+
+        new_lookup = ''
+        prev_model = self.proxy_model
+        for part in field.split(LOOKUP_SEP):
+            if new_lookup:
+                new_lookup += LOOKUP_SEP
+            field = prev_model.get_field(part)
+            rgbz2_field_name = field.rgbz2_name
+            if not hasattr(field, 'relation_proxy_model'):
+                new_lookup += rgbz2_field_name
+                break
+            else:
+                # Hack to remove "_set" postfix.
+                if rgbz2_field_name.endswith('_set'):
+                    rgbz2_field_name = rgbz2_field_name[:-4]
+                new_lookup += rgbz2_field_name
+
+            prev_model = field.relation_proxy_model
+
+        if reverse:
+            new_lookup = '-{}'.format(new_lookup)
+
+        return new_lookup
 
     def translate_nested_filter(self, field):
         new_lookup = ''

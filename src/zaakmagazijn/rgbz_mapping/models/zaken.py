@@ -262,6 +262,12 @@ class ZaakDocumentProxy(ModelProxy):
         ProxyForeignKey('status', 'status', StatusProxy),
         ProxyForeignKey('zaak', 'zaak', ZaakProxy),
         ProxyForeignKey('informatieobject', 'informatieobject', 'zaakmagazijn.rgbz_mapping.models.EnkelvoudigDocumentProxy'),
+
+        ProxyField('begin_geldigheid', 'begin_geldigheid'),
+        ProxyField('eind_geldigheid', 'eind_geldigheid'),
+        ProxyField('begin_relatie', 'begin_relatie'),
+        ProxyField('eind_relatie', 'eind_relatie'),
+        ProxyField('tijdstip_registratie', 'tijdstip_registratie'),
     )
 
 # ZaakObject

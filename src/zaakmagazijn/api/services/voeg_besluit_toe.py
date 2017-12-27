@@ -12,7 +12,9 @@ from ..stuf.attributes import entiteittype, noValue, verwerkingssoort
 from ..stuf.choices import ClientFoutChoices, ServerFoutChoices
 from ..stuf.constants import STUF_XML_NS, ZKN_XML_NS
 from ..stuf.faults import StUFFault
-from ..stuf.models import Bv03Bericht, Systeem, Tijdstip_e, TijdvakGeldigheid
+from ..stuf.models import (
+    Bv03Bericht, ExtraElementen, Systeem, Tijdstip_e, TijdvakGeldigheid
+)
 from ..stuf.utils import get_bv03_stuurgegevens
 
 
@@ -40,7 +42,7 @@ class VoegBesluitToe_BSLEDC_kennisgeving(ComplexModel):
     _type_info = [
         # Elements
         ('gerelateerde', VoegBesluitToe_EDC_kerngegevensKennisgeving),
-        # <element ref="StUF:extraElementen" minOccurs="0"/>
+        ('extraElementen', ExtraElementen.customize(ref='extraElementen')),
         # Attributes
         ('entiteittype', entiteittype.customize(fixed='BSLEDC')),
         ('verwerkingssoort', verwerkingssoort),

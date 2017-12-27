@@ -183,7 +183,7 @@ class Lk01Builder(ComplexModelBuilder):
         tijdvak_relatie = stuf_entiteit.get_tijdvak_relatie()
         if tijdvak_relatie:
             type_info.append(
-                ('tijdvakRelatie', TijdvakRelatie.customize(ref='TijdvakRelatie')),
+                ('tijdvakRelatie', TijdvakRelatie.customize(ref='tijdvakRelatie')),
             )
 
         tijdstip_registratie = stuf_entiteit.get_tijdstip_registratie()

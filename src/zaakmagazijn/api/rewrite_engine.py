@@ -95,7 +95,7 @@ class RewriteEngine:
         # namespace) but we don't want that because the reference WSDL uses it.
         # etree.cleanup_namespaces(element, top_nsmap=nsmap)
 
-        return etree.tostring(root, encoding='utf8', xml_declaration=True, pretty_print=True)
+        return etree.tostring(root, encoding='utf-8', xml_declaration=True, pretty_print=True)
 
     @classmethod
     def rewrite(cls, view_func):

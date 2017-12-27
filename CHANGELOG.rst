@@ -2,10 +2,24 @@
 Change history
 ==============
 
+0.9.7
+=====
+
+*December 22, 2017*
+
+* Fixed an issue with some ``sortering`` options not being properly populated
+  through the RGBZ compatability layer, resulting in an error.
+* Fixed various issues related to the WSDL rendering when
+  ``ZAAKMAGAZIJN_REFERENCE_WSDL`` is set to ``False``. It can now be parsed by
+  SoapUI again.
+* Fixed various small issues.
+* Pointed README shields to Haarlem repository.
+
+
 0.9.6
 =====
 
-*18 december, 2017*
+*December 18, 2017*
 
 * Added audit log to the admin interface.
 * The intended receiver ("ontvanger") is now checked even when

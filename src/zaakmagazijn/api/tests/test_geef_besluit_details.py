@@ -1,11 +1,12 @@
 from lxml import etree
 from zeep.xsd.const import Nil
 
-from zaakmagazijn.api.stuf.choices import BerichtcodeChoices
-from zaakmagazijn.api.tests.base import BaseSoapTests, BaseTestPlatformTests
-from zaakmagazijn.rgbz.tests.factory_models import BesluitFactory
-
-from ...rgbz.tests.factory_models import EnkelvoudigInformatieObjectFactory
+from ...rgbz.tests.factory_models import (
+    BesluitFactory, EnkelvoudigInformatieObjectFactory
+)
+from ..stuf.choices import BerichtcodeChoices
+from ..stuf.ordering import BSLSortering
+from .base import BaseSoapTests, BaseTestPlatformTests
 
 
 class geefBesluitDetails_BslLv01Tests(BaseSoapTests):
@@ -122,6 +123,64 @@ class geefBesluitDetails_BslLv01Tests(BaseSoapTests):
             antwoord_obj, 'zkn:isVastgelegdIn/zkn:gerelateerde/zkn:identificatie', 0, namespaces=self.nsmap)
         self._assert_xpath_results(
             antwoord_obj, 'zkn:isVastgelegdIn/zkn:gerelateerde/zkn:titel', 0, namespaces=self.nsmap)
+
+    def test_sortering(self):
+        """
+        Test all sortering options to give back a response. The order itself
+        is not checked.
+        """
+        besluit = BesluitFactory.create(
+            besluittype__datum_begin_geldigheid_besluittype="20170830",
+            besluittype__datum_einde_geldigheid_besluittype=None
+        )
+
+        client = self._get_client('BeantwoordVraag')
+        stuf_factory, zkn_factory, zds_factory = self._get_type_factories(client)
+
+        for i in BSLSortering.keys():
+            with client.options(raw_response=True):
+                response = client.service.geefBesluitdetails_BslLv01(
+                    stuurgegevens=stuf_factory['BSL-StuurgegevensLv01'](
+                        berichtcode='Lv01',
+                        entiteittype='BSL',
+                    ),
+                    parameters=stuf_factory['BSL-parametersVraagSynchroon'](
+                        sortering=i,
+                        indicatorVervolgvraag='false'
+                    ),
+                    scope={
+                        'object': zkn_factory['geefBesluitDetails-BSL-vraagScope'](**{
+                            'entiteittype': 'BSL',  # v
+                            'identificatie': Nil,  # v
+                            'datumBeslissing': Nil,  # v
+                            'ingangsdatumWerking': Nil,  # v
+                            'bst.reactietermijn': Nil,
+                            'isUitkomstVan': {
+                                'entiteittype': 'BSLZAK',  # v
+                                'gerelateerde': zkn_factory['geefBesluitDetails-ZAK-gerelateerdeVraagScope'](**{
+                                    'entiteittype': 'ZAK',  # v
+                                    'identificatie': Nil,
+                                }),
+                            },
+                        })
+                    },
+                    gelijk=zkn_factory['geefBesluitDetails-BSL-vraagSelectie'](
+                        entiteittype='BSL',  # v
+                        identificatie=besluit.identificatie,  # v
+                    )
+                )
+
+            response_root = etree.fromstring(response.content)
+            response_berichtcode = response_root.xpath(
+                '//zkn:stuurgegevens/stuf:berichtcode',
+                namespaces=self.nsmap
+            )[0].text
+            self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+            response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+            response_bsl_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
+
+            self.assertEqual(response_bsl_identificatie, besluit.identificatie)
 
 
 class geefBesluitDetails_BslLa01Tests(BaseSoapTests):
