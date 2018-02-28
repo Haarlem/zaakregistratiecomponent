@@ -12,7 +12,7 @@ PROJECT_NAME=zaakmagazijn
 PROJECT_PATH=/var/sites/$PROJECT_NAME
 # This will be passed to "git clone -b $BRANCH $REPO".
 REPO=https://github.com/Haarlem/zaakregistratiecomponent.git
-BRANCH=develop
+BRANCH=master
 # Available options are: dev, staging, production
 TARGET=staging
 # Django project settings.

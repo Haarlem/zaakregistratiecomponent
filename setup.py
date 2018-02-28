@@ -56,10 +56,6 @@ def reqs(*f, deps=False):
 def deps(*f):
     return reqs(*f, deps=True)
 
-print(reqs('base.txt'))
-print(deps('base.txt'))
-
-
 # -*- Long Description -*-
 
 if os.path.exists('README.rst'):

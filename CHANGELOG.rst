@@ -10,6 +10,7 @@ Change history
 * Added description to status type object representation.
 * Updated auditlog admin to show timezone aware timestamp.
 * Updated error message for StUF058 to be more useful.
+* Pointed setup and all shields to master branch.
 
 
 0.9.7
