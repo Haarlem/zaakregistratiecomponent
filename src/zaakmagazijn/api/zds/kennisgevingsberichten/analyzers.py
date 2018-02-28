@@ -66,11 +66,12 @@ class Mutation:
         # Determine the kind of operation this is.
         operation = get_operation(stuf_entiteit, entiteit_type, self.mutatiesoort, obj1, obj2, parent_operation)
         if operation is None:
-            # TODO [TECH]: stuf_details:
-            # Kan dit berict niet verwerken met een verwerkingssoort '$verwerkingssoort' voor het oude bericht
-            # en '$verwerkingssoort' voor het nieuwe bericht.
-            raise StUFFault(ServerFoutChoices.stuf058,
-                            stuf_details='')
+            raise StUFFault(
+                ServerFoutChoices.stuf058,
+                stuf_details='Kan dit bericht niet verwerken met een verwerkingssoort \'{}\' voor het oude voorkomen '
+                             'en \'{}\' voor het huidige voorkomen.'.format(
+                    getattr(obj1, 'verwerkingssoort', '?'), getattr(obj2, 'verwerkingssoort', '?')
+                ))
 
         self.verify_entity_type(stuf_entiteit, obj1)
         self.verify_entity_type(stuf_entiteit, obj2)
