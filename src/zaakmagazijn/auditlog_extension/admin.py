@@ -8,11 +8,11 @@ from auditlog.models import LogEntry
 class LogEntryAdminExt(LogEntryAdmin):
     change_form_template = 'admin/readonly_change_form.html'
 
-    list_display = ['created', 'resource_url', 'get_action_display', 'msg_short', 'get_user_display']
+    list_display = ['timestamp', 'resource_url', 'get_action_display', 'msg_short', 'get_user_display']
     search_fields = ['timestamp', 'object_repr', 'changes', 'actor__first_name', 'actor__last_name', 'additional_data']
-    readonly_fields = ['created', 'resource_url', 'get_action_display', 'get_user_display', 'msg', 'additional_data']
+    readonly_fields = ['timestamp', 'resource_url', 'get_action_display', 'get_user_display', 'msg', 'additional_data']
     fieldsets = [
-        (None, {'fields': ['created', 'get_user_display', 'resource_url']}),
+        (None, {'fields': ['timestamp', 'get_user_display', 'resource_url']}),
         (_('Changes'), {'fields': ['get_action_display', 'msg']}),
         # (_('Additional data'), {'fields': ['additional_data']}),
     ]

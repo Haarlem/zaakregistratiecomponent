@@ -2,6 +2,15 @@
 Change history
 ==============
 
+0.9.8
+=====
+
+*tba*
+
+* Added description to status type object representation.
+* Updated auditlog admin to show timezone aware timestamp.
+
+
 0.9.7
 =====
 
