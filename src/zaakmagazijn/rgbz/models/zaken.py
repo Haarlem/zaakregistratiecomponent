@@ -136,7 +136,7 @@ class StatusType(models.Model):
         mnemonic = 'STT'
 
     def __str__(self):
-        return '{}_{}'.format(self.zaaktype, self.statustypevolgnummer)
+        return '{}_{} ({})'.format(self.zaaktype, self.statustypevolgnummer, self.statustypeomschrijving)
 
 
 class Zaak(CMISMixin, TijdvakGeldigheidMixin, TijdstipRegistratieMixin, models.Model):
