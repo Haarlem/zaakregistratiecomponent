@@ -169,7 +169,7 @@ class voegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseSoapTests):
             tijdstipBericht=stuf_datetime.now(),
         )
         inhoud = stuf_factory.BinaireInhoud(
-            base64.b64encode(b'helloworld'),
+            b'helloworld',
             bestandsnaam='to_be_everywhere.flac',
             contentType='audio/flac',
         )
@@ -306,7 +306,7 @@ class STPvoegZaakdocumentToe_EdcLk01Tests(DMSMockMixin, BaseTestPlatformTests):
 
         # it's double encoded
         expected_string = 'UjBsR09EbGhjZ0dTQUxNQUFBUUNBRU1tQ1p0dU1GUXhEUzhi'
-        expected_bytes = base64.b64decode(base64.b64decode(expected_string))
+        expected_bytes = base64.b64decode(expected_string)
 
         self.assertEqual(bytes, expected_bytes)
 
@@ -481,7 +481,7 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         name = '{}.flac'.format(int(time.time()))
 
         inhoud = stuf_factory.BinaireInhoud(
-            base64.b64encode(big_ass_file),
+            big_ass_file,
             bestandsnaam=name,
             contentType='audio/flac',
         )
@@ -577,7 +577,7 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         name = '{}.flac'.format(int(time.time()))
 
         inhoud = stuf_factory.BinaireInhoud(
-            base64.b64encode(big_ass_file),
+            big_ass_file,
             bestandsnaam=name,
             contentType='audio/flac',
         )

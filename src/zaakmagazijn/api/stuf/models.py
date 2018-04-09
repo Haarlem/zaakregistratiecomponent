@@ -358,7 +358,7 @@ class BinaireInhoud(ComplexModel):
         self.data.rollover()
         self.data.handle.seek(0)
         encoded = self.data.handle.read()
-        return BytesIO(base64.b64decode(encoded))
+        return BytesIO(encoded)
 
 
 class ExtraElement(ComplexModel):

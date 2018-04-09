@@ -27,9 +27,8 @@ TEST_FILES_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def _create_binaire_inhoud(binary_data, filename=None):
-    encoded = base64.b64encode(binary_data)
     inhoud = BinaireInhoud(
-        data=File.Value(data=BytesIO(encoded)),
+        data=File.Value(data=BytesIO(binary_data)),
         bestandsnaam=filename
     )
     return inhoud
