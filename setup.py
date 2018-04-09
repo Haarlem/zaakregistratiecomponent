@@ -68,7 +68,7 @@ else:
 setuptools.setup(
     name=NAME,
     # packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
-    version='0.9.7',
+    version='0.9.8',
     description='Implementatie van het referentiecomponent Zaaksysteem (ZS)',
     long_description=long_description,
     keywords='zaaksysteem zakenmagazijn zds zaakservices documentservices soap zds',

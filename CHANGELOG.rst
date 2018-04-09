@@ -5,8 +5,12 @@ Change history
 0.9.8
 =====
 
-*tba*
+*April 9, 2018*
 
+* Removed the need to double-encode ``inhoud`` for ``updateZaakdocument`` and
+  ``voegZaakdocumentToe``. If you double encoded the content, you should
+  remove this behaviour when you update to this version. Otherwise, the
+  documents in your DMS will be unreadable (that is, base64 encoded).
 * Added description to status type object representation.
 * Updated auditlog admin to show timezone aware timestamp.
 * Updated error message for StUF058 to be more useful.
