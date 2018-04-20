@@ -199,7 +199,7 @@ class NatuurlijkPersoon(CMISMixin, BereikenMixin, GeslachtsAanduidingMixin, Reke
     aanduiding_naamgebruik = models.CharField(
         max_length=1, null=True, blank=True, choices=NaamGebruik.choices,
         help_text='Een aanduiding voor de wijze van aanschrijving van de NATUURLIJKe PERSOON.')
-    geboortedatum_ingeschreven_persoon = StUFDateField()
+    geboortedatum_ingeschreven_persoon = StUFDateField(null=True, blank=True)
     geboortedatum_ander_natuurlijk_persoon = StUFDateField(null=True, blank=True)
 
     """

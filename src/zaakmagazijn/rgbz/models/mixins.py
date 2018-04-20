@@ -171,7 +171,7 @@ class RekeningnummerMixin(models.Model):
 
 
 class GeslachtsAanduidingMixin(models.Model):
-    geslachtsaanduiding = models.CharField(
+    geslachtsaanduiding = models.CharField(null=True, blank=True,
         max_length=1, help_text='Een aanduiding die aangeeft of de persoon een man of een vrouw is, '
                                 'of dat het geslacht nog onbekend is.', choices=GeslachtsAanduiding.choices)
 
