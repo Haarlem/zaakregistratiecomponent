@@ -56,6 +56,10 @@ def reqs(*f, deps=False):
 def deps(*f):
     return reqs(*f, deps=True)
 
+print(reqs('base.txt'))
+print(deps('base.txt'))
+
+
 # -*- Long Description -*-
 
 if os.path.exists('README.rst'):
@@ -68,7 +72,7 @@ else:
 setuptools.setup(
     name=NAME,
     # packages=setuptools.find_packages(exclude=['tests', 'tests.*']),
-    version='0.9.8',
+    version='0.9.9',
     description='Implementatie van het referentiecomponent Zaaksysteem (ZS)',
     long_description=long_description,
     keywords='zaaksysteem zakenmagazijn zds zaakservices documentservices soap zds',

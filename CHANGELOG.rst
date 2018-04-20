@@ -2,6 +2,15 @@
 Change history
 ==============
 
+0.9.9
+=====
+
+*April 20, 2018*
+
+* Fixed ``geslachtsaanduiding`` en ``geboortedatum`` to be optional for a
+  ``NatuurlijkPersoon``.
+
+
 0.9.8
 =====
 
@@ -11,10 +20,6 @@ Change history
   ``voegZaakdocumentToe``. If you double encoded the content, you should
   remove this behaviour when you update to this version. Otherwise, the
   documents in your DMS will be unreadable (that is, base64 encoded).
-* Added description to status type object representation.
-* Updated auditlog admin to show timezone aware timestamp.
-* Updated error message for StUF058 to be more useful.
-* Pointed setup and all shields to master branch.
 
 
 0.9.7

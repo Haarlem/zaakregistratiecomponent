@@ -2,7 +2,7 @@
 Zaakmagazijn
 ============
 
-:Version: 0.9.8
+:Version: 0.9.9
 :Source: https://github.com/Haarlem/zaakregistratiecomponent
 :Keywords: zaaksysteem, zakenmagazijn, zds, zaakservices, documentservices, soap, zds
 
@@ -75,10 +75,10 @@ Verwijzingen
 * `Code <https://github.com/maykinmedia/zaakregistratiecomponent>`_
 
 
-.. |build-status| image:: https://secure.travis-ci.org/Haarlem/zaakregistratiecomponent.svg?branch=master
+.. |build-status| image:: https://secure.travis-ci.org/Haarlem/zaakregistratiecomponent.svg?branch=develop
     :alt: Build status
     :target: https://travis-ci.org/Haarlem/zaakregistratiecomponent
 
-.. |coverage| image:: https://codecov.io/github/maykinmedia/zaakregistratiecomponent/coverage.svg?branch=master
+.. |coverage| image:: https://codecov.io/github/maykinmedia/zaakregistratiecomponent/coverage.svg?branch=develop
     :alt: Coverage
-    :target: https://codecov.io/github/Haarlem/zaakregistratiecomponent?branch=master
+    :target: https://codecov.io/github/Haarlem/zaakregistratiecomponent?branch=develop
