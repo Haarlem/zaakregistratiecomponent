@@ -12,6 +12,7 @@ from ..stuf import OneToManyRelation, StUFEntiteit, StUFKerngegevens
 from ..stuf.choices import ClientFoutChoices, ServerFoutChoices
 from ..stuf.faults import StUFFault
 from ..stuf.models import Bv03Bericht
+from ..stuf.protocols import Nil
 from ..stuf.utils import get_bv03_stuurgegevens
 from ..zds import Lk01Builder
 from ..zds.entiteiten.betrokkene import OEHVZOEntiteit
@@ -240,6 +241,8 @@ class ActualiseerZaakstatus(ServiceBase):
 
         zakstt_datum_status_gezet = huidig.heeft[0].datumStatusGezet.data
         zakstt_toelichting = huidig.heeft[0].toelichting
+        if isinstance(zakstt_toelichting, Nil):
+            zakstt_toelichting = None
 
         with transaction.atomic():
             rol = Rol.objects.create(
@@ -248,7 +251,7 @@ class ActualiseerZaakstatus(ServiceBase):
                 # TODO [KING]: Taiga #221
                 rolomschrijving=zakbtrbtr_rolomschrijving or Rolomschrijving.behandelaar,
                 rolomschrijving_generiek=zakbtrbtr_rolomschrijving_generiek or RolomschrijvingGeneriek.behandelaar,
-                roltoelichting=zakbtrbtr_roltoelichting or ''
+                roltoelichting=zakbtrbtr_roltoelichting
             )
 
             # TODO [KING]: There is a unique constraint on zaak and
