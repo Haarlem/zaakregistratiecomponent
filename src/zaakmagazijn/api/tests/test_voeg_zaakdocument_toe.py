@@ -16,7 +16,7 @@ from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.tests import on_jenkins, should_skip_cmis_tests
 
 from ...rgbz.choices import JaNee
-from ...rgbz.models import EnkelvoudigInformatieObject, ZaakInformatieObject
+from ...rgbz.models import EnkelvoudigInformatieObject, ZaakInformatieObject, Zaak
 from ...rgbz.tests.factory_models import (
     InformatieObjectTypeFactory, StatusFactory, ZaakFactory
 )
@@ -395,7 +395,10 @@ class voegZaakdocumentToe_EdcLk01RegressionTests(DMSMixin, BaseTestPlatformTests
     disable_mocks = True
 
     @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
-    @override_settings(CMIS_UPLOAD_TO='zaakmagazijn.cmis.utils.upload_to_date_based')
+    @override_settings(
+        CMIS_UPLOAD_TO='zaakmagazijn.cmis.utils.upload_to_date_based',
+        ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'SoapUI', 'administratie': 'test', 'gebruiker': 'David'}
+    )
     def test_index_error_list_index_out_of_range(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/278
@@ -411,6 +414,34 @@ class voegZaakdocumentToe_EdcLk01RegressionTests(DMSMixin, BaseTestPlatformTests
         response = self._do_request(self.porttype, vraag)
 
         self.assertEquals(response.status_code, 200, response.content)
+
+
+class voegZaakdocumentToe_EdcLk01RegressionWithMocksTests(DMSMockMixin, BaseTestPlatformTests):
+    maxDiff = None
+    test_files_subfolder = 'maykin_voegZaakdocumentToe'
+    porttype = 'OntvangAsynchroon'
+
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'ZSH', 'administratie': '', 'gebruiker': ''})
+    def test_incorrect_attempt_to_create_existing_zaak_when_adding_zaak_omschrijving(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/403
+        """
+        self._dms_client.geef_inhoud.return_value = ('dummy.pdf', BytesIO(b'dummy'))
+
+        zaak = ZaakFactory.create(
+            zaakidentificatie='2017-0000633',
+            omschrijving='een omschrijving',
+            status_set__indicatie_laatst_gezette_status=JaNee.ja
+        )
+        edc_type = InformatieObjectTypeFactory.create(informatieobjecttypeomschrijving='verhuizing_Aangifteformulier')
+
+        self.assertEqual(Zaak.objects.all().count(), 1)
+
+        vraag = 'voegZaakdocumentToe_EdcLk01_taiga403.xml'
+        response = self._do_request(self.porttype, vraag)
+
+        self.assertEquals(response.status_code, 200, response.content)
+        self.assertEqual(Zaak.objects.all().count(), 1)
 
 
 class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
