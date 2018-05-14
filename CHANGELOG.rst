@@ -2,6 +2,16 @@
 Change history
 ==============
 
+0.9.10
+======
+
+*tbd*
+
+* Fixed ``link`` in the RGBZ compatability layer to actually return the the
+  ``link`` value of ``InformatieObject``en in related services. It previously
+  returned the ``formaat`` value by mistake.
+
+
 0.9.9
 =====
 

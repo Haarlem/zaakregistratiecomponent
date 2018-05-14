@@ -77,7 +77,7 @@ class EnkelvoudigDocumentProxy(ModelProxy):
 
     @classmethod
     def to_rgbz1_documentlink(cls, obj):
-        return obj.formaat[:200]
+        return obj.link[:200] if obj.link else None
 
     @classmethod
     def to_rgbz1__inhoud(cls, obj):
