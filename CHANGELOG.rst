@@ -10,6 +10,9 @@ Change history
 * Fixed ``link`` in the RGBZ compatability layer to actually return the the
   ``link`` value of ``InformatieObject``en in related services. It previously
   returned the ``formaat`` value by mistake.
+* Fixed issues with fields ``vertrouwlijkAanduiding`` and
+  ``vertrouwelijkheidAanduiding``. The ZDS 1.2 specification contains invalid
+  attribute names. These fields are now all named ``vertrouwelijkAanduiding``.
 
 
 0.9.9
@@ -19,6 +22,9 @@ Change history
 
 * Fixed ``geslachtsaanduiding`` en ``geboortedatum`` to be optional for a
   ``NatuurlijkPersoon``.
+* Fixed issues with fields ``vertrouwlijkAanduiding`` and
+  ``vertrouwelijkheidAanduiding``. The ZDS 1.2 specification contains invalid
+  attribute names. These fields are now all named ``vertrouwelijkAanduiding``.
 
 
 0.9.8

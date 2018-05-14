@@ -70,7 +70,7 @@ class InformatieObjectEntiteit(StUFEntiteit):
         ('taal', 'enkelvoudiginformatieobject__taal'),
         ('versie', 'versie'),
         ('verzenddatum', 'verzenddatum'),
-        ('vertrouwelijkheidAanduiding', 'vertrouwlijkaanduiding'),
+        ('vertrouwelijkAanduiding', 'vertrouwelijkaanduiding'),
         ('auteur', 'auteur'),
         ('status', 'informatieobject_status'),
         ('link', 'enkelvoudiginformatieobject__link'),

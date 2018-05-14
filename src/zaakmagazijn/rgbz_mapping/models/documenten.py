@@ -30,7 +30,7 @@ class DocumentProxy(ModelProxy):
         ProxyField('documenttitel', 'titel'),
         ProxyField('documentbeschrijving', 'beschrijving'),
         ProxyField('documentverzenddatum', 'verzenddatum'),
-        ProxyField('vertrouwlijkaanduiding', 'vertrouwlijkaanduiding'),
+        ProxyField('vertrouwelijkaanduiding', 'vertrouwelijkaanduiding'),
         ProxyField('documentauteur', 'auteur'),
         ProxyField('_inhoud', '_inhoud', is_virtual=True),
         ProxyForeignKey('documenttype', 'informatieobjecttype', DocumentTypeProxy),
