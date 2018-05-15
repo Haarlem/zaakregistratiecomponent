@@ -73,7 +73,11 @@ class EnkelvoudigDocumentProxy(ModelProxy):
 
     @classmethod
     def to_rgbz1_documentformaat(cls, obj):
-        return obj.formaat[:10]
+        # The specification in RGBZ 1.0 for "documentformaat" indicates type
+        # AN10. This effectively means that only 10 characters can be
+        # returned. However, the XSD of ZDS 1.2 indicates a max of 85
+        # characters. In agreement with Haarlem, this value is not cut off.
+        return obj.formaat
 
     @classmethod
     def to_rgbz1_documentlink(cls, obj):

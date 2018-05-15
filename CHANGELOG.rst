@@ -27,6 +27,10 @@ Change history
     - ``WOZDeelObject.woz_objectnummer``
     - ``WOZObject.soortobjectcode``
     - ``WOZWaardeObject.vastgestelde_waarde``
+* The ``EnkelvoudigInformatieObject.formaat`` attribute is no longer cut off
+  to 10 characters as was specified in the RGBZ 1.0 specification. The ZDS 1.2
+  specification allows for 85 characters, and we choose to remove the RGBZ
+  compatability layer rule to allow all stored characters to be returned.
 
 
 0.9.9
