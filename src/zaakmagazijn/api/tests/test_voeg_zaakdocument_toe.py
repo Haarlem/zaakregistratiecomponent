@@ -476,6 +476,9 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         root_folder.deleteTree()
 
     @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
+    @override_settings(
+        ZAAKMAGAZIJN_SYSTEEM={'organisatie': 'Maykin Media', 'applicatie': 'TTA', 'administratie': '', 'gebruiker': ''}
+    )
     def test_upload_small_file(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/387
@@ -485,14 +488,14 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         self.zender = {
             'organisatie': 'Maykin Media',
             'applicatie': 'Test',
-            'administratie': 'Support',
-            'gebruiker': 'john.doe@example.com',
+            'administratie': '',
+            'gebruiker': '',
         }
         self.ontvanger = {
             'organisatie': 'Maykin Media',
             'applicatie': 'TTA',
-            'administratie': 'Support',
-            'gebruiker': 'john.doe@example.com',
+            'administratie': '',
+            'gebruiker': '',
         }
         client = self._get_client('OntvangAsynchroon')
 
@@ -570,6 +573,9 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         )
 
     @skipIf(on_jenkins() or should_skip_cmis_tests(), "Skipped while there's no Alfresco running on Jenkins")
+    @override_settings(
+        ZAAKMAGAZIJN_SYSTEEM={'organisatie': 'Maykin Media', 'applicatie': 'TTA', 'administratie': '', 'gebruiker': ''}
+    )
     def test_upload_large_file(self):
         """
         See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/387
@@ -579,14 +585,14 @@ class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
         self.zender = {
             'organisatie': 'Maykin Media',
             'applicatie': 'Test',
-            'administratie': 'Support',
-            'gebruiker': 'john.doe@example.com',
+            'administratie': '',
+            'gebruiker': '',
         }
         self.ontvanger = {
             'organisatie': 'Maykin Media',
             'applicatie': 'TTA',
-            'administratie': 'Support',
-            'gebruiker': 'john.doe@example.com',
+            'administratie': '',
+            'gebruiker': '',
         }
         client = self._get_client('OntvangAsynchroon')
 
