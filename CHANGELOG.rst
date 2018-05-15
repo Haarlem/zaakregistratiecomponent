@@ -5,7 +5,7 @@ Change history
 0.9.10
 ======
 
-*tbd*
+*May 15, 2018*
 
 * Fixed ``link`` in the RGBZ compatability layer to actually return the the
   ``link`` value of ``InformatieObject``en in related services. It previously
