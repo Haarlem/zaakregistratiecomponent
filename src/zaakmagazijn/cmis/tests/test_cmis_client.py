@@ -41,6 +41,8 @@ def _stuffdate_to_datetime(value):
 
 class DMSMixin:
     def setUp(self):
+        super().setUp()
+
         self.client = CMISDMSClient()
         self.addCleanup(lambda: self._removeTree('/Zaken'))
         self.addCleanup(lambda: self._removeTree('/Sites/archief/documentLibrary'))

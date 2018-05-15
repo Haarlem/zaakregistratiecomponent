@@ -2,6 +2,37 @@
 Change history
 ==============
 
+0.9.10
+======
+
+*May 15, 2018*
+
+* Fixed ``link`` in the RGBZ compatability layer to actually return the the
+  ``link`` value of ``InformatieObject``en in related services. It previously
+  returned the ``formaat`` value by mistake.
+* Fixed issues with fields ``vertrouwlijkAanduiding`` and
+  ``vertrouwelijkheidAanduiding``. The ZDS 1.2 specification contains invalid
+  attribute names. These fields are now all named ``vertrouwelijkAanduiding``.
+* Fixed storing raw XML string when ``statustoelichting`` in service
+  ``actualiseerZaakstatus`` was empty.
+* Fixed creating underlying ``ZaakObject`` objects, like ``OpenbareRuimte``
+  even though the information model indicates some attributes are mandatory.
+  The XSD does not contain some of these attributes at all, so there is no way
+  to provide values for these attributes.
+  This conflicting specification was resolved by making the mandatory
+  attributes optional in the database for those that are missing in the XSD:
+    - ``GemeentelijkeOpenbareRuimteObject.type_openbare_ruimte``
+    - ``HuisHoudenObject.huishoudensoort``
+    - ``OpenbareRuimteObject.type_openbare_ruimte``
+    - ``WOZDeelObject.woz_objectnummer``
+    - ``WOZObject.soortobjectcode``
+    - ``WOZWaardeObject.vastgestelde_waarde``
+* The ``EnkelvoudigInformatieObject.formaat`` attribute is no longer cut off
+  to 10 characters as was specified in the RGBZ 1.0 specification. The ZDS 1.2
+  specification allows for 85 characters, and we choose to remove the RGBZ
+  compatability layer rule to allow all stored characters to be returned.
+
+
 0.9.9
 =====
 

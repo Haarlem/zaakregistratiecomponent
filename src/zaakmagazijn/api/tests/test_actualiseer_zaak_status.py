@@ -121,3 +121,50 @@ class STPactualiseerZaakstatus_ZakLk01Tests(BaseTestPlatformTests):
 
         status = self.zaak.status_set.filter(status_type__statustypeomschrijving=self.status_type.statustypeomschrijving).first()
         self.assertEqual(status.rol.betrokkene, medewerker.betrokkene_ptr)
+
+
+
+class actualiseerZaakstatus_ZakLk01RegressionTests(BaseTestPlatformTests):
+    test_files_subfolder = 'maykin_actualiseerZaakstatus'
+    porttype = 'OntvangAsynchroon'
+
+    def setUp(self):
+        super().setUp()
+
+        self.context = {
+            'gemeentecode': '',
+            'referentienummer': self.genereerID(10),
+
+            'zds_zaaktype_code': '12345678',
+            'zds_zaaktype_omschrijving': 'Aanvraag burgerservicenummer behandelen',
+
+            'datumVandaag': self.genereerdatum(),
+            'datumEergisteren': self.genereerdatum(),
+            'tijdstipRegistratie': self.genereerdatumtijd(),
+        }
+
+    def test_incorrect_empty_statustoelichting_value_stored(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/404
+        """
+        zaak = ZaakFactory.create()
+        status_type = StatusTypeFactory.create(statustypeomschrijving='Intake afgerond')
+        medewerker = MedewerkerFactory.create(
+            organisatorische_eenheid__organisatieeenheididentificatie=1111,
+            medewerkeridentificatie=2222,
+        )
+
+        vraag = 'actualiseerZaakstatus_ZakLk01_taiga404.xml'
+
+        self.context.update({
+            'medewerkerIdentificatie': medewerker.identificatie,
+            'genereerzaakident_identificatie_4': zaak.zaakidentificatie,
+            'zds_zaakstatus_code_2': '87654321',
+            'zds_zaakstatus_omschrijving_2': 'Intake afgerond',
+        })
+
+        response = self._do_request(self.porttype, vraag, self.context)
+        self.assertEquals(response.status_code, 200, response.content)
+
+        status = zaak.status_set.filter(status_type__statustypeomschrijving=status_type.statustypeomschrijving).first()
+        self.assertIsNone(status.statustoelichting)

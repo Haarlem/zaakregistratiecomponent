@@ -30,7 +30,7 @@ class DocumentProxy(ModelProxy):
         ProxyField('documenttitel', 'titel'),
         ProxyField('documentbeschrijving', 'beschrijving'),
         ProxyField('documentverzenddatum', 'verzenddatum'),
-        ProxyField('vertrouwlijkaanduiding', 'vertrouwlijkaanduiding'),
+        ProxyField('vertrouwelijkaanduiding', 'vertrouwelijkaanduiding'),
         ProxyField('documentauteur', 'auteur'),
         ProxyField('_inhoud', '_inhoud', is_virtual=True),
         ProxyForeignKey('documenttype', 'informatieobjecttype', DocumentTypeProxy),
@@ -73,11 +73,15 @@ class EnkelvoudigDocumentProxy(ModelProxy):
 
     @classmethod
     def to_rgbz1_documentformaat(cls, obj):
-        return obj.formaat[:10]
+        # The specification in RGBZ 1.0 for "documentformaat" indicates type
+        # AN10. This effectively means that only 10 characters can be
+        # returned. However, the XSD of ZDS 1.2 indicates a max of 85
+        # characters. In agreement with Haarlem, this value is not cut off.
+        return obj.formaat
 
     @classmethod
     def to_rgbz1_documentlink(cls, obj):
-        return obj.formaat[:200]
+        return obj.link[:200] if obj.link else None
 
     @classmethod
     def to_rgbz1__inhoud(cls, obj):

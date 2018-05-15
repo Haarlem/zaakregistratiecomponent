@@ -48,6 +48,7 @@ class geefLijstZaakdocumenten_ZakLv01Tests(BaseSoapTests):
                             'entiteittype' :'EDC',
                             'identificatie': Nil,
                             'creatiedatum': Nil,
+                            'vertrouwelijkAanduiding': Nil,
                             'titel': Nil,
                             'link': Nil,
                         }),

@@ -1,0 +1,53 @@
+    <zds:voegZaakdocumentToe_EdcLk01 xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <ZKN:stuurgegevens>
+        <StUF:berichtcode>Lk01</StUF:berichtcode>
+        <StUF:zender>
+          <StUF:organisatie>0637</StUF:organisatie>
+          <StUF:applicatie>NEWBAPP</StUF:applicatie>
+        </StUF:zender>
+        <StUF:ontvanger>
+          <StUF:organisatie>0392</StUF:organisatie>
+          <StUF:applicatie>ZSH</StUF:applicatie>
+        </StUF:ontvanger>
+        <StUF:referentienummer>90414187-86e3-45cc-ba6d-58e3fc7d4f45</StUF:referentienummer>
+        <StUF:tijdstipBericht>20171215160955800</StUF:tijdstipBericht>
+        <StUF:entiteittype>EDC</StUF:entiteittype>
+      </ZKN:stuurgegevens>
+      <ZKN:parameters>
+        <StUF:mutatiesoort>T</StUF:mutatiesoort>
+        <StUF:indicatorOvername>V</StUF:indicatorOvername>
+      </ZKN:parameters>
+      <ZKN:object StUF:entiteittype="EDC" StUF:verwerkingssoort="T">
+        <ZKN:identificatie>03920d77cf4f-e5cf-4eed-b8fe-17e8f31b4837</ZKN:identificatie>
+        <ZKN:dct.omschrijving>verhuizing_Aangifteformulier</ZKN:dct.omschrijving>
+        <ZKN:creatiedatum>20171215</ZKN:creatiedatum>
+        <ZKN:ontvangstdatum StUF:noValue="geenWaarde" xsi:nil="true"/>
+        <ZKN:titel>Aangifte verhuizing4</ZKN:titel>
+        <ZKN:beschrijving StUF:noValue="geenWaarde" xsi:nil="true"/>
+        <ZKN:formaat>application/octet-stream</ZKN:formaat>
+        <ZKN:taal>NL</ZKN:taal>
+        <ZKN:versie StUF:noValue="geenWaarde" xsi:nil="true"/>
+        <ZKN:status>Definitief</ZKN:status>
+        <ZKN:verzenddatum StUF:noValue="geenWaarde" xsi:nil="true"/>
+        <ZKN:vertrouwelijkAanduiding>INTERN</ZKN:vertrouwelijkAanduiding>
+        <ZKN:auteur>Niet bekend</ZKN:auteur>
+        <ZKN:link StUF:noValue="geenWaarde" xsi:nil="true"/>
+        <ZKN:inhoud StUF:bestandsnaam="dummy.pdf">ZHVtbXk=</ZKN:inhoud>
+        <StUF:tijdvakGeldigheid>
+          <StUF:beginGeldigheid>20171215160955801</StUF:beginGeldigheid>
+          <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+        </StUF:tijdvakGeldigheid>
+        <StUF:tijdstipRegistratie>20171215160955801</StUF:tijdstipRegistratie>
+        <ZKN:isRelevantVoor StUF:entiteittype="EDCZAK" StUF:verwerkingssoort="T">
+          <ZKN:gerelateerde StUF:entiteittype="ZAK" StUF:verwerkingssoort="T">
+            <ZKN:identificatie>2017-0000633</ZKN:identificatie>
+            <ZKN:omschrijving>een omschrijving</ZKN:omschrijving>
+          </ZKN:gerelateerde>
+          <StUF:tijdvakGeldigheid>
+            <StUF:beginGeldigheid>20171215160955801</StUF:beginGeldigheid>
+            <StUF:eindGeldigheid StUF:noValue="geenWaarde" xsi:nil="true"/>
+          </StUF:tijdvakGeldigheid>
+          <StUF:tijdstipRegistratie>20171215160955801</StUF:tijdstipRegistratie>
+        </ZKN:isRelevantVoor>
+      </ZKN:object>
+    </zds:voegZaakdocumentToe_EdcLk01>
