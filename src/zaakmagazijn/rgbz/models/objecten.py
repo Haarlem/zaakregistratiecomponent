@@ -1,5 +1,5 @@
 from django.core.validators import (
-    MaxLengthValidator, MaxValueValidator, MinLengthValidator
+    MaxLengthValidator, MinLengthValidator
 )
 from django.db import models
 
@@ -177,7 +177,8 @@ class GemeentelijkeOpenbareRuimteObject(ExtraValidatorsMixin, ObjectMixin, Objec
     naam_openbare_ruimte = models.CharField(
         max_length=80, help_text='Een door het bevoegde gemeentelijke orgaan aan een '
                                  'OPENBARE RUIMTE toegekende benaming')
-    type_openbare_ruimte = models.CharField(
+    # TODO [KING]: Volgens RSGB 3.0 is GemeentelijkeOpenbareRuimte.type_openbare_ruimte verplicht. Volgens ZDS echter niet en kan het zelfs niet worden meegegeven.
+    type_openbare_ruimte = models.CharField(blank=True, null=True,
         max_length=36, choices=TyperingOpenbareRuimte.choices,
         help_text='De aard van de als zodanig benoemde OPENBARERUIMTE.'
     )
@@ -209,7 +210,8 @@ class HuishoudenObject(AdresBaseClass, ObjectMixin, Object):
     huishoudennummer = models.CharField(
         max_length=12, help_text='Uniek identificerend administratienummer van een huishouden '
                                  'zoals toegekend door de gemeente waarin het huishouden woonachtig is.')
-    huishoudensoort = models.CharField(
+    # TODO [KING] Verplicht in RSGB, optioneel in XSD.
+    huishoudensoort = models.CharField(blank=True, null=True,
         max_length=2, choices=Huishoudensoort.choices, help_text='Typering van het huishouden naar grootte en verbondenheid.')
     datum_begin_geldigheid_huishouden = StUFDateField(
         default=stuf_datetime.today,
@@ -442,7 +444,8 @@ class OpenbareRuimteObject(ExtraValidatorsMixin, ObjectMixin, Object):
     naam_openbare_ruimte = models.CharField(
         max_length=80, help_text='Een door het bevoegde gemeentelijke orgaan aan een '
                                  'OPENBARE RUIMTE toegekende benaming')
-    type_openbare_ruimte = models.CharField(
+    # TODO [KING]: Volgens RSGB 3.0 is GemeentelijkeOpenbareRuimte.type_openbare_ruimte verplicht. Volgens ZDS echter niet en kan het zelfs niet worden meegegeven.
+    type_openbare_ruimte = models.CharField(blank=True, null=True,
         max_length=36, choices=TyperingOpenbareRuimte.choices,
         help_text='De aard van de als zodanig benoemde OPENBARERUIMTE.'
     )
@@ -456,7 +459,7 @@ class OpenbareRuimteObject(ExtraValidatorsMixin, ObjectMixin, Object):
     woonplaatsnaam = models.CharField(max_length=80)
 
     EXTRA_VALIDATORS = {
-        'identificatie': [MaxValueValidator(16), ]
+        'identificatie': [MaxLengthValidator(16), ]
     }
 
     class Meta:
@@ -492,7 +495,7 @@ class OverigGebouwdObject(ObjectMixin, Object):
         return self.object_ptr.geometrie
 
     EXTRA_VALIDATORS = {
-        'identificatie': [MaxValueValidator(16), ]
+        'identificatie': [MaxLengthValidator(16), ]
     }
 
     class Meta:
@@ -567,7 +570,7 @@ class PandObject(ObjectMixin, Object):
 
     EXTRA_VALIDATORS = {
         # ObjectNummering
-        'identificatie': [MaxValueValidator(16), ]
+        'identificatie': [MaxLengthValidator(16), ]
     }
 
     class Meta:
@@ -799,7 +802,7 @@ class WoonplaatsObject(ObjectMixin, Object):
 
     EXTRA_VALIDATORS = {
         # WoonplaatsCodering
-        'identificatie': [validate_non_negative_string, MaxValueValidator(4)]
+        'identificatie': [validate_non_negative_string, MaxLengthValidator(4)]
     }
 
     @property
@@ -821,7 +824,9 @@ class WozdeelObject(ObjectMixin, Object):
         help_text='Een aanduiding op welk tijdstip een deelobject is ontstaan.')
     datum_einde_geldigheid_deelobject = StUFDateField(
         null=True, blank=True, help_text='Een aanduiding op welk tijdstip een deelobject is beëindigd.')
-    woz_objectnummer = models.CharField(max_length=12, help_text='De unieke aanduiding van een WOZ-OBJECT.')
+    # TODO [KING] Verplicht in RSGB, optioneel in XSD.
+    woz_objectnummer = models.CharField(null=True, blank=True,
+        max_length=12, help_text='De unieke aanduiding van een WOZ-OBJECT.')
 
     class Meta:
         unique_together = ('nummer_wozdeelobject', 'woz_objectnummer')
@@ -839,9 +844,10 @@ class WozObject(ObjectMixin, Object):
     Unieke aanduiding WOZ-objectnummer
     """
     # TODO [KING]: Atribuut "locatieomschrijving" in Objecttype WozObject staat niet in RGBZ of RSGB
-    soortobjectcode = models.ForeignKey(
-        'rsgb.SoortWOZObject', help_text='Aanduiding van het soort object ten behoeve '
-                                         'van een correcte bepaling van de waarde.')
+
+    # TODO [KING] Verplicht in RSGB, optioneel in XSD.
+    soortobjectcode = models.ForeignKey('rsgb.SoortWOZObject', null=True,
+        help_text='Aanduiding van het soort object ten behoeve van een correcte bepaling van de waarde.')
     datum_begin_geldigheid_wozobject = StUFDateField(
         default=stuf_datetime.today,
         help_text='Een aanduiding op welk tijdstip een object is ontstaan.'
@@ -875,7 +881,9 @@ class WozWaardeObject(ObjectMixin, Object):
     Unieke aanduiding Combinatie van Waardepeildatum en WOZ-OBJECT
     """
     # TODO [KING]: hier mist waarschijnlijk de relatie met het Woz-Object
-    vastgestelde_waarde = models.CharField(
+
+    # TODO [KING] Verplicht in RSGB, optioneel in XSD.
+    vastgestelde_waarde = models.CharField(null=True, blank=True,
         max_length=11, help_text='Waarde van het WOZ-object zoals deze in het kader van de Wet WOZ is vastgesteld.')
     waardepeildatum = StUFDateField(
         help_text='De datum waarnaar de waarde van het WOZ-object wordt bepaald.'

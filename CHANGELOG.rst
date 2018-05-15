@@ -15,6 +15,18 @@ Change history
   attribute names. These fields are now all named ``vertrouwelijkAanduiding``.
 * Fixed storing raw XML string when ``statustoelichting`` in service
   ``actualiseerZaakstatus`` was empty.
+* Fixed creating underlying ``ZaakObject`` objects, like ``OpenbareRuimte``
+  even though the information model indicates some attributes are mandatory.
+  The XSD does not contain some of these attributes at all, so there is no way
+  to provide values for these attributes.
+  This conflicting specification was resolved by making the mandatory
+  attributes optional in the database for those that are missing in the XSD:
+    - ``GemeentelijkeOpenbareRuimteObject.type_openbare_ruimte``
+    - ``HuisHoudenObject.huishoudensoort``
+    - ``OpenbareRuimteObject.type_openbare_ruimte``
+    - ``WOZDeelObject.woz_objectnummer``
+    - ``WOZObject.soortobjectcode``
+    - ``WOZWaardeObject.vastgestelde_waarde``
 
 
 0.9.9

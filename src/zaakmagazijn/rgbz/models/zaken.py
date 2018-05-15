@@ -470,6 +470,14 @@ class ZaakObject(models.Model):
     relatieomschrijving = models.CharField(
         max_length=80, null=True, blank=True, help_text='Omschrijving van de betrekking tussen deZAAK en het OBJECT')
 
+    def save(self, *args, **kwargs):
+        # FIXME: Workaround for saving inherited Model objects.
+        # Django allows us to assign `OpenbareRuimteObject` to `ZaakObject.object`, but when saving the instance, it's
+        # set to `None`. This in turn seems like a bug in Django.
+        if self.object and type(self.object) is not Object and isinstance(self.object, Object):
+            self.object = self.object.object_ptr
+        super().save(*args, **kwargs)
+
     class Meta:
         mnemonic = 'ZOB'
 
