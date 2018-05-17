@@ -2,6 +2,14 @@
 Change history
 ==============
 
+0.9.11
+======
+
+*tbd*
+
+* Fixed namespace for ``bestandsnaam`` attribute of element ``inhoud`` in
+  EDC-objects to ``StUF``. Responses did not include this namespace.
+
 0.9.10
 ======
 
@@ -21,12 +29,14 @@ Change history
   to provide values for these attributes.
   This conflicting specification was resolved by making the mandatory
   attributes optional in the database for those that are missing in the XSD:
-    - ``GemeentelijkeOpenbareRuimteObject.type_openbare_ruimte``
-    - ``HuisHoudenObject.huishoudensoort``
-    - ``OpenbareRuimteObject.type_openbare_ruimte``
-    - ``WOZDeelObject.woz_objectnummer``
-    - ``WOZObject.soortobjectcode``
-    - ``WOZWaardeObject.vastgestelde_waarde``
+
+  - ``GemeentelijkeOpenbareRuimteObject.type_openbare_ruimte``
+  - ``HuisHoudenObject.huishoudensoort``
+  - ``OpenbareRuimteObject.type_openbare_ruimte``
+  - ``WOZDeelObject.woz_objectnummer``
+  - ``WOZObject.soortobjectcode``
+  - ``WOZWaardeObject.vastgestelde_waarde``
+
 * The ``EnkelvoudigInformatieObject.formaat`` attribute is no longer cut off
   to 10 characters as was specified in the RGBZ 1.0 specification. The ZDS 1.2
   specification allows for 85 characters, and we choose to remove the RGBZ
