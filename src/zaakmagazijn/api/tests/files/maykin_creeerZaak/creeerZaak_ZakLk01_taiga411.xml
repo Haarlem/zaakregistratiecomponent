@@ -1,0 +1,74 @@
+      <zds:creeerZaak_ZakLk01 xmlns:stuf="http://www.egem.nl/StUF/StUF0301" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:zkn="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:bg="http://www.egem.nl/StUF/sector/bg/0310">
+         <zkn:stuurgegevens>
+            <stuf:berichtcode>Lk01</stuf:berichtcode>
+            <stuf:zender>
+               <stuf:organisatie>0392</stuf:organisatie>
+               <stuf:applicatie>MORPLUS</stuf:applicatie>
+               <stuf:administratie>MOR</stuf:administratie>
+               <stuf:gebruiker>jongfc</stuf:gebruiker>
+            </stuf:zender>
+            <stuf:ontvanger>
+               <stuf:organisatie>0392</stuf:organisatie>
+               <stuf:applicatie>ZSH</stuf:applicatie>
+            </stuf:ontvanger>
+            <stuf:referentienummer>8</stuf:referentienummer>
+            <stuf:tijdstipBericht>20180125175248</stuf:tijdstipBericht>
+            <stuf:entiteittype>ZAK</stuf:entiteittype>
+         </zkn:stuurgegevens>
+         <zkn:parameters>
+            <stuf:mutatiesoort>T</stuf:mutatiesoort>
+            <stuf:indicatorOvername>V</stuf:indicatorOvername>
+         </zkn:parameters>
+         <zkn:object stuf:entiteittype="ZAK" stuf:verwerkingssoort="T">
+            <zkn:identificatie>0392-2017-0000001</zkn:identificatie>
+            <zkn:omschrijving>Test ICT, niet behandelen SVP</zkn:omschrijving>
+            <zkn:toelichting>Test ICT, niet behandelen SVP</zkn:toelichting>
+            <zkn:anderZaakObject>
+               <zkn:omschrijving>contactpersoon</zkn:omschrijving>
+               <zkn:aanduiding>contactpersoon</zkn:aanduiding>
+               <zkn:registratie>0392-9d5a9aee-b556-402b-97eb-815f953b4dfb</zkn:registratie>
+            </zkn:anderZaakObject>
+            <zkn:startdatum stuf:exact="true" stuf:indOnvolledigeDatum="V">20180125</zkn:startdatum>
+            <zkn:registratiedatum stuf:exact="true" stuf:indOnvolledigeDatum="V">20180125</zkn:registratiedatum>
+            <zkn:einddatumGepland>20180208</zkn:einddatumGepland>
+            <zkn:archiefnominatie>J</zkn:archiefnominatie>
+            <zkn:zaakniveau>1</zkn:zaakniveau>
+            <zkn:deelzakenIndicatie>N</zkn:deelzakenIndicatie>
+            <zkn:isVan stuf:entiteittype="ZAKZKT" stuf:verwerkingssoort="T">
+               <zkn:gerelateerde stuf:entiteittype="ZKT" stuf:verwerkingssoort="I">
+                  <zkn:code>1</zkn:code>
+                  <zkn:ingangsdatumObject>20170901</zkn:ingangsdatumObject>
+               </zkn:gerelateerde>
+            </zkn:isVan>
+            <zkn:heeftBetrekkingOp stuf:entiteittype="ZAKOBJ" stuf:verwerkingssoort="T">
+               <zkn:gerelateerde>
+                  <zkn:openbareRuimte stuf:entiteittype="OPR" stuf:verwerkingssoort="T">
+                     <bg:identificatie>1234121234567890</bg:identificatie>
+                     <bg:wpl.woonplaatsNaam>HaarlemTest</bg:wpl.woonplaatsNaam>
+                     <bg:gor.openbareRuimteNaam>openbareRuimteNaamTest</bg:gor.openbareRuimteNaam>
+                  </zkn:openbareRuimte>
+               </zkn:gerelateerde>
+            </zkn:heeftBetrekkingOp>
+            <zkn:heeftAlsInitiator stuf:entiteittype="ZAKBTRINI" stuf:verwerkingssoort="T">
+               <zkn:gerelateerde>
+                  <zkn:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+                     <zkn:identificatie>DVV/KCC</zkn:identificatie>
+                  </zkn:organisatorischeEenheid>
+               </zkn:gerelateerde>
+            </zkn:heeftAlsInitiator>
+            <zkn:heeftAlsUitvoerende stuf:entiteittype="ZAKBTRUTV" stuf:verwerkingssoort="T">
+               <zkn:gerelateerde>
+                  <zkn:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+                     <zkn:identificatie>DVV/KCC</zkn:identificatie>
+                  </zkn:organisatorischeEenheid>
+               </zkn:gerelateerde>
+            </zkn:heeftAlsUitvoerende>
+            <zkn:heeftAlsVerantwoordelijke stuf:entiteittype="ZAKBTRVRA" stuf:verwerkingssoort="T">
+               <zkn:gerelateerde>
+                  <zkn:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+                     <zkn:identificatie>DVV/KCC</zkn:identificatie>
+                  </zkn:organisatorischeEenheid>
+               </zkn:gerelateerde>
+            </zkn:heeftAlsVerantwoordelijke>
+         </zkn:object>
+      </zds:creeerZaak_ZakLk01>

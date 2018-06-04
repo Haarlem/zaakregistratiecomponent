@@ -749,3 +749,37 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
         object = zaak_object.object
         openbare_ruimte_object = object.is_type()
         self.assertEqual(openbare_ruimte_object.identificatie, '1234121234567890')
+
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'ZSH', 'administratie': '', 'gebruiker': ''})
+    def test_create_zaak_with_proper_bronorganisatie(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/411
+        """
+        org_eenheid = OrganisatorischeEenheidFactory.create(
+            organisatieeenheididentificatie='DVV/KCC')
+
+        zaak_type = ZaakTypeFactory.create(
+            zaaktypeomschrijving='MOR',
+            zaaktypeidentificatie='1',
+            domein='DVV',
+            zaaktypeomschrijving_generiek='Melding Openbare Ruimte',
+            rsin=1,
+            trefwoord=['MOR'],
+            doorlooptijd_behandeling=14,
+            vertrouwelijk_aanduiding='OPENBAAR',
+            publicatie_indicatie='N',
+            zaakcategorie=['Onderhouden','Repareren'],
+            datum_begin_geldigheid_zaaktype='20170901',
+            datum_einde_geldigheid_zaaktype='21000101',
+            organisatorische_eenheid=org_eenheid,
+        )
+
+        vraag = 'creeerZaak_ZakLk01_taiga411.xml'
+        response = self._do_request(self.porttype, vraag)
+
+        self.assertEquals(response.status_code, 200, response.content)
+
+        self.assertEqual(Zaak.objects.all().count(), 1)
+        zaak = Zaak.objects.get()
+        self.assertEqual(zaak.zaakidentificatie, '0392-2017-0000001')
+        self.assertEqual(zaak.bronorganisatie, '0392')

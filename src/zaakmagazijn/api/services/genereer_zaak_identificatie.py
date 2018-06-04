@@ -58,7 +58,7 @@ class GenereerZaakIdentificatie(ServiceBase):
 
         # Find an unused uuid. Hopefully this does never go trough more than 1 iteration.
         while True:
-            zaakidentificatie = func()
+            zaakidentificatie = func(data)
             if not Zaak.objects.filter(zaakidentificatie=zaakidentificatie).exists():
                 break
 

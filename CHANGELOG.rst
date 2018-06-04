@@ -9,6 +9,11 @@ Change history
 
 * Fixed namespace for ``bestandsnaam`` attribute of element ``inhoud`` in
   EDC-objects to ``StUF``. Responses did not include this namespace.
+* Added a new unique ID generator with a simple incremental number, prefixed
+  by the receiving organisation (stuurgegevens.ontvanger.organisatie) and the
+  current year (for example: 0392-2017-0000001):
+  ``zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_with_org_id``
+
 
 0.9.10
 ======
