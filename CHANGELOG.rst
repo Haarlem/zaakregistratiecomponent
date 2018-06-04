@@ -5,7 +5,7 @@ Change history
 0.9.11
 ======
 
-*tbd*
+*June 4, 2018*
 
 * Fixed namespace for ``bestandsnaam`` attribute of element ``inhoud`` in
   EDC-objects to ``StUF``. Responses did not include this namespace.
