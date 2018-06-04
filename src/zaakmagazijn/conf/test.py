@@ -22,6 +22,12 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 # This should be overwritten with override_settings in test to the appropriate URL.
 ZAAKMAGAZIJN_URL = 'bogus.localhost'
 
@@ -37,15 +43,10 @@ LOGGING['loggers'].update({
     },
 })
 
+SKIP_CMIS_TESTS = True
+
 #
 # Custom settings
-#
-
-# Show active environment in admin.
-ENVIRONMENT = 'test'
-
-#
-# Library settings
 #
 INSTALLED_APPS += [
     'django_jenkins',
