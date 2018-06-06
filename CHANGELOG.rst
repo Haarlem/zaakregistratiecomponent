@@ -11,6 +11,10 @@ Change history
   essentially allows the Zaakmagazijn to accept requests that are meant for
   different municipalities. Responses will have the the ``zender`` field
   filled with the ``ontvanger`` from the requests.
+* Added new setting ``ZAAKMAGAZIJN_DOCUMENT_ID_GENERATOR`` which takes a
+  function to generate a unique ID for ``genereerDocumentIdentificatie_Du02``.
+* Added new setting ``ZAAKMAGAZIJN_BESLUIT_ID_GENERATOR`` which takes a
+  function to generate a unique ID for ``genereerBesluitIdentificatie_Du02``.
 
 
 0.9.11

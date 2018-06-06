@@ -325,6 +325,10 @@ ZAAKMAGAZIJN_SYSTEEM = {
 
 ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
 # ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id'
+# ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_with_org_id'
+
+ZAAKMAGAZIJN_DOCUMENT_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
+ZAAKMAGAZIJN_BESLUIT_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
 
 # Absolute URL of the Zaakmagazijn. Used in the WSDL and should not be altered.
 ZAAKMAGAZIJN_ZDS_URL = '/static/schema/'

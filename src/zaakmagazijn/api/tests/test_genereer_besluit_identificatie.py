@@ -24,7 +24,7 @@ class GenereerBesluitIdentificatie_Du02(BaseSoapTests):
                 )
             )
 
-    @patch('zaakmagazijn.api.services.genereer_besluit_identificatie.create_unique_id')
+    @patch('zaakmagazijn.api.utils.create_unique_id')
     def test_create(self, create_unique_id_mock):
         create_unique_id_mock.return_value = '0000aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
 
