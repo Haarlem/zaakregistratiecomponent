@@ -16,7 +16,9 @@ from zaakmagazijn.utils import stuf_datetime
 from zaakmagazijn.utils.tests import on_jenkins, should_skip_cmis_tests
 
 from ...rgbz.choices import JaNee
-from ...rgbz.models import EnkelvoudigInformatieObject, ZaakInformatieObject, Zaak
+from ...rgbz.models import (
+    EnkelvoudigInformatieObject, Zaak, ZaakInformatieObject
+)
 from ...rgbz.tests.factory_models import (
     InformatieObjectTypeFactory, StatusFactory, ZaakFactory
 )

@@ -1,7 +1,5 @@
 import logging
 
-from django.conf import settings
-
 from lxml import etree
 from spyne import ComplexModel, Fault
 from spyne.protocol.xml import XmlDocument
@@ -11,6 +9,7 @@ from ...utils import stuf_datetime
 from ..utils import create_unique_id
 from .choices import BerichtcodeChoices, ClientFoutChoices, ServerFoutChoices
 from .models import BaseStuurgegevens, Systeem
+from .utils import get_systeem
 
 logger = logging.getLogger(__name__)
 
@@ -151,7 +150,7 @@ class SpyneStUFFault(Fault):
         }
         if stuf_berichtcode != BerichtcodeChoices.fo02:
             stuurgegevens_data.update({
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
+                'zender': get_systeem(stuurgegevens_zender.ontvanger),
                 'ontvanger': {
                     'organisatie': '',
                     'applicatie': '',

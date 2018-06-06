@@ -2,6 +2,17 @@
 Change history
 ==============
 
+0.9.12
+======
+
+*June 6, 2018*
+
+* Allow the the ``ZAAKMAGAZIJN_SYSTEEM`` setting to be a list. This
+  essentially allows the Zaakmagazijn to accept requests that are meant for
+  different municipalities. Responses will have the the ``zender`` field
+  filled with the ``ontvanger`` from the requests.
+
+
 0.9.11
 ======
 

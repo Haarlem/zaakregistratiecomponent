@@ -315,7 +315,7 @@ ZAAKMAGAZIJN_OPEN_ACCESS = True
 # Based on XSD parametersVraag -> maximumAantal
 ZAAKMAGAZIJN_DEFAULT_MAX_NR_RESULTS = 15
 
-# Indentificatie van systeem
+# Identificatie van systeem
 ZAAKMAGAZIJN_SYSTEEM = {
     'organisatie': 'ORG',
     'applicatie': 'TTA',

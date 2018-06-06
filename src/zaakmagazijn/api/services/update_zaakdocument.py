@@ -1,11 +1,8 @@
-from django.conf import settings
-
 from spyne import ComplexModel, ServiceBase, Unicode, rpc
 
-from zaakmagazijn.cmis.client import default_client as dms_client
-from zaakmagazijn.cmis.exceptions import DocumentConflictException
-from zaakmagazijn.rgbz.models import EnkelvoudigInformatieObject
-
+from ...cmis.client import default_client as dms_client
+from ...cmis.exceptions import DocumentConflictException
+from ...rgbz.models import EnkelvoudigInformatieObject
 from ...utils import stuf_datetime
 from ..stuf import attributes, simple_types
 from ..stuf.base import ComplexModelBuilder, complex_model_factory
@@ -13,6 +10,7 @@ from ..stuf.choices import BerichtcodeChoices, ServerFoutChoices
 from ..stuf.constants import STUF_XML_NS, ZDS_XML_NS
 from ..stuf.faults import StUFFault
 from ..stuf.models import Bv02Bericht, Systeem
+from ..stuf.utils import get_ontvanger, get_systeem_zender
 from ..utils import create_unique_id
 from ..zds import Lk02Builder
 from ..zds.kennisgevingsberichten import process_update
@@ -122,8 +120,8 @@ class UpdateZaakdocument(ServiceBase):
         return {
             'stuurgegevens': {
                 'berichtcode': BerichtcodeChoices.bv02,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
-                'ontvanger': data.stuurgegevens.zender,
+                'zender': get_systeem_zender(data.stuurgegevens.ontvanger),
+                'ontvanger': get_ontvanger(data.stuurgegevens.zender),
                 'referentienummer': create_unique_id(),
                 'tijdstipBericht': stuf_datetime.now()
             },

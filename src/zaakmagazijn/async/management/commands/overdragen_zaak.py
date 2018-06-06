@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import ugettext as _
 
-from zaakmagazijn.async.exceptions import UnexpectedAnswerException
-
+from ....api.stuf.faults import StUFFault
+from ....api.stuf.utils import get_systeem
 from ....apiauth.models import Application
 from ....rgbz.models import Zaak
 from ...consumer import Consumer
+from ...exceptions import UnexpectedAnswerException
 
 
 class Command(BaseCommand):
@@ -45,6 +46,13 @@ class Command(BaseCommand):
             help='Decline the Zaak. If not provided the Zaak will be accepted.',
         )
         parser.add_argument(
+            '-s', '--sender',
+            action='store',
+            dest='sender_organisation',
+            default=True,
+            help='Organisation to use as sender. Required if multiple senders are defined in ZAAKMAGAZIJN_SYSTEEM.',
+        )
+        parser.add_argument(
             '--dry-run', '--dryrun',
             action='store_true',
             dest='dryrun',
@@ -62,6 +70,18 @@ class Command(BaseCommand):
         except Zaak.DoesNotExist as e:
             raise CommandError('Zaak "{}" does not exist.'.format(zaak_id))
 
+        sender_organisation = options.get('sender_organisation', None)
+
+        # Mock the expected object to pass to ``get_systeem``.
+        class Sender(object):
+            organisatie = sender_organisation
+
+        try:
+            sender = get_systeem(Sender())
+        except StUFFault:
+            raise CommandError('The sender should be provided using --sender=<organisation> and configured in '
+                               'ZAAKMAGAZIJN_SYSTEEM.')
+
         accepted = options.get('accepted', True)
         messages = options.get('message', [])
         dryrun = options.get('dryrun', False)
@@ -74,6 +94,7 @@ class Command(BaseCommand):
                 messages,
                 accepted,
                 xrefnumber,
+                sender,
             )
             self.stdout.write('Operation succeeded: {}'.format(result.content if result else '(no response)'))
         except UnexpectedAnswerException as e:

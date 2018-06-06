@@ -40,8 +40,9 @@ uit de basis configuratie.
 
 * ``ZAAKMAGAZIJN_SYSTEEM``
 
-  Een ``dict`` die de identificatie van het Zaakmagazijn aangeeft. Kent de
-  sleutels:
+  Een ``dict`` die de identificatie van het Zaakmagazijn aangeeft. Kan ook een
+  ``list`` van ``dict`` zijn om meerdere gemeente(code)s te ondersteunen. Kent
+  de sleutels:
 
   - ``organisatie`` (standaard: ``ORG``)
   - ``applicatie`` (standaard: ``TTA``)

@@ -1,4 +1,4 @@
-from unittest import skip
+from django.conf import settings
 
 from lxml import etree
 
@@ -59,7 +59,8 @@ class STPoverdragenZaak_Du01Tests(BaseTestPlatformTests):
         self.assertEqual(response_berichtcode, BerichtcodeChoices.bv03, response.content)
 
         # Step 3 & 4
-        response = self.consumer.overdragenZaak(self.zaak, True, context['referentienummer'], melding='melding')
+        response = self.consumer.overdragenZaak(
+            self.zaak, True, context['referentienummer'], settings.ZAAKMAGAZIJN_SYSTEEM, melding='melding')
 
         response_root = etree.fromstring(response.content)
         response_berichtcode = response_root.xpath('//stuf:stuurgegevens/stuf:berichtcode', namespaces=self.nsmap)[0].text
@@ -88,7 +89,8 @@ class STPoverdragenZaak_Du01Tests(BaseTestPlatformTests):
         self.assertEqual(response_berichtcode, BerichtcodeChoices.bv03, response.content)
 
         # Step 3 & 4
-        response = self.consumer.overdragenZaak(self.zaak, False, context['referentienummer'], melding='melding')
+        response = self.consumer.overdragenZaak(
+            self.zaak, False, context['referentienummer'], settings.ZAAKMAGAZIJN_SYSTEEM, melding='melding')
 
         response_root = etree.fromstring(response.content)
         response_berichtcode = response_root.xpath('//stuf:stuurgegevens/stuf:berichtcode', namespaces=self.nsmap)[0].text
