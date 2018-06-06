@@ -7,6 +7,7 @@ from django.test import TestCase, override_settings
 from lxml import etree
 from zeep.xsd.const import Nil
 
+from ...api.stuf.choices import BerichtcodeChoices
 from ...api.tests.base import BaseSoapTests
 from ...rgbz.choices import JaNee
 from ...rgbz.tests.factory_models import StatusFactory
@@ -218,3 +219,180 @@ class ServiceOperationSignalTests(TestCase):
         self.assertIn('Service operations created: {}, removed: {}, total count: {}.'.format(
             current_count, 1, current_count
         ), out)
+
+
+class MultitenancyTests(BaseSoapTests):
+
+    def setUp(self):
+        super().setUp()
+
+        self.client = self._get_client('BeantwoordVraag', strict=False)
+
+        self.status = StatusFactory.create(indicatie_laatst_gezette_status=JaNee.ja)
+        self.zaak = self.status.zaak
+
+    def _simple_request(self, ontvanger=None):
+        zaak_id = self.zaak.zaakidentificatie
+        zender = {
+            'organisatie': 'Maykin Media',
+            'applicatie': 'Test',
+            'administratie': 'Support',
+            'gebruiker': 'john.doe@example.com',
+        }
+
+        with self.client.options(raw_response=True):
+            stuf_factory, zkn_factory, zds_factory = self._get_type_factories(self.client)
+            return self.client.service.geefZaakstatus_ZakLv01(
+                stuurgegevens=stuf_factory['ZAK-StuurgegevensLv01'](
+                    berichtcode='Lv01',
+                    entiteittype='ZAK',
+                    zender=zender,
+                    ontvanger=ontvanger,
+                ),
+                parameters=stuf_factory['ZAK-parametersVraagSynchroon'](
+                    sortering=1,
+                    indicatorVervolgvraag=False),
+                scope={
+                    'object': zkn_factory['GeefZaakStatus-ZAK-vraagScope'](
+                        entiteittype='ZAK',
+                        identificatie=Nil,
+                        heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagScope'](
+                            entiteittype='ZAKSTT',
+                            indicatieLaatsteStatus=Nil,
+                            datumStatusGezet=Nil,
+                            gerelateerde=zkn_factory['GeefZaakStatus-STT-vraag'](
+                                entiteittype='STT',
+                                volgnummer=Nil,
+                            )
+                        )
+                    ),
+                },
+                gelijk=zkn_factory['GeefZaakStatus-ZAK-vraagSelectie'](
+                    entiteittype='ZAK',
+                    identificatie=zaak_id,
+                    heeft=zkn_factory['GeefZaakStatus-ZAKSTT-vraagSelectie'](
+                        entiteittype='ZAKSTT',
+                        indicatieLaatsteStatus=JaNee.ja,
+                    )
+                )
+            )
+
+    def _assert_sender_is_receiver(self, response, receiver):
+        self.assertEquals(response.status_code, 200, response.content)
+
+        response_root = etree.fromstring(response.content)
+        response_berichtcode = response_root.xpath('//zkn:stuurgegevens/stuf:berichtcode', namespaces=self.nsmap)[0].text
+        self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+        response_ontvanger_org = response_root.xpath('//zkn:stuurgegevens/stuf:zender/stuf:organisatie', namespaces=self.nsmap)[0].text
+        self.assertEqual(response_ontvanger_org, receiver['organisatie'], response.content)
+
+    @override_settings(
+        ZAAKMAGAZIJN_OPEN_ACCESS=True,
+        ZAAKMAGAZIJN_SYSTEEM={'organisatie': '1234', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''}
+    )
+    def test_single_tenant_configured_as_dict(self):
+        ontvanger = {
+            'organisatie': '1234',
+            'applicatie': 'test',
+            'administratie': '',
+            'gebruiker': '',
+        }
+        response = self._simple_request(ontvanger=ontvanger)
+        self._assert_sender_is_receiver(response, ontvanger)
+
+    @override_settings(
+        ZAAKMAGAZIJN_OPEN_ACCESS=True,
+        ZAAKMAGAZIJN_SYSTEEM=[{'organisatie': '1234', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''}]
+    )
+    def test_single_tenant_configured_as_list(self):
+        ontvanger = {
+            'organisatie': '1234',
+            'applicatie': 'test',
+            'administratie': '',
+            'gebruiker': '',
+        }
+        response = self._simple_request(ontvanger=ontvanger)
+        self._assert_sender_is_receiver(response, ontvanger)
+
+    @override_settings(
+        ZAAKMAGAZIJN_OPEN_ACCESS=True,
+        ZAAKMAGAZIJN_SYSTEEM=[
+            {'organisatie': '1234', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+            {'organisatie': '5678', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+        ]
+    )
+    def test_multiple_tenant_configured(self):
+        ontvanger = {
+            'organisatie': '1234',
+            'applicatie': 'test',
+            'administratie': '',
+            'gebruiker': '',
+        }
+        response = self._simple_request(ontvanger=ontvanger)
+        self._assert_sender_is_receiver(response, ontvanger)
+
+        ontvanger.update({
+            'organisatie': '5678'
+        })
+        response = self._simple_request(ontvanger=ontvanger)
+        self._assert_sender_is_receiver(response, ontvanger)
+
+
+    @override_settings(
+        ZAAKMAGAZIJN_OPEN_ACCESS=True,
+        ZAAKMAGAZIJN_SYSTEEM=[
+            {'organisatie': '1234', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+            {'organisatie': '5678', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+        ]
+    )
+    def test_multiple_tenant_configured_no_receiver_specified(self):
+        response = self._simple_request(ontvanger=None)
+
+        response_root = etree.fromstring(response.content)
+
+        fault_xpath = '*/soap11env:Fault/detail/stuf:Fo02Bericht/stuf:body/stuf:code[text()="StUF010"]'.format()
+        self._assert_xpath_results(response_root, fault_xpath, 1, namespaces=self.nsmap)
+
+
+    @override_settings(
+        ZAAKMAGAZIJN_OPEN_ACCESS=True,
+        ZAAKMAGAZIJN_SYSTEEM=[
+            {'organisatie': '1234', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+            {'organisatie': '5678', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+        ]
+    )
+    def test_multiple_tenant_configured_no_receiving_organisation_specified(self):
+        ontvanger = {
+            'organisatie': '',
+            'applicatie': 'test',
+            'administratie': '',
+            'gebruiker': '',
+        }
+        response = self._simple_request(ontvanger=ontvanger)
+
+        response_root = etree.fromstring(response.content)
+
+        fault_xpath = '*/soap11env:Fault/detail/stuf:Fo02Bericht/stuf:body/stuf:code[text()="StUF010"]'.format()
+        self._assert_xpath_results(response_root, fault_xpath, 1, namespaces=self.nsmap)
+
+    @override_settings(
+        ZAAKMAGAZIJN_OPEN_ACCESS=True,
+        ZAAKMAGAZIJN_SYSTEEM=[
+            {'organisatie': '1234', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+            {'organisatie': '5678', 'applicatie': 'test', 'administratie': '', 'gebruiker': ''},
+        ]
+    )
+    def test_multiple_tenant_configured_unknown_receiver_specified(self):
+        ontvanger = {
+            'organisatie': '3456',
+            'applicatie': 'test',
+            'administratie': '',
+            'gebruiker': '',
+        }
+        response = self._simple_request(ontvanger=ontvanger)
+
+        response_root = etree.fromstring(response.content)
+
+        fault_xpath = '*/soap11env:Fault/detail/stuf:Fo02Bericht/stuf:body/stuf:code[text()="StUF010"]'.format()
+        self._assert_xpath_results(response_root, fault_xpath, 1, namespaces=self.nsmap)

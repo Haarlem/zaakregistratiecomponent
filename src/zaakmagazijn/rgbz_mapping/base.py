@@ -4,8 +4,7 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db.models.constants import LOOKUP_SEP
 from django.utils.module_loading import import_string
 
-from zaakmagazijn.api.stuf.utils import get_model_field
-
+from ..api.stuf.utils import get_model_field
 from .exceptions import NoValueError
 from .manager import ProxyRelatedManager
 from .registry import proxy_registry

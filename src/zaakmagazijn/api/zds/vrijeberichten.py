@@ -60,16 +60,13 @@ class GenereerIdentificatieOutputBuilder(ComplexModelBuilder):
     def create_data(self, request_obj, identificatie):
         # TODO [TECH]: Maybe we should move the whole stuurgegevens (or at least zender/ontvanger) to the application level?
         # TODO [TECH]: Reference etc. should also be logged.
-        ontvanger = request_obj.stuurgegevens.zender
-        cross_refnummer = request_obj.stuurgegevens.referentienummer
-
         stuurgegevens = {
             'berichtcode': self.berichtcode,
-            'zender': get_systeem_zender(),
-            'ontvanger': get_ontvanger(ontvanger),
+            'zender': get_systeem_zender(request_obj.stuurgegevens.ontvanger),
+            'ontvanger': get_ontvanger(request_obj.stuurgegevens.zender),
             'referentienummer': create_unique_id(),
             'tijdstipBericht': stuf_datetime.now(),
-            'crossRefnummer': cross_refnummer or IgnoreAttribute(),
+            'crossRefnummer': request_obj.stuurgegevens.referentienummer or IgnoreAttribute(),
             'functie': self.name,
         }
 
