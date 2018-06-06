@@ -1,7 +1,9 @@
+from django.conf import settings
+from django.utils.module_loading import import_string
+
 from spyne import ServiceBase, rpc
 
 from ...rgbz.models import Besluit
-from ..utils import create_unique_id
 from ..zds.vrijeberichten import (
     GenereerIdentificatieInputBuilder, GenereerIdentificatieOutputBuilder
 )
@@ -47,9 +49,11 @@ class GenereerBesluitIdentificatie(ServiceBase):
         # StUF:entiteittype="BSL". Binnen besluit is één verplicht element
         # opgenomen namelijk de Besluitidentificatie.
 
+        func = import_string(settings.ZAAKMAGAZIJN_BESLUIT_ID_GENERATOR)
+
         # Find an unused uuid. Hopefully this does never go trough more than 1 iteration.
         while True:
-            identificatie = create_unique_id()
+            identificatie = func(data)
             if not Besluit.objects.filter(identificatie=identificatie).exists():
                 break
 

@@ -11,9 +11,8 @@ from spyne import Unicode
 from spyne.model.complex import TypeInfo
 from spyne.util.django import DEFAULT_FIELD_MAP as _DEFAULT_FIELD_MAP
 
-from zaakmagazijn.utils import stuf_datetime
-from zaakmagazijn.utils.fields import GMLField
-
+from ...utils import stuf_datetime
+from ...utils.fields import GMLField
 from .models import DatumMetIndicator, TijdstipMetIndicator
 from .simple_types import GeometrieIMGeo_e
 
@@ -255,13 +254,49 @@ def get_spyne_field(spyne_model, *path):
     return spyne_model
 
 
-def get_systeem_zender():
+def get_systeem(ontvanger):
+    """
+    Resolve the intended recipient.
+
+    :param ontvanger: An ``object`` containing the ontvanger XML data.
+    :return: A ``dict`` with the (matching or configured) system.
+    """
+    from .choices import ClientFoutChoices
+    from .faults import StUFFault
+
+    # If multiple identifications are defined in the settings,
+    # the recipient (ontvanger) is required.
+    system_dict = None
+
+    if isinstance(settings.ZAAKMAGAZIJN_SYSTEEM, (list, tuple)):
+        if len(settings.ZAAKMAGAZIJN_SYSTEEM) == 1:
+            system_dict = settings.ZAAKMAGAZIJN_SYSTEEM[0]
+        elif ontvanger is not None and ontvanger.organisatie is not None:
+            for sd in settings.ZAAKMAGAZIJN_SYSTEEM:
+                if sd.get('organisatie', None) == ontvanger.organisatie:
+                    system_dict = sd
+                    break
+
+        if system_dict is None:
+            raise StUFFault(ClientFoutChoices.stuf010, 'De ontvangende organisatie is niet meegegeven of onbekend.')
+
+    else:
+        system_dict = settings.ZAAKMAGAZIJN_SYSTEEM
+
+    return system_dict
+
+
+def get_systeem_zender(ontvanger):
     """
     Return the zender (sender) data, if we're the sender. sender data is based
-    on what is stored in the settings.
+    on what is stored in the settings. ``IgnoreAttribute`` is used for unfilled
+    fields.
+
+    :param ontvanger: An ``object`` containing the ontvanger XML data.
+    :return: A ``dict`` with the (matching or configured) system.
     """
     from .protocols import IgnoreAttribute
-    systeem = settings.ZAAKMAGAZIJN_SYSTEEM
+    systeem = get_systeem(ontvanger)
 
     zender = {
         'organisatie': systeem['organisatie'] or IgnoreAttribute(),
@@ -297,7 +332,7 @@ def get_bv03_stuurgegevens(data):
 
     return {
         'berichtcode': BerichtcodeChoices.bv03,
-        'zender': get_systeem_zender(),
+        'zender': get_systeem_zender(data.stuurgegevens.ontvanger),
         'ontvanger': get_ontvanger(data.stuurgegevens.zender),
         'referentienummer': create_unique_id(),
         'crossRefnummer': data.stuurgegevens.referentienummer,

@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from ..api.stuf.choices import ClientFoutChoices, ServerFoutChoices
 from ..api.stuf.faults import StUFFault
+from ..api.stuf.utils import get_systeem
 from .models import Application
 
 logger = logging.getLogger(__name__)
@@ -27,11 +28,14 @@ def handle_authorization(ctx):
         except AttributeError as e:
             raise StUFFault(ServerFoutChoices.stuf058)
 
+        system_dict = get_systeem(ontvanger)
+
         # Check if we are the intended recipient (not required)
         if ontvanger is not None:
-            # Application is required, the rest is optional but should match if provided!
+            # Application is required, the rest is optional but should match
+            # if provided!
             for key, request_value in ontvanger.as_dict().items():
-                system_val = settings.ZAAKMAGAZIJN_SYSTEEM.get(key)
+                system_val = system_dict.get(key)
                 if (request_value or key == 'applicatie') and request_value != system_val:
                     raise StUFFault(
                         ClientFoutChoices.stuf010,
