@@ -100,9 +100,10 @@ ZAAKMAGAZIJN_SYSTEEM = {
 }
 # Incremental ID for Zaak IDs
 ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
+ZAAKMAGAZIJN_URL = ''
 
 # DMS backend
-CMIS_CLIENT_URL = 'http://localhost:8080/alfresco/cmisatom'
+CMIS_CLIENT_URL = 'http://localhost:8081/alfresco/cmisatom'
 CMIS_CLIENT_USER = ''
 CMIS_CLIENT_USER_PASSWORD = ''
 CMIS_UPLOAD_TO = 'zaakmagazijn.cmis.utils.upload_to'
