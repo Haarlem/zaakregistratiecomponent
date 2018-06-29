@@ -730,6 +730,8 @@ class La01Builder(ComplexModelBuilder):
             self.total_objs = qs.count()
         if limit_arg > 0:
             qs = qs[:limit_arg]
+
+        # import ipdb; ipdb.set_trace()
         for obj in qs:
             try:
                 obj_answer = self._create_fundamenteel(

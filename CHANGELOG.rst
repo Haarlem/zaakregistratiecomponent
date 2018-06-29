@@ -2,6 +2,19 @@
 Change history
 ==============
 
+
+0.9.13
+======
+
+*tbd*
+
+* The operation ``actualiseerZaakstatus_ZakLk01`` now takes the ``volgnummer``
+  and ``zkt.code`` elements of the ``heeft.gerelateerde`` (Objecttype
+  StatusType) into account. This fixes an issue where status types existed
+  with equal descriptions existed. Note that ``zkt.code`` is still optional
+  but if provided, it will be used to search the appropriate status type.
+
+
 0.9.12
 ======
 
