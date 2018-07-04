@@ -13,6 +13,10 @@ Change history
   StatusType) into account. This fixes an issue where status types existed
   with equal descriptions existed. Note that ``zkt.code`` is still optional
   but if provided, it will be used to search the appropriate status type.
+* Fixes a performance issue when looking up objects through the RGBZ proxy
+  layer.
+* Minor documentation updates and script improvements for setting up for
+  setting up Alfresco using the provided Vagrantfile.
 
 
 0.9.12
