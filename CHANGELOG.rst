@@ -6,7 +6,7 @@ Change history
 0.9.13
 ======
 
-*tbd*
+*July 9, 2018*
 
 * The operation ``actualiseerZaakstatus_ZakLk01`` now takes the ``volgnummer``
   and ``zkt.code`` elements of the ``heeft.gerelateerde`` (Objecttype
