@@ -171,6 +171,7 @@ class GerelateerdeExterneZaak(models.Model):
                                                      help_text='Het RSIN van de organisatie die verantwoordelijk is voor de behandeling van de gerelateerde ZAAK.'
                                                      )
     zaakidentificatie = models.CharField(
+        db_index=True,
         max_length=40, null=True, blank=True, help_text='De unieke identificatie van de gerelateerde ZAAK.')  # unique constraint allows multiple null values, but not blank?
     zaaktypeomschrijving_generiek = models.CharField(
         max_length=80, help_text='Algemeen gehanteerde omschrijving van de aard van '

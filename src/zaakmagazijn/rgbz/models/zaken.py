@@ -25,6 +25,7 @@ class ZaakType(CMISMixin, models.Model):
 
     """
     zaaktypeidentificatie = models.PositiveIntegerField(
+        db_index=True,
         help_text='Unieke identificatie van het ZAAKTYPE binnen de CATALOGUS waarin het ZAAKTYPE voorkomt.',
         validators=[MaxValueValidator(99999)], unique=True)
     zaaktypeomschrijving = models.CharField(
@@ -134,6 +135,7 @@ class StatusType(models.Model):
     class Meta:
         verbose_name_plural = 'Status types'
         mnemonic = 'STT'
+        unique_together = ('zaaktype', 'statustypevolgnummer')
 
     def __str__(self):
         return '{}_{} ({})'.format(self.zaaktype, self.statustypevolgnummer, self.statustypeomschrijving)
