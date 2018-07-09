@@ -11,6 +11,7 @@ class OrganisatorischeEenheidBaseClass(models.Model):
     Minimaal aanwezige velden voor een Organisatorisch Eenheid Object
     """
     organisatieidentificatie = models.PositiveIntegerField(
+        db_index=True,
         help_text='Het RSIN van de organisatie zijnde een Niet-natuurlijk '
                   'persoon waarvan de ORGANISATORISCHE EENHEID deel uit maakt.'
     )
@@ -77,6 +78,7 @@ class ObjectMixin(models.Model):
 
 class Object(TypeMixin, models.Model):
     identificatie = models.CharField(
+        db_index=True,
         max_length=100, help_text='De unieke identificatie van het OBJECT')
     object_zaken = models.ManyToManyField('rgbz.Zaak', related_name='gerelateerde_aan',
                                           through='rgbz.ZaakObject')

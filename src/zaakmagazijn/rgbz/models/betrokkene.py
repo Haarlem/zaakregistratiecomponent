@@ -75,6 +75,7 @@ class Medewerker(CMISMixin, GeslachtsAanduidingMixin, BereikenMixin, Betrokkene)
     Medewerkeridentificatie.
     """
     medewerkeridentificatie = models.CharField(
+        db_index=True,
         max_length=24, help_text='Een korte unieke aanduiding van de MEDEWERKER.')
     achternaam = models.CharField(
         max_length=200, help_text='De achternaam zoals de MEDEWERKER die in het dagelijkse verkeer gebruikt.'
@@ -422,6 +423,7 @@ class OrganisatorischeEenheid(CMISMixin, OrganisatorischeEenheidBaseClass, Berei
                 pass
 
     organisatieeenheididentificatie = models.CharField(
+        db_index=True,
         max_length=24, help_text='Een korte identificatie van de organisatorische eenheid.')
 
     naam_verkort = models.CharField(

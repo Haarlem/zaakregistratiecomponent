@@ -112,17 +112,18 @@ class ProxyQuerySet:
         full_filter_kwargs = {}
         full_filter_kwargs.update(filter_kwargs)
         full_filter_kwargs.update(extra_filter_kwargs)
-        partly_filtered_queryset = self.queryset.filter(**full_filter_kwargs)
+        filtered_queryset = self.queryset.filter(**full_filter_kwargs)
 
-        exclude_pks = []
-        for obj in partly_filtered_queryset:
+        filter_pks = []
+        for obj in filtered_queryset:
             for field in applicable_fields:
                 filter_value = field.get_django_field().to_python(kwargs[field.rgbz1_name])
                 db_value = self.proxy_model._to_rgbz1_field(field, obj)
-                if filter_value != db_value:
-                    exclude_pks.append(obj.pk)
+                if filter_value == db_value:
+                    filter_pks.append(obj.pk)
 
-        filtered_queryset = partly_filtered_queryset.exclude(pk__in=exclude_pks)
+        if filter_pks:
+            filtered_queryset = filtered_queryset.filter(pk__in=filter_pks)
 
         return self.__class__(proxy_model=self.proxy_model, queryset=filtered_queryset)
 

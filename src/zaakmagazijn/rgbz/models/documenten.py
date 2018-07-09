@@ -28,6 +28,7 @@ class InformatieObject(Object):
     """
 
     informatieobjectidentificatie = models.CharField(
+        db_index=True,
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
         validators=[alphanumeric_excluding_diacritic, ])
     # TODO [KING]: Attribuut bronorganisatie in IOT bestaat niet in ZDS maar is verplicht
