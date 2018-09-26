@@ -243,6 +243,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'cmislib': {
+            'handlers': ['project', 'console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
         'django.request': {
             'handlers': ['django'],
             'level': 'ERROR',

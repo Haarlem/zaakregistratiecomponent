@@ -4,7 +4,7 @@
 #
 #    pip-compile --no-index --output-file requirements/base.txt requirements/base.in
 #
--e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev2#egg=cmislib
+-e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev3#egg=cmislib
 -e git+https://github.com/maykinmedia/spyne.git@maykin#egg=spyne
 -e git+https://github.com/maykinmedia/python-zeep.git@xsi-nil-on-complex-type-with-simple-content#egg=zeep
 appdirs==1.4.3
