@@ -13,3 +13,9 @@ INSERT INTO public.rgbz_organisatorischeeenheid (betrokkene_ptr_id, organisatiei
 * Add DEMO casetype 
 */
 INSERT INTO public.rgbz_zaaktype (zaaktypeidentificatie, zaaktypeomschrijving, domein, zaaktypeomschrijving_generiek, rsin, trefwoord, doorlooptijd_behandeling, servicenorm_behandeling, archiefclassificatiecode, vertrouwelijk_aanduiding, publicatie_indicatie, zaakcategorie, publicatietekst, datum_begin_geldigheid_zaaktype, datum_einde_geldigheid_zaaktype, medewerker_id, organisatorische_eenheid_id) VALUES (1, 'DEMO', 'DEMO', 'Demonstratie zaaktype', 1, '{''DEMO''}', 14, null, null, 'OPENBAAR', 'N', null, null, '20180101', '21000101', null, 1);
+
+/*
+*Add DEMO_DOCUMENT documenttype
+*/ 
+INSERT INTO public.rgbz_informatieobjecttypeomschrijvinggeneriek (informatieobjecttypeomschrijving_generiek, definitie_informatieobjecttypeomschrijving_generiek, herkomst_informatieobjecttypeomschrijving_generiek, hierarchie_informatieobjecttypeomschrijving_generiek, opmerking_informatieobjecttypeomschrijving_generiek, begin_geldigheid_informatieobjecttypeomschrijving_generiek, einde_geldigheid_informatieobjecttypeomschrijving_generiek) VALUES ('DEMO_DOC', 'Demo document', 'Demo', 'Demo', null, '20180101', null);
+INSERT INTO public.rgbz_informatieobjecttype (informatieobjecttypeomschrijving, domein, rsin, informatieobjectcategorie, informatieobjecttypetrefwoord, datum_begin_geldigheid_informatieobjecttype, datum_einde_geldigheid_informatieobjecttype, informatieobjecttypeomschrijving_generiek_id) VALUES ('DEMO_DOCUMENT', 'DEMO', 1, 'document', null, '20180101', null, (select id from rgbz_informatieobjecttypeomschrijvinggeneriek where informatieobjecttypeomschrijving_generiek='DEMO_DOC'));
