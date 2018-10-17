@@ -424,3 +424,4 @@ class BaseTestPlatformTests(StUFMixin, XmlHelperMixin, MockDMSMixin, LiveServerT
         response = requests.post('{}/{}'.format(self.live_server_url, soap_port), rendered_envelope, headers=headers)
         logger.debug(etree.tostring(etree.fromstring(response.content), xml_declaration=True, encoding="UTF-8", pretty_print=True).decode(encoding='utf-8'))
         return response
+

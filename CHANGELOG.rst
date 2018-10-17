@@ -8,6 +8,9 @@ Change history
 
 *TODO*
 
+* Changed how *groupattributes* are updated. They are only updated if they are
+  explicitly provided in the *current* and/or *new* ``object`` in the XML. If
+  both are empty, they are no longer removed.
 * The performance fix in 0.9.13 introduced a bug that caused objects to be
   incorrectly identified, causing incorrect relations between objects.
 * Fixed operation ``voegZaakdocumentToe_EdcLk01`` which incorrectly checked for
