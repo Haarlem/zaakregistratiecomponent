@@ -38,9 +38,11 @@ class ZaakTypeProxy(ModelProxy):
     model = ZaakType
     objects = ProxyManager()
 
-    @classmethod
-    def to_rgbz2_zaaktypeidentificatie(cls, kwargs):
-        raise NoValueError()
+    # Implemented as specified but for all practical use cases, the mapping
+    # should simply exist. Hence, the code below is commented out.
+    # @classmethod
+    # def to_rgbz2_zaaktypeidentificatie(cls, kwargs):
+    #     raise NoValueError()
 
     @classmethod
     def to_rgbz2_domein(cls, kwargs):

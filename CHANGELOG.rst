@@ -3,6 +3,43 @@ Change history
 ==============
 
 
+0.9.14
+======
+
+*October 17, 2018*
+
+* Fixed an issue in the RGBZ-mapping that caused an error when several
+  ``Zaaktype`` objects exist with the same date. The specification doesn't allow
+  the ``zaaktypecode`` to be mapped to ``zaaktypeidentificatie`` but for all
+  practical cases, this seems the best approach nonetheless.
+* Added Docker setup. See ``DOCKER.rst`` for instructions.
+* Updated several underlying libraries.
+* Improved logging for communications with the DMS.
+
+
+0.9.13
+======
+
+*July 9, 2018*
+
+* The operation ``actualiseerZaakstatus_ZakLk01`` now takes the ``volgnummer``
+  and ``zkt.code`` elements of the ``heeft.gerelateerde`` (Objecttype
+  StatusType) into account. This fixes an issue where status types existed
+  with equal descriptions existed. Note that ``zkt.code`` is still optional
+  but if provided, it will be used to search the appropriate status type.
+* Fixes a performance issue when looking up objects through the RGBZ proxy
+  layer that used a WHERE-clause. Also added several database indexes to make
+  lookups faster.
+* Added a unique constaint on ``Statustype``: ``zaaktype`` and
+  ``statustypevolgnummer``. If there are any conflicting combinations in the
+  database, these need to be resolved first before applying this update.
+* Fixes creating/identifing ``NatuurlijkPersoon`` when different matching
+  fields are used. This was actually fixed by removing most of matching fields
+  for this object type since VNG was unable to provide a clear definition.
+* Minor documentation updates and script improvements for setting up for
+  setting up Alfresco using the provided Vagrantfile.
+
+
 0.9.13
 ======
 
