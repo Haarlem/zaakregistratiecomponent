@@ -10,7 +10,7 @@ from ...rgbz.models import (
 from ...rgbz.tests.factory_models import (
     AnderZaakObjectFactory, BesluitTypeFactory, MedewerkerFactory, NatuurlijkPersoonFactory,
     NietNatuurlijkPersoonFactory, OrganisatorischeEenheidFactory, RolFactory,
-    VestigingFactory, WaterdeelObjectFactory, ZaakFactory, ZaakKenmerk,
+    VestigingFactory, WaterdeelObjectFactory, ZaakFactory, ZaakKenmerk, ZaakKenmerkFactory,
     ZaakTypeFactory, ZakenRelatie
 )
 from ..stuf.choices import BerichtcodeChoices, ServerFoutChoices
@@ -320,11 +320,16 @@ class MaykinupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         AnderZaakObjectFactory.create(
             zaak=self.zaak
         )
+        ZaakKenmerkFactory.create(
+            zaak=self.zaak
+        )
         self.assertEquals(self.zaak.anderzaakobject_set.all().count(), 2)
+        self.assertEquals(self.zaak.zaakkenmerk_set.all().count(), 2)
         vraag = 'updateZaak_ZakLk01_anderzaakobject.xml'
         response = self._do_request(self.porttype, vraag, self.context)
         self.assertEquals(response.status_code, 200, response.content)
         response_root = etree.fromstring(response.content)
+        self.assertEquals(self.zaak.zaakkenmerk_set.all().count(), 2)
         self.assertEquals(self.zaak.anderzaakobject_set.all().count(), 2)
 
     @patch('zaakmagazijn.rgbz_mapping.models.zaken.ZaakProxy.objects')
