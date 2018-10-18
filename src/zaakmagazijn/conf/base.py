@@ -243,6 +243,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'cmislib': {
+            'handlers': ['project', 'console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
         'django.request': {
             'handlers': ['django'],
             'level': 'ERROR',
@@ -345,6 +350,10 @@ ZAAKMAGAZIJN_STUF_TESTPLATFORM = False
 STATICFILES_DIRS = list(STATICFILES_DIRS) + [
     ('schema', os.path.join(ZAAKMAGAZIJN_ZDS_PATH)),
 ]
+
+# Absolute URL to retrieve the WSDL schema. For test purposes, you typically
+# use: 'http://localhost:8000'
+ZAAKMAGAZIJN_URL = None
 
 # Toelichtingen, en omschrijvingen die automatisch worden ingevuld bij het
 # aanmaken van het Relatietype Rol, voor een Zaak.

@@ -107,6 +107,10 @@ class Mutation:
             for gegevensgroep in stuf_entiteit.get_gegevensgroepen():
                 groepattributen_old = [child_obj1 for child_obj1, child_obj1 in iter_relations(obj1, obj2, gegevensgroep.field_name)]
                 groepattributen_current = [child_obj2 for child_obj1, child_obj2 in iter_relations(obj1, obj2, gegevensgroep.field_name)]
+                # Taiga #416 -- Negeer bij updateZaak een groepattribuut als deze niet expliciet wordt meegegeven
+                if obj1 and obj2 and obj1.verwerkingssoort == 'W' and obj2.verwerkingssoort == 'W' and \
+                   (groepattributen_old == [] and groepattributen_current == []):
+                    continue
                 operation.add_relation(
                     gegevensgroep, GroupAttributeOperation(gegevensgroep.stuf_entiteit, groepattributen_old, groepattributen_current))
 

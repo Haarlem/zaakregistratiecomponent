@@ -8,10 +8,10 @@ from ...rgbz.models import (
     Medewerker, NietNatuurlijkPersoon, Rol, WaterdeelObject, Zaak
 )
 from ...rgbz.tests.factory_models import (
-    BesluitTypeFactory, MedewerkerFactory, NatuurlijkPersoonFactory,
+    AnderZaakObjectFactory, BesluitTypeFactory, MedewerkerFactory, NatuurlijkPersoonFactory,
     NietNatuurlijkPersoonFactory, OrganisatorischeEenheidFactory, RolFactory,
-    VestigingFactory, WaterdeelObjectFactory, ZaakFactory, ZaakKenmerk,
-    ZaakTypeFactory
+    VestigingFactory, WaterdeelObjectFactory, ZaakFactory, ZaakKenmerk, ZaakKenmerkFactory,
+    ZaakTypeFactory, ZakenRelatie
 )
 from ..stuf.choices import BerichtcodeChoices, ServerFoutChoices
 from .base import BaseTestPlatformTests
@@ -311,6 +311,26 @@ class MaykinupdateZaak_ZakLk01Tests(BaseTestPlatformTests):
         response = self._do_request(self.porttype, vraag, self.context)
         self.assertEquals(response.status_code, 200, response.content)
         response_root = etree.fromstring(response.content)
+
+    def test_anderzaakobject_regression(self): # Taiga #416
+        """
+        """
+        besluittype = BesluitTypeFactory.create(besluittypeomschrijving='omschrijving5')
+
+        AnderZaakObjectFactory.create(
+            zaak=self.zaak
+        )
+        ZaakKenmerkFactory.create(
+            zaak=self.zaak
+        )
+        self.assertEquals(self.zaak.anderzaakobject_set.all().count(), 2)
+        self.assertEquals(self.zaak.zaakkenmerk_set.all().count(), 2)
+        vraag = 'updateZaak_ZakLk01_anderzaakobject.xml'
+        response = self._do_request(self.porttype, vraag, self.context)
+        self.assertEquals(response.status_code, 200, response.content)
+        response_root = etree.fromstring(response.content)
+        self.assertEquals(self.zaak.zaakkenmerk_set.all().count(), 2)
+        self.assertEquals(self.zaak.anderzaakobject_set.all().count(), 2)
 
     @patch('zaakmagazijn.rgbz_mapping.models.zaken.ZaakProxy.objects')
     def test_more_than_1_object_found(self, mock_zaak_objects):

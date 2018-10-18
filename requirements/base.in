@@ -1,8 +1,9 @@
-pip-tools
-psycopg2
+pip-tools>=2.0
+psycopg2-binary
 Pillow
 pytz
 raven
+httplib2==0.8             # Pinned to 0.8 due to #387
 
 Django
 # django-admin-tools
@@ -20,5 +21,5 @@ unidecode
 
 # forks
 -e git+https://github.com/maykinmedia/spyne.git@maykin#egg=spyne
--e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev2#egg=cmislib
+-e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev5#egg=cmislib
 -e git+https://github.com/maykinmedia/python-zeep.git@xsi-nil-on-complex-type-with-simple-content#egg=zeep
