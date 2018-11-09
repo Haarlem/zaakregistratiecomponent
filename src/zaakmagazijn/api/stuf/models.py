@@ -9,7 +9,7 @@ from spyne.model.complex import ComplexModel, XmlAttribute, XmlData
 from . import attributes, simple_types
 from ...utils.fields import StUFDateField, StUFDateTimeField
 from .attributes import element, exact, indOnvolledigeDatum, noValue
-from .constants import BG_XML_NS, STUF_XML_NS, ZKN_XML_NS
+from .constants import BG_XML_NS, STUF_XML_NS, ZKN_XML_NS, XMIME_XML_NS
 from .ordering import BSLSortering, EDCSortering, ZAKSortering
 
 logger = logging.getLogger(__name__)
@@ -347,8 +347,8 @@ class BinaireInhoud(ComplexModel):
     __type_name__ = 'BinaireInhoud'
     _type_info = [
         ('data', XmlData(File)),
-        ('bestandsnaam', XmlAttribute(attributes.Bestandsnaam, ref='bestandsnaam')),
-        ('contentType', XmlAttribute(attributes.ContentType, ref='contentType')),
+        ('bestandsnaam', XmlAttribute(attributes.Bestandsnaam, ref='bestandsnaam', ns=STUF_XML_NS)),
+        ('contentType', XmlAttribute(attributes.ContentType, ref='contentType', ns=XMIME_XML_NS)),
     ]
 
     def to_cmis(self) -> BytesIO:

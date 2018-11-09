@@ -12,6 +12,7 @@ from ...rgbz.tests.factory_models import (
     ZaakInformatieObjectFactory
 )
 from ..stuf.choices import BerichtcodeChoices
+from ..stuf.constants import STUF_XML_NS
 from ..stuf.ordering import EDCSortering
 from .base import BaseSoapTests, BaseTestPlatformTests
 
@@ -239,7 +240,7 @@ class geefZaakdocumentLezen_EdcLa01Tests(DMSMockMixin, BaseSoapTests):
             inhoud.text,
             base64.b64encode(b'foobarbaz').decode('utf-8')
         )
-        self.assertEqual(inhoud.attrib['bestandsnaam'], 'doc 1')
+        self.assertEqual(inhoud.attrib['{{{}}}bestandsnaam'.format(STUF_XML_NS)], 'doc 1')
         self._dms_client.geef_inhoud.assert_called_once_with(self.document)
 
     def test_namespace_response(self):

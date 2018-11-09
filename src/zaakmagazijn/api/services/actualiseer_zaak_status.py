@@ -12,6 +12,7 @@ from ..stuf import OneToManyRelation, StUFEntiteit, StUFKerngegevens
 from ..stuf.choices import ClientFoutChoices, ServerFoutChoices
 from ..stuf.faults import StUFFault
 from ..stuf.models import Bv03Bericht
+from ..stuf.protocols import Nil
 from ..stuf.utils import get_bv03_stuurgegevens
 from ..zds import Lk01Builder
 from ..zds.entiteiten.betrokkene import OEHVZOEntiteit
@@ -21,6 +22,7 @@ class StatusTypeKerngegevens(StUFKerngegevens):
     mnemonic = 'STT'
     model = StatusType
     field_mapping = (
+        ('zkt.code', 'zaaktype__zaaktypeidentificatie'),
         # ('zkt.identificatie', 'zaaktype__zaaktypeidentificatie'),
         # ('zkt.omschrijving', 'zaaktype__zaaktypeomschrijving'),
         ('volgnummer', 'statustypevolgnummer'),
@@ -213,12 +215,20 @@ class ActualiseerZaakstatus(ServiceBase):
             raise StUFFault(ClientFoutChoices.stuf055, stuf_details='Verwacht (huidig) heeft@verwerkingssoort="T".')
 
         # Eis #1
-        stt_omschrijving = huidig.heeft[0].gerelateerde.omschrijving
-        # stt_volgnummer = huidig.heeft[0].gerelateerde.volgnummer
+        status_type_filter_kwargs = {
+            'statustypeomschrijving': huidig.heeft[0].gerelateerde.omschrijving,
+            'statustypevolgnummer': huidig.heeft[0].gerelateerde.volgnummer,
+        }
+        zaak_type_identificatie = huidig.heeft[0].gerelateerde.__getattribute__('zkt.code')
+        if zaak_type_identificatie:
+            status_type_filter_kwargs['zaaktype__zaaktypeidentificatie'] = zaak_type_identificatie
+
         try:
-            status_type_obj = StatusType.objects.get(statustypeomschrijving=stt_omschrijving)
+            status_type_obj = StatusType.objects.get(**status_type_filter_kwargs)
         except StatusType.DoesNotExist:
-            raise StUFFault(ServerFoutChoices.stuf064, stuf_details='StatusType met omschrijving "{}" bestaat niet'.format(stt_omschrijving))
+            raise StUFFault(ServerFoutChoices.stuf064, stuf_details='Statustype bestaat niet')
+        except StatusType.MultipleObjectsReturned:
+            raise StUFFault(ServerFoutChoices.stuf064, stuf_details='Statustype is niet uniek identificeerbaar')
 
         # TODO [KING]: Taiga #223 Het ZS kan aan de hand van informatie uit de ZTC bepalen of een status een eindstatus van een zaak is.
 
@@ -240,6 +250,8 @@ class ActualiseerZaakstatus(ServiceBase):
 
         zakstt_datum_status_gezet = huidig.heeft[0].datumStatusGezet.data
         zakstt_toelichting = huidig.heeft[0].toelichting
+        if isinstance(zakstt_toelichting, Nil):
+            zakstt_toelichting = None
 
         with transaction.atomic():
             rol = Rol.objects.create(
@@ -248,7 +260,7 @@ class ActualiseerZaakstatus(ServiceBase):
                 # TODO [KING]: Taiga #221
                 rolomschrijving=zakbtrbtr_rolomschrijving or Rolomschrijving.behandelaar,
                 rolomschrijving_generiek=zakbtrbtr_rolomschrijving_generiek or RolomschrijvingGeneriek.behandelaar,
-                roltoelichting=zakbtrbtr_roltoelichting or ''
+                roltoelichting=zakbtrbtr_roltoelichting
             )
 
             # TODO [KING]: There is a unique constraint on zaak and

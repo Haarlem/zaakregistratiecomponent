@@ -2,6 +2,91 @@
 Change history
 ==============
 
+
+0.9.13
+======
+
+*July 9, 2018*
+
+* The operation ``actualiseerZaakstatus_ZakLk01`` now takes the ``volgnummer``
+  and ``zkt.code`` elements of the ``heeft.gerelateerde`` (Objecttype
+  StatusType) into account. This fixes an issue where status types existed
+  with equal descriptions existed. Note that ``zkt.code`` is still optional
+  but if provided, it will be used to search the appropriate status type.
+* Fixes a performance issue when looking up objects through the RGBZ proxy
+  layer that used a WHERE-clause. Also added several database indexes to make
+  lookups faster.
+* Added a unique constaint on ``Statustype``: ``zaaktype`` and
+  ``statustypevolgnummer``. If there are any conflicting combinations in the
+  database, these need to be resolved first before applying this update.
+* Fixes creating/identifing ``NatuurlijkPersoon`` when different matching
+  fields are used. This was actually fixed by removing most of matching fields
+  for this object type since VNG was unable to provide a clear definition.
+* Minor documentation updates and script improvements for setting up for
+  setting up Alfresco using the provided Vagrantfile.
+
+
+0.9.12
+======
+
+*June 6, 2018*
+
+* Allow the the ``ZAAKMAGAZIJN_SYSTEEM`` setting to be a list. This
+  essentially allows the Zaakmagazijn to accept requests that are meant for
+  different municipalities. Responses will have the the ``zender`` field
+  filled with the ``ontvanger`` from the requests.
+* Added new setting ``ZAAKMAGAZIJN_DOCUMENT_ID_GENERATOR`` which takes a
+  function to generate a unique ID for ``genereerDocumentIdentificatie_Du02``.
+* Added new setting ``ZAAKMAGAZIJN_BESLUIT_ID_GENERATOR`` which takes a
+  function to generate a unique ID for ``genereerBesluitIdentificatie_Du02``.
+
+
+0.9.11
+======
+
+*June 4, 2018*
+
+* Fixed namespace for ``bestandsnaam`` attribute of element ``inhoud`` in
+  EDC-objects to ``StUF``. Responses did not include this namespace.
+* Added a new unique ID generator with a simple incremental number, prefixed
+  by the receiving organisation (stuurgegevens.ontvanger.organisatie) and the
+  current year (for example: 0392-2017-0000001):
+  ``zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_with_org_id``
+
+
+0.9.10
+======
+
+*May 15, 2018*
+
+* Fixed ``link`` in the RGBZ compatability layer to actually return the the
+  ``link`` value of ``InformatieObject``en in related services. It previously
+  returned the ``formaat`` value by mistake.
+* Fixed issues with fields ``vertrouwlijkAanduiding`` and
+  ``vertrouwelijkheidAanduiding``. The ZDS 1.2 specification contains invalid
+  attribute names. These fields are now all named ``vertrouwelijkAanduiding``.
+* Fixed storing raw XML string when ``statustoelichting`` in service
+  ``actualiseerZaakstatus`` was empty.
+* Fixed creating underlying ``ZaakObject`` objects, like ``OpenbareRuimte``
+  even though the information model indicates some attributes are mandatory.
+  The XSD does not contain some of these attributes at all, so there is no way
+  to provide values for these attributes.
+  This conflicting specification was resolved by making the mandatory
+  attributes optional in the database for those that are missing in the XSD:
+
+  - ``GemeentelijkeOpenbareRuimteObject.type_openbare_ruimte``
+  - ``HuisHoudenObject.huishoudensoort``
+  - ``OpenbareRuimteObject.type_openbare_ruimte``
+  - ``WOZDeelObject.woz_objectnummer``
+  - ``WOZObject.soortobjectcode``
+  - ``WOZWaardeObject.vastgestelde_waarde``
+
+* The ``EnkelvoudigInformatieObject.formaat`` attribute is no longer cut off
+  to 10 characters as was specified in the RGBZ 1.0 specification. The ZDS 1.2
+  specification allows for 85 characters, and we choose to remove the RGBZ
+  compatability layer rule to allow all stored characters to be returned.
+
+
 0.9.9
 =====
 

@@ -418,18 +418,15 @@ class La01Builder(ComplexModelBuilder):
 
         # TODO [TECH]: Maybe we should move the whole stuurgegevens (or at least zender/ontvanger) to the application level?
         # TODO [TECH]: Reference etc. should also be logged.
-        ontvanger = request_obj.stuurgegevens.zender
-        cross_refnummer = request_obj.stuurgegevens.referentienummer
-
         return {
             'stuurgegevens': {
                 'berichtcode': self.berichtcode,
-                'zender': get_systeem_zender(),
-                'ontvanger': get_ontvanger(ontvanger),
+                'zender': get_systeem_zender(request_obj.stuurgegevens.ontvanger),
+                'ontvanger': get_ontvanger(request_obj.stuurgegevens.zender),
                 # TODO [TECH]: Generate reference
                 'referentienummer': create_unique_id(),
                 'tijdstipBericht': stuf_datetime.now(),
-                'crossRefnummer': cross_refnummer or IgnoreAttribute(),
+                'crossRefnummer': request_obj.stuurgegevens.referentienummer or IgnoreAttribute(),
                 'entiteittype': self.stuf_entiteit.get_mnemonic()
             },
             'parameters': self.create_output_parameters_data(input_parameters_obj),
@@ -733,6 +730,8 @@ class La01Builder(ComplexModelBuilder):
             self.total_objs = qs.count()
         if limit_arg > 0:
             qs = qs[:limit_arg]
+
+        # import ipdb; ipdb.set_trace()
         for obj in qs:
             try:
                 obj_answer = self._create_fundamenteel(

@@ -42,7 +42,7 @@ class IncrementalYearIdTestCase(BaseSoapTests):
 
     @freeze_time(datetime.date(2017, 1, 1))
     @override_settings(ZAAKMAGAZIJN_ZAAK_ID_GENERATOR='zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id')
-    def test_service_request(self):
+    def test_service_request_create_incremental_year_id(self):
         client = self._get_client('VerwerkSynchroonVrijBericht')
         stuf_factory = client.type_factory('http://www.egem.nl/StUF/StUF0301')
 
@@ -58,5 +58,103 @@ class IncrementalYearIdTestCase(BaseSoapTests):
 
         response_root = etree.fromstring(result.content)
         response_identificatie = response_root.xpath('//zds:zaak/zkn:identificatie', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(response_identificatie, '2017-0000001')
+
+    @freeze_time(datetime.date(2017, 1, 1))
+    @override_settings(
+        ZAAKMAGAZIJN_ZAAK_ID_GENERATOR='zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_with_org_id',
+        ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'ZSH', 'administratie': '', 'gebruiker': ''}
+    )
+    def test_service_request_create_incremental_year_with_org_id(self):
+        client = self._get_client('VerwerkSynchroonVrijBericht')
+        stuf_factory = client.type_factory('http://www.egem.nl/StUF/StUF0301')
+
+        with client.options(raw_response=True):
+            result = client.service.genereerZaakIdentificatie_Di02(
+                stuurgegevens=stuf_factory['Di02-Stuurgegevens-gzi'](
+                    berichtcode='Di02',
+                    referentienummer='123',
+                    tijdstipBericht=stuf_datetime.now(),
+                    functie='genereerZaakidentificatie',
+                    ontvanger={
+                        'applicatie': 'ZSH',
+                        'organisatie': '0392',
+                    }
+                )
+            )
+
+        response_root = etree.fromstring(result.content)
+        response_identificatie = response_root.xpath('//zds:zaak/zkn:identificatie', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(response_identificatie, '0392-2017-0000001')
+
+    @freeze_time(datetime.date(2017, 1, 1))
+    @override_settings(
+        ZAAKMAGAZIJN_ZAAK_ID_GENERATOR='zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_with_org_id',
+        ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'ZSH', 'administratie': '', 'gebruiker': ''}
+    )
+    def test_service_request_create_incremental_year_with_org_id_without_org(self):
+        client = self._get_client('VerwerkSynchroonVrijBericht')
+        stuf_factory = client.type_factory('http://www.egem.nl/StUF/StUF0301')
+
+        with client.options(raw_response=True):
+            result = client.service.genereerZaakIdentificatie_Di02(
+                stuurgegevens=stuf_factory['Di02-Stuurgegevens-gzi'](
+                    berichtcode='Di02',
+                    referentienummer='123',
+                    tijdstipBericht=stuf_datetime.now(),
+                    functie='genereerZaakidentificatie',
+                )
+            )
+
+        response_root = etree.fromstring(result.content)
+        error_message = response_root.xpath('//stuf:Fo02Bericht/stuf:body/stuf:details', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(error_message, 'Ontvangende organisatie is verplicht in de stuurgegevens voor het genereren van identificaties.')
+
+    @freeze_time(datetime.date(2017, 1, 1))
+    @override_settings(
+        ZAAKMAGAZIJN_DOCUMENT_ID_GENERATOR='zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id'
+    )
+    def test_service_request_create_incremental_year_id(self):
+        client = self._get_client('VerwerkSynchroonVrijBericht')
+        stuf_factory = client.type_factory('http://www.egem.nl/StUF/StUF0301')
+
+        with client.options(raw_response=True):
+            result = client.service.genereerDocumentIdentificatie_Di02(
+                stuurgegevens=stuf_factory['Di02-Stuurgegevens-gdi'](
+                    berichtcode='Di02',
+                    referentienummer='123',
+                    tijdstipBericht=stuf_datetime.now(),
+                    functie='genereerDocumentidentificatie'
+                )
+            )
+
+        response_root = etree.fromstring(result.content)
+        response_identificatie = response_root.xpath('//zds:document/zkn:identificatie', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(response_identificatie, '2017-0000001')
+
+    @freeze_time(datetime.date(2017, 1, 1))
+    @override_settings(
+        ZAAKMAGAZIJN_BESLUIT_ID_GENERATOR='zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id'
+    )
+    def test_service_request_create_incremental_year_id(self):
+        client = self._get_client('VerwerkSynchroonVrijBericht')
+        stuf_factory = client.type_factory('http://www.egem.nl/StUF/StUF0301')
+
+        with client.options(raw_response=True):
+            result = client.service.genereerBesluitIdentificatie_Di02(
+                stuurgegevens=stuf_factory['Di02-Stuurgegevens-gbi'](
+                    berichtcode='Di02',
+                    referentienummer='123',
+                    tijdstipBericht=stuf_datetime.now(),
+                    functie='genereerBesluitidentificatie'
+                )
+            )
+
+        response_root = etree.fromstring(result.content)
+        response_identificatie = response_root.xpath('//zds:besluit/zkn:identificatie', namespaces=self.nsmap)[0].text
 
         self.assertEqual(response_identificatie, '2017-0000001')

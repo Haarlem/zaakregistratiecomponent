@@ -28,6 +28,7 @@ class InformatieObject(Object):
     """
 
     informatieobjectidentificatie = models.CharField(
+        db_index=True,
         max_length=40, help_text='Een binnen een gegeven context ondubbelzinnige referentie naar het INFORMATIEOBJECT.',
         validators=[alphanumeric_excluding_diacritic, ])
     # TODO [KING]: Attribuut bronorganisatie in IOT bestaat niet in ZDS maar is verplicht
@@ -71,7 +72,7 @@ class InformatieObject(Object):
     verzenddatum = StUFDateField(null=True, blank=True)
     geadresseerde = models.CharField(max_length=200, null=True, blank=True,
                                      help_text='De persoon of organisatie waarnaar het informatieobject is verzonden.')
-    vertrouwlijkaanduiding = models.CharField(max_length=20, choices=Vertrouwelijkaanduiding.choices,
+    vertrouwelijkaanduiding = models.CharField(max_length=20, choices=Vertrouwelijkaanduiding.choices,
                                               help_text='Aanduiding van de mate waarin het INFORMATIEOBJECT voor de '
                                                         'openbaarheid bestemd is.')
     gebruiksrechten = models.ForeignKey('rgbz.GebruiksRechten', null=True, blank=True)
@@ -241,7 +242,7 @@ class EnkelvoudigInformatieObject(CMISMixin, InformatieObject):
         'zsdms:documentbeschrijving': 'beschrijving',  # o
         'zsdms:documentverzenddatum': 'verzenddatum',  # o
         # TODO [TECH]: Change field to vertrouw*E*lijkaanduiding
-        'zsdms:vertrouwelijkaanduiding': 'vertrouwlijkaanduiding',  # v
+        'zsdms:vertrouwelijkaanduiding': 'vertrouwelijkaanduiding',  # v
         'zsdms:documentauteur': 'auteur',  # v (kan verschillen van cmis:createdBy)
         'zsdms:documentversie': 'versie',  # o
         'zsdms:documentstatus': 'informatieobject_status',  # o

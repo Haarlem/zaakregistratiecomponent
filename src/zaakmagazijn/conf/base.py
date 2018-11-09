@@ -243,6 +243,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'cmislib': {
+            'handlers': ['project', 'console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
         'django.request': {
             'handlers': ['django'],
             'level': 'ERROR',
@@ -315,7 +320,7 @@ ZAAKMAGAZIJN_OPEN_ACCESS = True
 # Based on XSD parametersVraag -> maximumAantal
 ZAAKMAGAZIJN_DEFAULT_MAX_NR_RESULTS = 15
 
-# Indentificatie van systeem
+# Identificatie van systeem
 ZAAKMAGAZIJN_SYSTEEM = {
     'organisatie': 'ORG',
     'applicatie': 'TTA',
@@ -325,6 +330,10 @@ ZAAKMAGAZIJN_SYSTEEM = {
 
 ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
 # ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id'
+# ZAAKMAGAZIJN_ZAAK_ID_GENERATOR = 'zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_with_org_id'
+
+ZAAKMAGAZIJN_DOCUMENT_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
+ZAAKMAGAZIJN_BESLUIT_ID_GENERATOR = 'zaakmagazijn.api.utils.create_unique_id'
 
 # Absolute URL of the Zaakmagazijn. Used in the WSDL and should not be altered.
 ZAAKMAGAZIJN_ZDS_URL = '/static/schema/'
@@ -341,6 +350,10 @@ ZAAKMAGAZIJN_STUF_TESTPLATFORM = False
 STATICFILES_DIRS = list(STATICFILES_DIRS) + [
     ('schema', os.path.join(ZAAKMAGAZIJN_ZDS_PATH)),
 ]
+
+# Absolute URL to retrieve the WSDL schema. For test purposes, you typically
+# use: 'http://localhost:8000'
+ZAAKMAGAZIJN_URL = None
 
 # Toelichtingen, en omschrijvingen die automatisch worden ingevuld bij het
 # aanmaken van het Relatietype Rol, voor een Zaak.

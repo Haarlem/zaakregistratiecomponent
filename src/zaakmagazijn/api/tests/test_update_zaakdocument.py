@@ -70,7 +70,7 @@ class STPupdateZaakdocument_DI02Tests(DMSMockMixin, BaseTestPlatformTests):
             creatiedatum=vandaag,
             titel='titel',
             taal='taal',
-            vertrouwlijkaanduiding='VERTROUWELIJK',
+            vertrouwelijkaanduiding='VERTROUWELIJK',
             auteur='auteur',
             link=None
         )
@@ -78,14 +78,14 @@ class STPupdateZaakdocument_DI02Tests(DMSMockMixin, BaseTestPlatformTests):
 
         self.zaakdocument2 = EnkelvoudigInformatieObjectFactory.create(
             informatieobjectidentificatie=self.context['voegzaakdocumenttoe_identificatie_7'],
-            vertrouwlijkaanduiding='VERTROUWELIJK',
+            vertrouwelijkaanduiding='VERTROUWELIJK',
             auteur='auteur',
         )
         ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.zaakdocument2)
 
         self.zaakdocument3 = EnkelvoudigInformatieObjectFactory.create(
             informatieobjectidentificatie=self.context['maakzaakdocument_identificatie_5'],
-            vertrouwlijkaanduiding='VERTROUWELIJK',
+            vertrouwelijkaanduiding='VERTROUWELIJK',
             auteur='auteur',
         )
         ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.zaakdocument3)

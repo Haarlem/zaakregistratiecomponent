@@ -27,7 +27,7 @@ class InformatieObjectEntiteit(StUFEntiteit):
         ('versie', 'documentversie'),
         ('status', 'documentstatus'),
         ('verzenddatum', 'documentverzenddatum'),
-        ('vertrouwelijkheidAanduiding', 'vertrouwlijkaanduiding'),
+        ('vertrouwelijkAanduiding', 'vertrouwelijkaanduiding'),
         ('auteur', 'documentauteur'),
         ('link', 'documentlink'),
     )

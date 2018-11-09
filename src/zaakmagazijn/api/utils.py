@@ -10,7 +10,7 @@ from zaakmagazijn.rgbz_mapping.models import EnkelvoudigDocumentProxy
 from .stuf.choices import ServerFoutChoices
 
 
-def create_unique_id():
+def create_unique_id(data=None):
     gemeente_code = settings.ZAAKMAGAZIJN_GEMEENTE_CODE
     assert len(gemeente_code) == 4, 'Gemeentecode should always be 4 characters long'
 

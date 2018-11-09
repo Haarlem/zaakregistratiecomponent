@@ -56,7 +56,7 @@ class EnkelvoudigDocumentEntiteit(StUFEntiteit):
         ('versie', 'documentversie'),
         ('status', 'documentstatus'),
         ('verzenddatum', 'documentverzenddatum'),
-        ('vertrouwelijkAanduiding', 'vertrouwlijkaanduiding'),
+        ('vertrouwelijkAanduiding', 'vertrouwelijkaanduiding'),
         ('auteur', 'documentauteur'),
         ('link', 'documentlink'),
         ('inhoud', '_inhoud'),

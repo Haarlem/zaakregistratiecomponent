@@ -97,13 +97,20 @@ class NatuurlijkPersoonEntiteit(StUFEntiteit):
         'anp.identificatie',
         # It's unclear what this is.
         # 'inp.a-nummer',
-        'geslachtsnaam',
-        'voorvoegselGeslachtsnaam',
-        'voorletters',
-        'voornamen',
-        'geslachtsaanduiding',
-        'geboortedatum',
-        # TODO [TECH]: Add support for this.
+
+        # Removed the matching fields below. KING/VNG could not answer what it
+        # actually means that these fields are matching fields (kerngegevens).
+        # They seem to provide "hints" as to what can be used to uniquely
+        # identify a person but not in any automated way that makes sense.
+        # See: Taiga #413
+        # 'geslachtsnaam',
+        # 'voorvoegselGeslachtsnaam',
+        # 'voorletters',
+        # 'voornamen',
+        # 'geslachtsaanduiding',
+        # 'geboortedatum',
+
+        # TODO [TECH]: Add support for these two fields.
         # 'verblijfsadres',
         # 'sub.verblijfBuitenland',
     )

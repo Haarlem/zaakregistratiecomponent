@@ -57,7 +57,7 @@ class Consumer(object):
 
         return response
 
-    def overdragenZaak(self, zaak, accepted, cross_ref_nummer, melding=None):
+    def overdragenZaak(self, zaak, accepted, cross_ref_nummer, zender, melding=None):
         if melding is not None and not isinstance(melding, (list, tuple)):
             melding = [melding, ]
 
@@ -74,7 +74,7 @@ class Consumer(object):
         data = {
             'stuurgegevens': {
                 'berichtcode': berichtcode,
-                'zender': settings.ZAAKMAGAZIJN_SYSTEEM,
+                'zender': zender,
                 'ontvanger': self.application.zender_as_dict(),
                 'referentienummer': referentienummer,
                 'tijdstipBericht': stuf_datetime.now(),

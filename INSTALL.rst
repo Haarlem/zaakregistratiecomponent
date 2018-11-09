@@ -40,8 +40,9 @@ uit de basis configuratie.
 
 * ``ZAAKMAGAZIJN_SYSTEEM``
 
-  Een ``dict`` die de identificatie van het Zaakmagazijn aangeeft. Kent de
-  sleutels:
+  Een ``dict`` die de identificatie van het Zaakmagazijn aangeeft. Kan ook een
+  ``list`` van ``dict`` zijn om meerdere gemeente(code)s te ondersteunen. Kent
+  de sleutels:
 
   - ``organisatie`` (standaard: ``ORG``)
   - ``applicatie`` (standaard: ``TTA``)
@@ -62,16 +63,37 @@ uit de basis configuratie.
   (standaard: ``zaakmagazijn.api.utils.create_unique_id``)
 
   Een functie die een uniek nummer genereert voor de service
-  ``genereerZaakIdentificatie_Di02``. Er zijn 2 functies meegeleverd:
+  ``genereerZaakIdentificatie_Di02``. Er zijn 3 functies meegeleverd:
 
   - ``zaakmagazijn.api.utils.create_unique_id`` (standaard)
 
-    Creeert een nummer bestaande uit de gemeente code en een UUID.
+    Creeert een nummer bestaande uit de gemeente code en een UUID. Voorbeeld:
+    ``039288072b1c-54f4-485c-8e83-095621e6jk24``
 
   - ``zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_id``
 
     Creeert een nummer bestaande uit het huidige jaar en een oplopend
-    volgnummer binnen hetzelfde jaar.
+    volgnummer binnen hetzelfde jaar. Voorbeeld: ``2017-0000001``
+
+  - ``zaakmagazijn.contrib.idgenerator.utils.create_incremental_year_with_org_id``
+
+    Creeert een nummer bestaande uit de ontvangende organisatie, het huidige
+    jaar en een oplopend volgnummer binnen hetzelfde jaar. Voorbeeld:
+    ``0392-2017-0000001``
+
+* ``ZAAKMAGAZIJN_DOCUMENT_ID_GENERATOR``
+  (standaard: ``zaakmagazijn.api.utils.create_unique_id``)
+
+  Een functie die een uniek nummer genereert voor de service
+  ``genereerDocumentIdentificatie_Du02``. Zie
+  ``ZAAKMAGAZIJN_ZAAK_ID_GENERATOR`` voor mogelijke functies.
+
+* ``ZAAKMAGAZIJN_BESLUIT_ID_GENERATOR``
+  (standaard: ``zaakmagazijn.api.utils.create_unique_id``)
+
+  Een functie die een uniek nummer genereert voor de service
+  ``genereerBesluitIdentificatie_Du02``.  Zie
+  ``ZAAKMAGAZIJN_ZAAK_ID_GENERATOR`` voor mogelijke functies.
 
 * ``ZAAKMAGAZIJN_URL``
 
