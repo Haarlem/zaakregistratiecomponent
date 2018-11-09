@@ -9,8 +9,9 @@ from zeep.xsd.const import Nil
 from ...rgbz.choices import JaNee
 from ...rgbz.tests.factory_models import (
     EnkelvoudigInformatieObjectFactory, ZaakFactory,
-    ZaakInformatieObjectFactory
-)
+    ZaakInformatieObjectFactory,
+    InformatieObjectTypeFactory,
+    InformatieObjectTypeOmschrijvingGeneriekFactory)
 from ..stuf.choices import BerichtcodeChoices
 from ..stuf.constants import STUF_XML_NS
 from ..stuf.ordering import EDCSortering
@@ -527,3 +528,38 @@ class geefZaakdocumentLezen_EdcLv01RegressionTests(DMSMockMixin, BaseTestPlatfor
         response_zak_identificatie = response_object_element.xpath('zkn:isRelevantVoor/zkn:gerelateerde/zkn:identificatie', namespaces=self.nsmap)[0].text
 
         self.assertEqual(response_zak_identificatie, zaak.zaakidentificatie)
+
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'SoapUI', 'administratie': 'test', 'gebruiker': 'David'})
+    def test_scope_alles_met_generiek_doc_type(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/419
+        """
+        dct_generiek = InformatieObjectTypeOmschrijvingGeneriekFactory.create()
+        dct = InformatieObjectTypeFactory.create(
+            informatieobjecttypeomschrijving_generiek=dct_generiek
+        )
+        document = EnkelvoudigInformatieObjectFactory.create(
+            informatieobjectidentificatie='03923185840f-7268-44a6-95ba-085c385b0544',
+            informatieobjecttype=dct,
+        )
+        zaak = ZaakFactory.create(status_set__indicatie_laatst_gezette_status=JaNee.ja)
+        ZaakInformatieObjectFactory.create(zaak=zaak, informatieobject=document)
+
+        vraag = 'geefZaakdocumentLezen_EdcLv01_taiga419.xml'
+        response = self._do_request(self.porttype, vraag)
+
+        self.assertEquals(response.status_code, 200, response.content)
+
+        response_root = etree.fromstring(response.content)
+        response_berichtcode = response_root.xpath(
+            '//zkn:stuurgegevens/stuf:berichtcode',
+            namespaces=self.nsmap
+        )[0].text
+        self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+        print(response.content)
+
+        response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+        response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(response_edc_identificatie, document.informatieobjectidentificatie)

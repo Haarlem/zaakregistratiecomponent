@@ -1,0 +1,37 @@
+<zds:geefZaakdocumentLezen_EdcLv01 xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                                   xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120"
+                                   xmlns:ns="http://www.egem.nl/StUF/sector/zkn/0310"
+                                   xmlns:stuf="http://www.egem.nl/StUF/StUF0301"
+                                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns:stuurgegevens>
+        <stuf:berichtcode>Lv01</stuf:berichtcode>
+        <stuf:zender>
+            <stuf:organisatie>1</stuf:organisatie>
+            <stuf:applicatie>SoapUI</stuf:applicatie>
+            <stuf:administratie>test</stuf:administratie>
+            <stuf:gebruiker>David</stuf:gebruiker>
+        </stuf:zender>
+        <stuf:ontvanger>
+            <stuf:organisatie>0392</stuf:organisatie>
+            <stuf:applicatie>SoapUI</stuf:applicatie>
+            <stuf:administratie>test</stuf:administratie>
+            <stuf:gebruiker>David</stuf:gebruiker>
+        </stuf:ontvanger>
+        <stuf:referentienummer>1</stuf:referentienummer>
+        <stuf:tijdstipBericht>20170831115500</stuf:tijdstipBericht>
+        <stuf:entiteittype>EDC</stuf:entiteittype>
+    </ns:stuurgegevens>
+     <ns:parameters>
+        <stuf:sortering>0</stuf:sortering>
+        <stuf:indicatorVervolgvraag>false</stuf:indicatorVervolgvraag>
+        <stuf:indicatorAantal>false</stuf:indicatorAantal>
+     </ns:parameters>
+    <ns:gelijk stuf:entiteittype="EDC">
+        <ns:identificatie>03923185840f-7268-44a6-95ba-085c385b0544</ns:identificatie>
+    </ns:gelijk>
+    <!--Optional:-->
+    <ns:scope>
+        <!--Optional:-->
+        <ns:object stuf:entiteittype="EDC" stuf:scope="alles" />
+    </ns:scope>
+</zds:geefZaakdocumentLezen_EdcLv01>

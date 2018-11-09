@@ -12,6 +12,8 @@ Change history
   ``Zaaktype`` objects exist with the same date. The specification doesn't allow
   the ``zaaktypecode`` to be mapped to ``zaaktypeidentificatie`` but for all
   practical cases, this seems the best approach nonetheless.
+* Fixed retrieving documents with ``stuf:scope="alles"`` that caused an RGBZ
+  mapping error for generic document type descriptions.
 * Added Docker setup. See ``DOCKER.rst`` for instructions.
 * Updated several underlying libraries.
 * Improved logging for communications with the DMS.

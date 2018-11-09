@@ -1,3 +1,5 @@
+from django.db import models
+
 from ...rgbz.models import (
     EnkelvoudigInformatieObject, InformatieObject, InformatieObjectType,
     SamengesteldInformatieObject
@@ -14,9 +16,18 @@ class DocumentTypeProxy(ModelProxy):
     fields = (
         ProxyField('documenttypeomschrijving', 'informatieobjecttypeomschrijving'),
         ProxyField('documentcategorie', 'informatieobjectcategorie'),
-        ProxyField('documenttypeomschrijving_generiek', 'informatieobjecttypeomschrijving_generiek'),
+        ProxyField('documenttypeomschrijving_generiek', None, rgbz1_field=models.CharField(
+            verbose_name='documenttypeomschrijving_generiek', max_length=80, blank=True)),
     )
     objects = ProxyManager()
+
+    @classmethod
+    def to_rgbz1_documenttypeomschrijving_generiek(cls, obj):
+        generiek = obj.informatieobjecttypeomschrijving_generiek
+        if generiek:
+            return generiek.informatieobjecttypeomschrijving_generiek
+
+        return None
 
 
 class DocumentProxy(ModelProxy):

@@ -3,9 +3,19 @@ import factory
 from ....utils import stuf_datetime
 from ...models import (
     EnkelvoudigInformatieObject, InformatieObject, InformatieObjectType,
-    SamengesteldInformatieObject
-)
+    SamengesteldInformatieObject,
+    InformatieObjectTypeOmschrijvingGeneriek)
 from .zaken import ZaakInformatieObjectFactory
+
+
+class InformatieObjectTypeOmschrijvingGeneriekFactory(factory.django.DjangoModelFactory):
+    informatieobjecttypeomschrijving_generiek = factory.Sequence(lambda n: 'omschrijving {0}'.format(n))
+    definitie_informatieobjecttypeomschrijving_generiek = 'definitie'
+    herkomst_informatieobjecttypeomschrijving_generiek = 'herkomst'
+    hierarchie_informatieobjecttypeomschrijving_generiek = 'hierarchie'
+
+    class Meta:
+        model = InformatieObjectTypeOmschrijvingGeneriek
 
 
 class InformatieObjectTypeFactory(factory.django.DjangoModelFactory):
