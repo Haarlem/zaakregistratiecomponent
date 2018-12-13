@@ -1,0 +1,41 @@
+<zds:voegZaakdocumentToe_EdcLk01 xmlns:stuf="http://www.egem.nl/StUF/StUF0301" xmlns:xm="http://www.w3.org/2005/05/xmlmime" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:zkn="http://www.egem.nl/StUF/sector/zkn/0310">
+  <zkn:stuurgegevens>
+    <stuf:berichtcode>Lk01</stuf:berichtcode>
+    <stuf:zender>
+      <stuf:organisatie>0392</stuf:organisatie>
+      <stuf:applicatie>MORPLUS</stuf:applicatie>
+      <stuf:administratie>MOR</stuf:administratie>
+      <stuf:gebruiker>husseldm</stuf:gebruiker>
+    </stuf:zender>
+    <stuf:ontvanger>
+      <stuf:organisatie>0392</stuf:organisatie>
+      <stuf:applicatie>ZSH</stuf:applicatie>
+    </stuf:ontvanger>
+    <stuf:referentienummer>dc70fcf9-9a1b-4c1b-a74d-1e6eec7ae6b4</stuf:referentienummer>
+    <stuf:tijdstipBericht>20180913165041</stuf:tijdstipBericht>
+    <stuf:entiteittype>EDC</stuf:entiteittype>
+  </zkn:stuurgegevens>
+  <zkn:parameters>
+    <stuf:mutatiesoort>T</stuf:mutatiesoort>
+    <stuf:indicatorOvername>V</stuf:indicatorOvername>
+  </zkn:parameters>
+  <zkn:object stuf:entiteittype="EDC" stuf:verwerkingssoort="T">
+    <zkn:identificatie>{{ identificatie }}</zkn:identificatie>
+    <zkn:dct.omschrijving>DEMO_DOCUMENT</zkn:dct.omschrijving>
+    <zkn:creatiedatum stuf:exact="true" stuf:indOnvolledigeDatum="V" stuf:noValue="geenWaarde">20180913</zkn:creatiedatum>
+    <zkn:ontvangstdatum stuf:exact="true" stuf:indOnvolledigeDatum="V" stuf:noValue="geenWaarde">20180913</zkn:ontvangstdatum>
+    <zkn:titel>Document.pdf</zkn:titel>
+    <zkn:formaat>pdf</zkn:formaat>
+    <zkn:taal>nl</zkn:taal>
+    <zkn:versie>1</zkn:versie>
+    <zkn:status>definitief</zkn:status>
+    <zkn:vertrouwelijkAanduiding>OPENBAAR</zkn:vertrouwelijkAanduiding>
+    <zkn:auteur>Melder</zkn:auteur>
+    <zkn:inhoud stuf:bestandsnaam="Document.pdf" xm:contentType="application/pdf">ZHVtbXk=</zkn:inhoud>
+    <zkn:isRelevantVoor stuf:entiteittype="EDCZAK" stuf:verwerkingssoort="T">
+      <zkn:gerelateerde stuf:entiteittype="ZAK" stuf:verwerkingssoort="I">
+        <zkn:identificatie>{{ zaak_identificatie }}</zkn:identificatie>
+      </zkn:gerelateerde>
+    </zkn:isRelevantVoor>
+  </zkn:object>
+</zds:voegZaakdocumentToe_EdcLk01>

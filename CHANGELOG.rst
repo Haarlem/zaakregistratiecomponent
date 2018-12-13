@@ -6,8 +6,13 @@ Change history
 0.9.14
 ======
 
-*October 17, 2018*
+*TODO*
 
+* The performance fix in 0.9.13 introduced a bug that caused objects to be
+  incorrectly identified, causing incorrect relations between objects.
+* Fixed operation ``voegZaakdocumentToe_EdcLk01`` which incorrectly checked for
+  existing documents, so multiple documents can now exist with the same
+  filename.
 * Fixed sorting on EDC value ``2`` which gave an error due to the RGBZ mapping.
 * Fixed an issue in the RGBZ-mapping that caused an error when several
   ``Zaaktype`` objects exist with the same date. The specification doesn't allow
@@ -18,6 +23,7 @@ Change history
 * Added Docker setup. See ``DOCKER.rst`` for instructions.
 * Updated several underlying libraries.
 * Improved logging for communications with the DMS.
+* Additional debug logging was added to see how RGBZ-mapping works.
 
 
 0.9.13
@@ -37,29 +43,6 @@ Change history
   ``statustypevolgnummer``. If there are any conflicting combinations in the
   database, these need to be resolved first before applying this update.
 * Fixed creating/identifing ``NatuurlijkPersoon`` when different matching
-  fields are used. This was actually fixed by removing most of matching fields
-  for this object type since VNG was unable to provide a clear definition.
-* Minor documentation updates and script improvements for setting up for
-  setting up Alfresco using the provided Vagrantfile.
-
-
-0.9.13
-======
-
-*July 9, 2018*
-
-* The operation ``actualiseerZaakstatus_ZakLk01`` now takes the ``volgnummer``
-  and ``zkt.code`` elements of the ``heeft.gerelateerde`` (Objecttype
-  StatusType) into account. This fixes an issue where status types existed
-  with equal descriptions existed. Note that ``zkt.code`` is still optional
-  but if provided, it will be used to search the appropriate status type.
-* Fixes a performance issue when looking up objects through the RGBZ proxy
-  layer that used a WHERE-clause. Also added several database indexes to make
-  lookups faster.
-* Added a unique constaint on ``Statustype``: ``zaaktype`` and
-  ``statustypevolgnummer``. If there are any conflicting combinations in the
-  database, these need to be resolved first before applying this update.
-* Fixes creating/identifing ``NatuurlijkPersoon`` when different matching
   fields are used. This was actually fixed by removing most of matching fields
   for this object type since VNG was unable to provide a clear definition.
 * Minor documentation updates and script improvements for setting up for
