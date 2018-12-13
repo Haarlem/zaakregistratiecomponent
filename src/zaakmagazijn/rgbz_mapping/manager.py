@@ -142,6 +142,23 @@ class ProxyQuerySet:
 
             filtered_queryset = filtered_queryset.filter(pk__in=filter_pks)
 
+        # For logging purposes
+        if logger.level <= logging.DEBUG:
+            _proxy_filter_str = '{}.objects.filter({})'.format(
+                self.proxy_model.__name__, ', '.join(
+                    ['{}={}'.format(k, v) for k, v in kwargs.items()]))
+            if _mapped_kwargs:
+                _map_method = 'via value comparison'
+                _real_filter_str = '{}.objects.filter({})'.format(
+                    self.proxy_model.model.__name__, ', '.join(
+                        ['{}={}'.format(k, v) for k, v in _mapped_kwargs.items()]))
+            else:
+                _map_method = 'directly'
+                _real_filter_str = '{}.objects.filter({})'.format(
+                    self.proxy_model.model.__name__, ', '.join(
+                        ['{}={}'.format(k, v) for k, v in full_filter_kwargs.items()]))
+            logger.debug('{} mapped ({}) to: {}'.format(_proxy_filter_str, _map_method, _real_filter_str))
+
         return self.__class__(proxy_model=self.proxy_model, queryset=filtered_queryset)
 
     def get(self, **kwargs):
