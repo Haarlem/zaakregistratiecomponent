@@ -8,6 +8,7 @@ Change history
 
 *October 17, 2018*
 
+* Fixed sorting on EDC value ``2`` which gave an error due to the RGBZ mapping.
 * Fixed an issue in the RGBZ-mapping that caused an error when several
   ``Zaaktype`` objects exist with the same date. The specification doesn't allow
   the ``zaaktypecode`` to be mapped to ``zaaktypeidentificatie`` but for all
@@ -29,13 +30,13 @@ Change history
   StatusType) into account. This fixes an issue where status types existed
   with equal descriptions existed. Note that ``zkt.code`` is still optional
   but if provided, it will be used to search the appropriate status type.
-* Fixes a performance issue when looking up objects through the RGBZ proxy
+* Fixed a performance issue when looking up objects through the RGBZ proxy
   layer that used a WHERE-clause. Also added several database indexes to make
   lookups faster.
 * Added a unique constaint on ``Statustype``: ``zaaktype`` and
   ``statustypevolgnummer``. If there are any conflicting combinations in the
   database, these need to be resolved first before applying this update.
-* Fixes creating/identifing ``NatuurlijkPersoon`` when different matching
+* Fixed creating/identifing ``NatuurlijkPersoon`` when different matching
   fields are used. This was actually fixed by removing most of matching fields
   for this object type since VNG was unable to provide a clear definition.
 * Minor documentation updates and script improvements for setting up for

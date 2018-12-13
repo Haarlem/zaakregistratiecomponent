@@ -48,7 +48,10 @@ EDCSortering = {
     1: ['identificatie'],
     2: [
         'documenttype__documentcategorie',
-        'documenttype__documenttypeomschrijving_generiek'
+        # FIXME: The RGBZ-mapping makes it impossible to sort on the generic
+        # field. Instead, we use the non-generic description.
+        'documenttype__documenttypeomschrijving'
+        # 'documenttype__documenttypeomschrijving_generiek'
     ],
     3: ['documenttype__documenttypeomschrijving'],
     4: ['documenttitel', 'documentversie'],
