@@ -6,7 +6,7 @@ Change history
 0.9.14
 ======
 
-*TODO*
+*December 14, 2018*
 
 * Changed how *groupattributes* are updated. They are only updated if they are
   explicitly provided in the *current* and/or *new* ``object`` in the XML. If
