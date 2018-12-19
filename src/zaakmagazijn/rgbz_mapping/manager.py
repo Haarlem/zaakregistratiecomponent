@@ -1,4 +1,8 @@
+import logging
+
 from django.db.models.constants import LOOKUP_SEP
+
+logger = logging.getLogger(__name__)
 
 
 class ProxyQuerySet:
@@ -92,7 +96,6 @@ class ProxyQuerySet:
         Filtering is a bit trippy, since we want to filter on RGBZ1 values, and not
         on RGBZ2 values.
         """
-
         direct_translatable_fields = list(self.proxy_model.get_fields(
             in_rgbz1=True, in_rgbz2=True, is_foreign_key=True,
             is_field=True, only_non_computed=True
@@ -114,16 +117,47 @@ class ProxyQuerySet:
         full_filter_kwargs.update(extra_filter_kwargs)
         filtered_queryset = self.queryset.filter(**full_filter_kwargs)
 
-        filter_pks = []
-        for obj in filtered_queryset:
-            for field in applicable_fields:
-                filter_value = field.get_django_field().to_python(kwargs[field.rgbz1_name])
-                db_value = self.proxy_model._to_rgbz1_field(field, obj)
-                if filter_value == db_value:
+        # Line below only for logging purposes
+        _mapped_kwargs = {}
+
+        if applicable_fields:
+            filter_pks = []
+            for obj in filtered_queryset:
+                # Iterate over all fields and if they all match, add the PK to the
+                # filter.
+                match = False
+                for field in applicable_fields:
+                    filter_value = field.get_django_field().to_python(kwargs[field.rgbz1_name])
+                    db_value = self.proxy_model._to_rgbz1_field(field, obj)
+
+                    # Line below only for logging purposes
+                    _mapped_kwargs[field.rgbz2_name] = filter_value
+
+                    match = filter_value == db_value
+                    if not match:
+                        break
+
+                if match:
                     filter_pks.append(obj.pk)
 
-        if filter_pks:
             filtered_queryset = filtered_queryset.filter(pk__in=filter_pks)
+
+        # For logging purposes
+        if logger.level <= logging.DEBUG:
+            _proxy_filter_str = '{}.objects.filter({})'.format(
+                self.proxy_model.__name__, ', '.join(
+                    ['{}={}'.format(k, v) for k, v in kwargs.items()]))
+            if _mapped_kwargs:
+                _map_method = 'via value comparison'
+                _real_filter_str = '{}.objects.filter({})'.format(
+                    self.proxy_model.model.__name__, ', '.join(
+                        ['{}={}'.format(k, v) for k, v in _mapped_kwargs.items()]))
+            else:
+                _map_method = 'directly'
+                _real_filter_str = '{}.objects.filter({})'.format(
+                    self.proxy_model.model.__name__, ', '.join(
+                        ['{}={}'.format(k, v) for k, v in full_filter_kwargs.items()]))
+            logger.debug('{} mapped ({}) to: {}'.format(_proxy_filter_str, _map_method, _real_filter_str))
 
         return self.__class__(proxy_model=self.proxy_model, queryset=filtered_queryset)
 

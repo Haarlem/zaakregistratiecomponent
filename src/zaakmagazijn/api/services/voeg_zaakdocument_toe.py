@@ -7,7 +7,6 @@ from zaakmagazijn.rgbz_mapping.models import (
 )
 
 from ...cmis.client import default_client as dms_client
-from ...rgbz.models import EnkelvoudigInformatieObject, Zaak
 from ..stuf import OneToManyRelation, StUFEntiteit
 from ..stuf.models import Bv03Bericht  # , TijdvakGeldigheid
 from ..stuf.utils import get_bv03_stuurgegevens
@@ -135,7 +134,6 @@ class VoegZaakdocumentToe(ServiceBase):
         # * Minimaal de vereiste metadata voor een EDC wordt vastgelegd in de
         #   daarvoor gedefinieerde objectproperties. In Tabel 3 is een mapping
         #   aangegeven tussen de StUF-ZKN-elementen en CMIS-objectproperties.
-
         with transaction.atomic():
             process_create(EnkelvoudigDocumentEntiteit, data)
 
@@ -144,13 +142,13 @@ class VoegZaakdocumentToe(ServiceBase):
             created_by = zender.gebruiker or zender.administratie or zender.applicatie or zender.organisatie or None
 
             # vul de document met de inhoud
-            document = EnkelvoudigInformatieObject.objects.get(informatieobjectidentificatie=data.object.identificatie)
+            document = EnkelvoudigDocumentProxy.objects.get(identificatie=data.object.identificatie)
 
             inhoud = data.object.inhoud
             content = inhoud.to_cmis()
 
             dms_client.maak_zaakdocument_met_inhoud(
-                document,
+                document._obj,
                 filename=inhoud.bestandsnaam,
                 sender=created_by,
                 stream=content,
@@ -158,8 +156,8 @@ class VoegZaakdocumentToe(ServiceBase):
             )
 
             # relateer document aan juiste zaak folder
-            zaak = Zaak.objects.get(zaakidentificatie=data.object.isRelevantVoor[0].gerelateerde.identificatie)
-            dms_client.relateer_aan_zaak(document, zaak)
+            zaak = ZaakProxy.objects.get(zaakidentificatie=data.object.isRelevantVoor[0].gerelateerde.identificatie)
+            dms_client.relateer_aan_zaak(document._obj, zaak._obj)
 
         return {
             'stuurgegevens': get_bv03_stuurgegevens(data),

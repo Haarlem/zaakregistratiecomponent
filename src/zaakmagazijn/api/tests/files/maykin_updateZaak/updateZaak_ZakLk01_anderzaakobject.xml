@@ -1,0 +1,31 @@
+<zds:updateZaak_ZakLk01 xsi:schemaLocation="http://www.stufstandaarden.nl/koppelvlak/zds0120 ../../zds0120_msg_totaal.xsd" xmlns:StUF="http://www.egem.nl/StUF/StUF0301" xmlns:ZKN="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:BG="http://www.egem.nl/StUF/sector/bg/0310">
+    <ZKN:stuurgegevens>
+        <StUF:berichtcode>Lk01</StUF:berichtcode>
+        <StUF:zender>
+            <StUF:organisatie>{{ zenderOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ zenderApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:zender>
+        <StUF:ontvanger>
+            <StUF:organisatie>{{ ontvangerOrganisatie }}</StUF:organisatie>
+            <StUF:applicatie>{{ ontvangerApplicatie }}</StUF:applicatie>
+            <StUF:gebruiker/>
+        </StUF:ontvanger>
+        <StUF:referentienummer>{{ referentienummer }}</StUF:referentienummer>
+        <StUF:tijdstipBericht>{{ tijdstipBericht }}</StUF:tijdstipBericht>
+        <StUF:entiteittype>ZAK</StUF:entiteittype>
+    </ZKN:stuurgegevens>
+    <ZKN:parameters>
+        <StUF:mutatiesoort>W</StUF:mutatiesoort>
+        <StUF:indicatorOvername>V</StUF:indicatorOvername>
+    </ZKN:parameters>
+    <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
+        <ZKN:identificatie>{{ gemeentecode }}{{ creerzaak_identificatie_7 }}</ZKN:identificatie>
+    </ZKN:object>
+    <ZKN:object StUF:verwerkingssoort="W" StUF:entiteittype="ZAK">
+        <ZKN:identificatie>{{ gemeentecode }}{{ creerzaak_identificatie_7 }}</ZKN:identificatie>
+        <ZKN:resultaat>
+    	    <ZKN:omschrijving>Afgehandeld</ZKN:omschrijving>
+        </ZKN:resultaat>
+    </ZKN:object>
+</zds:updateZaak_ZakLk01>

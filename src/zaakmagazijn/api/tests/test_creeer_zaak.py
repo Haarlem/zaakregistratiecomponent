@@ -783,3 +783,31 @@ class creeerZaak_ZakLk01RegressionTests(BaseTestPlatformTests):
         zaak = Zaak.objects.get()
         self.assertEqual(zaak.zaakidentificatie, '0392-2017-0000001')
         self.assertEqual(zaak.bronorganisatie, '0392')
+
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'ZSH', 'administratie': '', 'gebruiker': ''})
+    def test_creeer_zaak_als_2_zaaktypen_aanwezig_zijn_met_dezelfde_begindatum(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/415
+        """
+        org_eenheid_dvv = OrganisatorischeEenheidFactory.create(
+            organisatieeenheididentificatie='DVV/KCC')
+
+        org_eenheid_spl = OrganisatorischeEenheidFactory.create(
+            organisatieeenheididentificatie='SPL')
+
+        zaak_type_mor = ZaakTypeFactory.create(
+            zaaktypeomschrijving='MOR',
+            zaaktypeidentificatie='1',
+            datum_begin_geldigheid_zaaktype='20170901',
+        )
+
+        zaak_type_ander = ZaakTypeFactory.create(
+            zaaktypeomschrijving='ANDER',
+            zaaktypeidentificatie='2',
+            datum_begin_geldigheid_zaaktype='20170901',
+        )
+
+        vraag = 'creeerZaak_ZakLk01_taiga415.xml'
+        response = self._do_request(self.porttype, vraag)
+
+        self.assertEquals(response.status_code, 200, response.content)

@@ -1,0 +1,65 @@
+<zds:creeerZaak_ZakLk01 xmlns:stuf="http://www.egem.nl/StUF/StUF0301" xmlns:zds="http://www.stufstandaarden.nl/koppelvlak/zds0120" xmlns:zkn="http://www.egem.nl/StUF/sector/zkn/0310" xmlns:bg="http://www.egem.nl/StUF/sector/bg/0310">
+  <zkn:stuurgegevens>
+    <stuf:berichtcode>Lk01</stuf:berichtcode>
+    <stuf:zender>
+      <stuf:organisatie>0392</stuf:organisatie>
+      <stuf:applicatie>MORPLUS</stuf:applicatie>
+      <stuf:administratie>MOR</stuf:administratie>
+      <stuf:gebruiker>system</stuf:gebruiker>
+    </stuf:zender>
+    <stuf:ontvanger>
+      <stuf:organisatie>0392</stuf:organisatie>
+      <stuf:applicatie>ZSH</stuf:applicatie>
+    </stuf:ontvanger>
+    <stuf:referentienummer>4a57fac8-7d11-48a9-ab50-fbc10150fa9e</stuf:referentienummer>
+    <stuf:tijdstipBericht>20180808145339</stuf:tijdstipBericht>
+    <stuf:entiteittype>ZAK</stuf:entiteittype>
+  </zkn:stuurgegevens>
+  <zkn:parameters>
+    <stuf:mutatiesoort>T</stuf:mutatiesoort>
+    <stuf:indicatorOvername>V</stuf:indicatorOvername>
+  </zkn:parameters>
+  <zkn:object stuf:entiteittype="ZAK" stuf:verwerkingssoort="T">
+    <zkn:identificatie>0392-2018-0028115</zkn:identificatie>
+    <zkn:omschrijving>Test</zkn:omschrijving>
+    <zkn:toelichting>Test</zkn:toelichting>
+    <zkn:anderZaakObject>
+      <zkn:omschrijving>contactpersoon</zkn:omschrijving>
+      <zkn:aanduiding>contactpersoon</zkn:aanduiding>
+      <zkn:registratie>0392-1a3d32b3-a71c-4fb6-b76e-ad0426904418</zkn:registratie>
+    </zkn:anderZaakObject>
+    <zkn:startdatum stuf:exact="true" stuf:indOnvolledigeDatum="V">20180808</zkn:startdatum>
+    <zkn:registratiedatum stuf:exact="true" stuf:indOnvolledigeDatum="V">20180808</zkn:registratiedatum>
+    <zkn:einddatumGepland>20180822</zkn:einddatumGepland>
+    <zkn:archiefnominatie>J</zkn:archiefnominatie>
+    <zkn:zaakniveau>1</zkn:zaakniveau>
+    <zkn:deelzakenIndicatie>N</zkn:deelzakenIndicatie>
+    <zkn:isVan stuf:entiteittype="ZAKZKT" stuf:verwerkingssoort="T">
+      <zkn:gerelateerde stuf:entiteittype="ZKT" stuf:verwerkingssoort="I">
+        <zkn:code>1</zkn:code>
+        <zkn:ingangsdatumObject>20170901</zkn:ingangsdatumObject>
+      </zkn:gerelateerde>
+    </zkn:isVan>
+    <zkn:heeftAlsInitiator stuf:entiteittype="ZAKBTRINI" stuf:verwerkingssoort="T">
+      <zkn:gerelateerde>
+        <zkn:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+          <zkn:identificatie>DVV/KCC</zkn:identificatie>
+        </zkn:organisatorischeEenheid>
+      </zkn:gerelateerde>
+    </zkn:heeftAlsInitiator>
+    <zkn:heeftAlsUitvoerende stuf:entiteittype="ZAKBTRUTV" stuf:verwerkingssoort="T">
+      <zkn:gerelateerde>
+        <zkn:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+          <zkn:identificatie>SPL</zkn:identificatie>
+        </zkn:organisatorischeEenheid>
+      </zkn:gerelateerde>
+    </zkn:heeftAlsUitvoerende>
+    <zkn:heeftAlsVerantwoordelijke stuf:entiteittype="ZAKBTRVRA" stuf:verwerkingssoort="T">
+      <zkn:gerelateerde>
+        <zkn:organisatorischeEenheid stuf:entiteittype="OEH" stuf:verwerkingssoort="I">
+          <zkn:identificatie>DVV/KCC</zkn:identificatie>
+        </zkn:organisatorischeEenheid>
+      </zkn:gerelateerde>
+    </zkn:heeftAlsVerantwoordelijke>
+  </zkn:object>
+</zds:creeerZaak_ZakLk01>

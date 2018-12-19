@@ -445,6 +445,45 @@ class voegZaakdocumentToe_EdcLk01RegressionWithMocksTests(DMSMockMixin, BaseTest
         self.assertEquals(response.status_code, 200, response.content)
         self.assertEqual(Zaak.objects.all().count(), 1)
 
+    @override_settings(ZAAKMAGAZIJN_SYSTEEM={'organisatie': '0392', 'applicatie': 'ZSH', 'administratie': '', 'gebruiker': ''})
+    def test_non_unique_document_title_gives_an_error(self):
+        """
+        See: https://taiga.maykinmedia.nl/project/haarlem-zaakmagazijn/issue/418
+        """
+        self._dms_client.geef_inhoud.return_value = ('Document.pdf', BytesIO(b'dummy'))
+
+        zaak_id_1 = '0392-2018-0000002'
+        zaak_id_2 = '0392-2018-0000003'
+
+        zaak_1 = ZaakFactory.create(
+            zaakidentificatie=zaak_id_1,
+            omschrijving='een omschrijving',
+            status_set__indicatie_laatst_gezette_status=JaNee.ja
+        )
+        zaak_2 = ZaakFactory.create(
+            zaakidentificatie=zaak_id_2,
+            omschrijving='een omschrijving',
+            status_set__indicatie_laatst_gezette_status=JaNee.ja
+        )
+        edc_type = InformatieObjectTypeFactory.create(informatieobjecttypeomschrijving='DEMO_DOCUMENT')
+
+        vraag = 'voegZaakdocumentToe_EdcLk01_taiga418.xml'
+
+        self.assertEqual(EnkelvoudigInformatieObject.objects.all().count(), 0)
+
+        response = self._do_request(self.porttype, vraag, extra_context={
+            'identificatie': '03920333caa5-595a-4a4d-acb9-bb160a32259e',
+            'zaak_identificatie': zaak_id_1,
+        })
+        self.assertEquals(response.status_code, 200, response.content)
+
+        response = self._do_request(self.porttype, vraag, extra_context={
+            'identificatie': '03920333caa5-595a-4a4d-acb9-bb160a32259d',
+            'zaak_identificatie': zaak_id_2
+        })
+        self.assertEquals(response.status_code, 200, response.content)
+        self.assertEqual(EnkelvoudigInformatieObject.objects.all().count(), 2)
+
 
 class voegZaakdocumentToe_EdcLk01EndToEndTests(BaseSoapTests):
     maxDiff = None
