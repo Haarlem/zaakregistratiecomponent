@@ -1,3 +1,7 @@
+.. image:: https://haarlem.github.io/assets/haarlem-open-source-logo.svg
+   :width: 30%
+   :target: https://haarlem.github.io
+
 ============
 Zaakmagazijn
 ============
@@ -8,14 +12,12 @@ Zaakmagazijn
 
 |build-status| |coverage|
 
-
 Implementatie van het referentiecomponent Zaaksysteem (ZS) volgens de
 Standaard Zaak- en Documentservices (ZDS) 1.2 specificatie van KING ten
 behoeve van zaakgericht werken.
 
 Ontwikkeld door `Maykin Media B.V. <https://www.maykinmedia.nl>`_ in opdracht
 van de Gemeente Haarlem.
-
 
 Introductie
 ===========
