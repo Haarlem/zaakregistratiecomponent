@@ -544,8 +544,8 @@ class Rol(TijdvakGeldigheidMixin, TijdvakRelatieMixin, TijdstipRegistratieMixin,
     rolomschrijving_generiek = models.CharField(
         max_length=40, choices=RolomschrijvingGeneriek.choices,
         help_text='Algemeen gehanteerde benaming van de aard van de ROL')
-    roltoelichting = models.TextField(
-        max_length=1000)
+    roltoelichting = models.CharField(
+        max_length=1000, db_index=True)
     indicatie_machtiging = models.CharField(
         max_length=15, choices=IndicatieMachtiging.choices, null=True, blank=True,
         help_text='Indicatie of de BETROKKENE in de ROL bij de ZAAK '
