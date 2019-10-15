@@ -103,6 +103,7 @@ class ProxyQuerySet:
         applicable_fields = {field for field in self.proxy_model.get_fields(in_rgbz1=True, is_foreign_key=True, is_field=True) if field.rgbz1_name in kwargs}
 
         extra_fields = kwargs.keys() - {field.rgbz1_name for field in applicable_fields}
+        computed_fields = {field.rgbz1_name for field in applicable_fields} - kwargs.keys()
 
         extra_filter_kwargs = {
             self.translate_nested_filter(field_name): kwargs[field_name] for field_name in extra_fields}
@@ -120,13 +121,13 @@ class ProxyQuerySet:
         # Line below only for logging purposes
         _mapped_kwargs = {}
 
-        if applicable_fields:
+        if computed_fields:
             filter_pks = []
             for obj in filtered_queryset:
                 # Iterate over all fields and if they all match, add the PK to the
                 # filter.
                 match = False
-                for field in applicable_fields:
+                for field in computed_fields:
                     filter_value = field.get_django_field().to_python(kwargs[field.rgbz1_name])
                     db_value = self.proxy_model._to_rgbz1_field(field, obj)
 
@@ -147,17 +148,17 @@ class ProxyQuerySet:
             _proxy_filter_str = '{}.objects.filter({})'.format(
                 self.proxy_model.__name__, ', '.join(
                     ['{}={}'.format(k, v) for k, v in kwargs.items()]))
-            if _mapped_kwargs:
-                _map_method = 'via value comparison'
+            if computed_fields:
+                _map_method = 'via {}value comparison (slow)'.format('(unneeded) ' if not _mapped_kwargs else '')
                 _real_filter_str = '{}.objects.filter({})'.format(
                     self.proxy_model.model.__name__, ', '.join(
                         ['{}={}'.format(k, v) for k, v in _mapped_kwargs.items()]))
             else:
-                _map_method = 'directly'
+                _map_method = 'directly (fast)'
                 _real_filter_str = '{}.objects.filter({})'.format(
                     self.proxy_model.model.__name__, ', '.join(
                         ['{}={}'.format(k, v) for k, v in full_filter_kwargs.items()]))
-            logger.debug('{} mapped ({}) to: {}'.format(_proxy_filter_str, _map_method, _real_filter_str))
+            logger.debug('{} mapped {} to: {}'.format(_proxy_filter_str, _map_method, _real_filter_str))
 
         return self.__class__(proxy_model=self.proxy_model, queryset=filtered_queryset)
 
