@@ -3,6 +3,22 @@ Change history
 ==============
 
 
+0.9.15
+======
+
+*October 16, 2019*
+
+* Improved performance at the cost of validation when retrieving documents by
+  using the document identification. The RGBZ 1.0 version of ``identificatie``
+  requires it to start with the ``bronorganisatie``. In RGBZ 2.0 the latter
+  was explicitely moved to its own attribute. The validation is now removed so
+  you can now create documents that have an invalid ``bronorganisatie`` but this
+  allows for database filtering instead of Python filtering.
+* Improved performance by only filtering on Python level when the parameter
+  could not be filtered on database level.
+* Improved performance by indexing ``roltoelichting`` on ``RolType``.
+
+
 0.9.14
 ======
 
