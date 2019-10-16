@@ -72,11 +72,19 @@ class EnkelvoudigDocumentProxy(ModelProxy):
         _obj = obj.is_type()
         return super().from_django_obj(_obj)
 
-    @classmethod
-    def to_rgbz2_informatieobjectidentificatie(cls, rgbz1_kwargs):
-        val = str(rgbz1_kwargs['identificatie'])
-        validate_starts_with_gemeentecode(val)
-        return val
+    #
+    # WARNING: The method below is accurate but causes all queries, that want to
+    # get a document by "identificatie", to be filtered in Python instead of in
+    # the database. If only the "identificatie" is provided, it even retrieves
+    # the entire dataset from the database, to be filtered in Python. This
+    # caused so much performance degradation that we removed the validation for
+    # the "gemeentecode" which is only needed for RGBZ 1.
+    #
+    # @classmethod
+    # def to_rgbz2_informatieobjectidentificatie(cls, rgbz1_kwargs):
+    #     val = str(rgbz1_kwargs['identificatie'])
+    #     validate_starts_with_gemeentecode(val)
+    #     return val
 
     @classmethod
     def to_rgbz2_bronorganisatie(cls, rgbz1_kwargs):
