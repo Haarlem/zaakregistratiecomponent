@@ -9,6 +9,8 @@ Change history
 *dev*
 
 * Added generic audit logging functionality for read actions.
+* Added audit log functionality for ``geefZaakdetails``,
+  ``geefZaakdocumentLezen``, ``geefZaakdocumentBewerken``.
 
 
 0.9.15

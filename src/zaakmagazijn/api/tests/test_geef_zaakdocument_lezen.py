@@ -1,6 +1,7 @@
 import base64
 from io import BytesIO
 
+from auditlog.models import LogEntry
 from django.test import override_settings
 
 from lxml import etree
@@ -563,3 +564,51 @@ class geefZaakdocumentLezen_EdcLv01RegressionTests(DMSMockMixin, BaseTestPlatfor
         response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
 
         self.assertEqual(response_edc_identificatie, document.informatieobjectidentificatie)
+
+
+class GeefZaakdocumentlezen_AuditlogTests(DMSMockMixin, BaseTestPlatformTests):
+    porttype = 'BeantwoordVraag'
+    maxDiff = None
+    test_files_subfolder = 'stp_geefZaakdocumentlezen'
+
+    def setUp(self):
+        super().setUp()
+
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
+
+        self.document = EnkelvoudigInformatieObjectFactory.create()
+        self.zaak = ZaakFactory.create(status_set__indicatie_laatst_gezette_status=JaNee.ja)
+        ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.document)
+
+    def _test_response(self, response):
+        self.assertEquals(response.status_code, 200, response.content)
+
+        response_root = etree.fromstring(response.content)
+        response_berichtcode = response_root.xpath(
+            '//zkn:stuurgegevens/stuf:berichtcode',
+            namespaces=self.nsmap
+        )[0].text
+        self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+        response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+        response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(response_edc_identificatie, self.document.informatieobjectidentificatie)
+
+    def test_geefLijstZaakdocumentenlezen_EdcLv01_01(self):
+        vraag = 'geefZaakdocumentLezen_EdcLv01_01.xml'
+        context = {
+            'voegzaakdocumenttoe_identificatie_1': self.document.informatieobjectidentificatie,
+        }
+
+        count = LogEntry.objects.count()
+
+        response = self._do_request(self.porttype, vraag, context)
+
+        self._test_response(response)
+        self.assertEqual(LogEntry.objects.count(), count + 1)
+
+        log_entry = LogEntry.objects.latest()
+        self.assertEqual(log_entry.action, LogEntry.Action.READ)
+        self.assertEqual(log_entry.content_type.model, 'enkelvoudiginformatieobject')
+        self.assertEqual(log_entry.additional_data['functie'], 'geefZaakdocumentLezen_EdcLv01')
