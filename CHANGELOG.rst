@@ -6,7 +6,7 @@ Change history
 0.9.16
 ======
 
-*dev*
+*December 9, 2019*
 
 * Added generic audit logging functionality for read actions.
 * Added audit log functionality for ``geefZaakdetails``,
