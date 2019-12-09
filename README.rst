@@ -6,7 +6,7 @@
 Zaakmagazijn
 ============
 
-:Version: 0.9.15
+:Version: 0.9.16
 :Source: https://github.com/Haarlem/zaakregistratiecomponent
 :Keywords: zaaksysteem, zakenmagazijn, zds, zaakservices, documentservices, soap, zds
 
