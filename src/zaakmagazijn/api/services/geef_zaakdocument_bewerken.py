@@ -1,5 +1,6 @@
 from spyne import AnyXml, ServiceBase, Unicode, rpc
 
+from zaakmagazijn.auditlog_extension.signals import service_read
 from ...cmis.client import default_client as dms_client
 from ..stuf import simple_types
 from ..stuf.attributes import entiteittype, functie
@@ -209,4 +210,7 @@ class GeefZaakdocumentBewerken(ServiceBase):
             'checkedOutId': checked_out_id,
             'checkedOutBy': checked_out_by
         }
+
+        service_read.send(sender=ctx, instance=eio)
+
         return data

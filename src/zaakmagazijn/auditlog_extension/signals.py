@@ -1,6 +1,6 @@
-import django.dispatch
 import logging
 
+import django.dispatch
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
@@ -63,6 +63,7 @@ def log_read(sender, instance, **kwargs):
     attrs = {
         'action': LogEntry.Action.READ,
         'content_type': ContentType.objects.get_for_model(instance),
+        'changes': {},
         'object_pk': pk,
         'object_repr': smart_text(instance),
     }

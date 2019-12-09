@@ -246,4 +246,4 @@ class GeefZaakdetails(ServiceBase):
         # Ook voor het GeefZaakDetails bericht is het mogelijk om
         # niet-authentieke contactgegevens op te nemen.
 
-        return output_builder.create_data(data, GeefZaakdetails.output_model)
+        return output_builder.create_data(data, GeefZaakdetails.output_model, auditlog=True)
