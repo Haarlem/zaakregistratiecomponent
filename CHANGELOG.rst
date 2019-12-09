@@ -3,6 +3,14 @@ Change history
 ==============
 
 
+0.9.16
+======
+
+*dev*
+
+* Added generic audit logging functionality for read actions.
+
+
 0.9.15
 ======
 
