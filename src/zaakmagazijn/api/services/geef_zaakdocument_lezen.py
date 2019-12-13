@@ -97,4 +97,4 @@ class GeefZaakdocumentLezen(ServiceBase):
         # In Tabel 3 is een mapping aangegeven tussen de StUF-ZKN-elementen en
         # CMIS-properties om de vertaling uit te voeren.
 
-        return output_builder.create_data(data, GeefZaakdocumentLezen.output_model)
+        return output_builder.create_data(data, GeefZaakdocumentLezen.output_model, auditlog=True)

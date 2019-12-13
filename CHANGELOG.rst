@@ -3,6 +3,16 @@ Change history
 ==============
 
 
+0.9.16
+======
+
+*December 9, 2019*
+
+* Added generic audit logging functionality for read actions.
+* Added audit log functionality for ``geefZaakdetails``,
+  ``geefZaakdocumentLezen``, ``geefZaakdocumentBewerken``.
+
+
 0.9.15
 ======
 

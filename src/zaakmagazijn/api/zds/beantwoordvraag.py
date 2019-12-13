@@ -7,6 +7,7 @@ from spyne.model.complex import TypeInfo
 
 from zaakmagazijn.api.stuf.faults import StUFFault
 from zaakmagazijn.api.utils import create_unique_id
+from zaakmagazijn.auditlog_extension.signals import service_read
 from zaakmagazijn.utils import stuf_datetime
 
 from ..stuf import (
@@ -409,12 +410,12 @@ class La01Builder(ComplexModelBuilder):
             params['aantalVoorkomens'] = self.total_objs
         return params
 
-    def create_data(self, request_obj, output_model):
+    def create_data(self, request_obj, output_model, auditlog=False):
         gelijk_obj = request_obj.gelijk
         scope_obj = request_obj.scope.object if request_obj.scope else None
         input_parameters_obj = request_obj.parameters if request_obj.parameters else None
         objects = self.create_object_data(gelijk_obj, scope_obj, input_parameters_obj,
-                                          self.get_queryset(request_obj), output_model)
+                                          self.get_queryset(request_obj), output_model, auditlog=auditlog)
 
         # TODO [TECH]: Maybe we should move the whole stuurgegevens (or at least zender/ontvanger) to the application level?
         # TODO [TECH]: Reference etc. should also be logged.
@@ -706,7 +707,7 @@ class La01Builder(ComplexModelBuilder):
             obj_answer['entiteittype'] = stuf_entiteit.get_mnemonic()
         return obj_answer
 
-    def _create_object_data(self, stuf_entiteit, queryset, scope_obj, filter_obj, parameters_obj, root_scope_obj, object_model):
+    def _create_object_data(self, stuf_entiteit, queryset, scope_obj, filter_obj, parameters_obj, root_scope_obj, object_model, auditlog=False):
         """
         See StUF 03.01 6.3.3 and 6.4.2
         """
@@ -732,6 +733,9 @@ class La01Builder(ComplexModelBuilder):
             qs = qs[:limit_arg]
 
         for obj in qs:
+            if auditlog:
+                service_read.send(sender=self.__class__, instance=obj)
+
             try:
                 obj_answer = self._create_fundamenteel(
                     stuf_entiteit=stuf_entiteit,
@@ -750,7 +754,7 @@ class La01Builder(ComplexModelBuilder):
             raise EmptyResultError()
         return answer
 
-    def create_object_data(self, filter_obj, scope_obj, parameters_obj, queryset, output_model):
+    def create_object_data(self, filter_obj, scope_obj, parameters_obj, queryset, output_model, auditlog=False):
         #
         # Filter out all objects, on the highest level, which aren't needed based on the entire search query early.
         # I know, I know. early optimalization is the root of all evil.
@@ -768,7 +772,8 @@ class La01Builder(ComplexModelBuilder):
                                             filter_obj=filter_obj,
                                             parameters_obj=parameters_obj,
                                             root_scope_obj=scope_obj,
-                                            object_model=object_model)
+                                            object_model=object_model,
+                                            auditlog=auditlog)
         except EmptyResultError:
             data = []
 

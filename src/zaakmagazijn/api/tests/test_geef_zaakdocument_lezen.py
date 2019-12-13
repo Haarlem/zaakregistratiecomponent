@@ -1,17 +1,23 @@
 import base64
 from io import BytesIO
 
+from django.contrib.contenttypes.models import ContentType
 from django.test import override_settings
+from django.urls import reverse
+from django.utils import timezone
 
+from auditlog.models import LogEntry
 from lxml import etree
 from zeep.xsd.const import Nil
 
+from zaakmagazijn.accounts.models import User
+
 from ...rgbz.choices import JaNee
 from ...rgbz.tests.factory_models import (
-    EnkelvoudigInformatieObjectFactory, ZaakFactory,
-    ZaakInformatieObjectFactory,
-    InformatieObjectTypeFactory,
-    InformatieObjectTypeOmschrijvingGeneriekFactory)
+    EnkelvoudigInformatieObjectFactory, InformatieObjectTypeFactory,
+    InformatieObjectTypeOmschrijvingGeneriekFactory, ZaakFactory,
+    ZaakInformatieObjectFactory
+)
 from ..stuf.choices import BerichtcodeChoices
 from ..stuf.constants import STUF_XML_NS
 from ..stuf.ordering import EDCSortering
@@ -563,3 +569,103 @@ class geefZaakdocumentLezen_EdcLv01RegressionTests(DMSMockMixin, BaseTestPlatfor
         response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
 
         self.assertEqual(response_edc_identificatie, document.informatieobjectidentificatie)
+
+
+class GeefZaakdocumentlezen_AuditlogTests(DMSMockMixin, BaseTestPlatformTests):
+    porttype = 'BeantwoordVraag'
+    maxDiff = None
+    test_files_subfolder = 'stp_geefZaakdocumentlezen'
+
+    def setUp(self):
+        super().setUp()
+
+        self._dms_client.geef_inhoud.return_value = ('doc 1', BytesIO())
+
+        self.document = EnkelvoudigInformatieObjectFactory.create()
+        self.zaak = ZaakFactory.create(status_set__indicatie_laatst_gezette_status=JaNee.ja)
+        ZaakInformatieObjectFactory.create(zaak=self.zaak, informatieobject=self.document)
+
+    def _test_response(self, response):
+        self.assertEquals(response.status_code, 200, response.content)
+
+        response_root = etree.fromstring(response.content)
+        response_berichtcode = response_root.xpath(
+            '//zkn:stuurgegevens/stuf:berichtcode',
+            namespaces=self.nsmap
+        )[0].text
+        self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+        response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+        response_edc_identificatie = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
+
+        self.assertEqual(response_edc_identificatie, self.document.informatieobjectidentificatie)
+
+    def test_geefLijstZaakdocumentenlezen_EdcLv01_01(self):
+        vraag = 'geefZaakdocumentLezen_EdcLv01_01.xml'
+        context = {
+            'voegzaakdocumenttoe_identificatie_1': self.document.informatieobjectidentificatie,
+        }
+
+        count = LogEntry.objects.count()
+
+        response = self._do_request(self.porttype, vraag, context)
+
+        self._test_response(response)
+        self.assertEqual(LogEntry.objects.count(), count + 1)
+
+        log_entry = LogEntry.objects.latest()
+        self.assertEqual(log_entry.action, LogEntry.Action.READ)
+        self.assertEqual(log_entry.content_type.model, 'enkelvoudiginformatieobject')
+        self.assertEqual(log_entry.additional_data['functie'], 'geefZaakdocumentLezen_EdcLv01')
+
+    def test_admin(self):
+        user = User.objects.create_superuser('johndoe', 'johndoe@example.com', 'supersecret')
+        ct = ContentType.objects.get(app_label='rgbz', model='enkelvoudiginformatieobject')
+
+        LogEntry.objects.all().delete()
+
+        LogEntry.objects.create(**{
+            'actor_id': None,
+            'additional_data': {
+                'zender': None,
+                'functie': 'geefZaakdocumentLezen_EdcLv01'
+            },
+            'object_pk': '1',
+            'changes': {},
+            'timestamp': timezone.now(),
+            'object_id': 1,
+            'remote_addr': None,
+            'action': LogEntry.Action.READ,
+            'content_type_id': ct.pk,
+            'id': self.document.pk,
+            'object_repr': str(self.document)
+        })
+
+        login = self.client.login(username=user.username, password='supersecret')
+        self.assertTrue(login)
+
+        response = self.client.get(reverse('admin:auditlog_logentry_changelist'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, 'geefZaakdocumentLezen_EdcLv01')
+        self.assertContains(response, str(self.document))
+
+    def test_integration(self):
+        vraag = 'geefZaakdocumentLezen_EdcLv01_01.xml'
+        context = {
+            'voegzaakdocumenttoe_identificatie_1': self.document.informatieobjectidentificatie,
+        }
+
+        LogEntry.objects.all().delete()
+
+        response = self._do_request(self.porttype, vraag, context)
+        self.assertEqual(response.status_code, 200)
+
+        user = User.objects.create_superuser('johndoe', 'johndoe@example.com', 'supersecret')
+
+        self.client.login(username=user.username, password='supersecret')
+        response = self.client.get(reverse('admin:auditlog_logentry_changelist'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, 'geefZaakdocumentLezen_EdcLv01')
+        self.assertContains(response, str(self.document))

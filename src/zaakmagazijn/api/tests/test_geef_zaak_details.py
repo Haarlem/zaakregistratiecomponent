@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from operator import attrgetter
 from unittest import skip
 
+from django.utils.translation import ugettext_lazy as _
+from auditlog.models import LogEntry
 from lxml import etree
 from zeep.xsd.const import Nil
 
@@ -992,3 +994,48 @@ class STPgeefZaakdetails_ZakLv01Tests(BaseTestPlatformTests):
         response = self._do_request(self.porttype, vraag, context)
 
         self._test_response(response)
+
+
+class GeefZaakdetails_AuditlogTests(BaseTestPlatformTests):
+    porttype = 'BeantwoordVraag'
+    maxDiff = None
+    test_files_subfolder = 'stp_geefZaakdetails'
+
+    def setUp(self):
+        super().setUp()
+
+        self.zaak = ZaakFactory.create()
+
+    def _test_response(self, response):
+        self.assertEquals(response.status_code, 200, response.content)
+
+        response_root = etree.fromstring(response.content)
+        response_berichtcode = response_root.xpath('//zkn:stuurgegevens/stuf:berichtcode', namespaces=self.nsmap)[0].text
+        self.assertEqual(response_berichtcode, BerichtcodeChoices.la01, response.content)
+
+        response_object_element = response_root.xpath('//zkn:antwoord/zkn:object', namespaces=self.nsmap)[0]
+
+        response_zaak_id = response_object_element.xpath('zkn:identificatie', namespaces=self.nsmap)[0].text
+        self.assertEqual(response_zaak_id, self.zaak.zaakidentificatie, response.content)
+
+    def test_geefZaakdetails_ZakLv01_01(self):
+        vraag = 'geefZaakdetails_ZakLv01_01.xml'
+        context = {
+            'referentienummer': self.genereerID(10),
+            'genereerzaakident_identificatie_2': self.zaak.zaakidentificatie,
+            'gemeentecode': '',
+        }
+
+        count = LogEntry.objects.count()
+
+        response = self._do_request(self.porttype, vraag, context)
+
+        self._test_response(response)
+        self.assertEqual(LogEntry.objects.count(), count + 1)
+
+        log_entry = LogEntry.objects.latest()
+        self.assertEqual(log_entry.action, LogEntry.Action.READ)
+        self.assertEqual(log_entry.get_action_display(), _("read"))
+        self.assertEqual(log_entry.content_type.model, 'zaak')
+        self.assertEqual(log_entry.additional_data['functie'], 'geefZaakdetails_ZakLv01')
+        self.assertEqual(log_entry.additional_data['zender']['organisatie'], 'KING')
