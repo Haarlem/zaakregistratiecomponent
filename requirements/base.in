@@ -3,7 +3,7 @@ psycopg2-binary
 Pillow
 pytz
 raven
-httplib2==0.8             # Pinned to 0.8 due to #387
+httplib2==0.18.0             # Pinned to 0.8 due to #387
 
 Django
 # django-admin-tools

@@ -7,38 +7,38 @@
 -e git+https://github.com/maykinmedia/chemistry-cmislib.git@0.7.dev5#egg=cmislib
 -e git+https://github.com/maykinmedia/spyne.git@maykin#egg=spyne
 -e git+https://github.com/maykinmedia/python-zeep.git@xsi-nil-on-complex-type-with-simple-content#egg=zeep
-appdirs==1.4.3
-cached-property==1.3.0
+appdirs==1.4.3            # via zeep
+cached-property==1.3.0    # via zeep
 click==6.7                # via pip-tools
 contextlib2==0.5.5        # via raven
-defusedxml==0.5.0
-django-auditlog==0.4.4
-django-axes==2.3.2
-django-choices==1.5.0
+defusedxml==0.5.0         # via zeep
+django-auditlog==0.4.4    # via -r base.in
+django-axes==2.3.2        # via -r base.in
+django-choices==1.5.0     # via -r base.in
 django-compat==1.0.14     # via django-hijack, django-hijack-admin
-django-hijack-admin==2.1.4
-django-hijack==2.1.4
+django-hijack-admin==2.1.4  # via -r base.in
+django-hijack==2.1.4      # via -r base.in, django-hijack-admin
 django-jsonfield==1.0.1   # via django-auditlog
-django-redis==4.8.0
-django-rosetta==0.7.13
-django-sniplates==0.5.0
-django==1.11.7
+django-redis==4.8.0       # via -r base.in
+django-rosetta==0.7.13    # via -r base.in
+django-sniplates==0.5.0   # via -r base.in
+django==1.11.7            # via -r base.in, django-choices, django-hijack-admin, django-rosetta, django-sniplates
 first==2.0.1              # via pip-tools
-httplib2==0.8
-iso8601==0.1.11
-isodate==0.5.4
-lxml==3.7.3
+httplib2==0.18.0          # via -r base.in, cmislib
+iso8601==0.1.11           # via cmislib
+isodate==0.5.4            # via zeep
+lxml==3.7.3               # via zeep
 microsofttranslator==0.8  # via django-rosetta
 olefile==0.44             # via pillow
-pillow==4.1.1
-pip-tools==2.0.2
+pillow==4.1.1             # via -r base.in
+pip-tools==2.0.2          # via -r base.in
 polib==1.0.8              # via django-rosetta
-psycopg2-binary==2.7.5
+psycopg2-binary==2.7.5    # via -r base.in
 python-dateutil==2.6.0    # via django-auditlog
-pytz==2017.2
-raven==6.0.0
+pytz==2017.2              # via -r base.in, django, spyne, zeep
+raven==6.0.0              # via -r base.in
 redis==2.10.5             # via django-redis
-requests-toolbelt==0.8.0
-requests==2.14.2          # via django-rosetta, microsofttranslator, requests-toolbelt
-six==1.10.0               # via django-compat, django-rosetta, microsofttranslator, pip-tools, python-dateutil
-unidecode==0.4.20
+requests-toolbelt==0.8.0  # via zeep
+requests==2.14.2          # via django-rosetta, microsofttranslator, requests-toolbelt, zeep
+six==1.10.0               # via cmislib, django-compat, django-rosetta, microsofttranslator, pip-tools, python-dateutil, zeep
+unidecode==0.4.20         # via -r base.in
